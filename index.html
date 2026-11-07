@@ -134,8 +134,11 @@ nav {
 @media (max-width: 768px) { .interactive-grid { grid-template-columns: 1fr; } }
 .sound-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin-top: 12px; }
 .sound-btn { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px; border-radius: 12px; font-size: 1.2rem; cursor: pointer; }
+.sound-label { font-size: 0.75rem; color: #cbd5e1; display: block; margin-top: 4px; }
+
 .todo-list { list-style: none; margin-top: 12px; }
 .todo-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.todo-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
 
 .owner-layout { display: flex; gap: 24px; align-items: center; }
 .owner-avatar { width: 100px; height: 100px; background: linear-gradient(45deg, var(--accent), #3b82f6); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; }
@@ -185,13 +188,8 @@ nav {
             <option value="valentijn">💖 Valentijn</option>
           </select>
         </div>
-        <button type="submit" class="btn btn-full" id="authSubmitBtn" style="margin-top: 10px;">Inloggen</button>
+        <button type="submit" class="btn btn-full" id="authSubmitBtn" style="margin-top: 15px;">Inloggen</button>
       </form>
     </div>
   </div>
 
-  <!-- ===== MAINSTREAM APPLICATIE ===== -->
-  <div class="app-wrapper" id="appScreen">
-    <nav>
-      <div style="font-weight: 800; font-size: 1.2rem;">🔮 ControlPortaal</div>
-      <div class="nav-links">
