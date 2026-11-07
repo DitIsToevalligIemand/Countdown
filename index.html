@@ -1,313 +1,550 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feestdagen, Kalender & Concerten Portaal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --bg-gradient: linear-gradient(135deg, #2b1104 0%, #3d1502 50%, #631704 100%);
-            --card-bg: rgba(38, 18, 9, 0.9);
-            --card-border: rgba(245, 158, 11, 0.4);
-            --text-color: #fef3c7;
-            --accent-color: #d97706;
-            --accent-glow: rgba(217, 119, 6, 0.5);
-            --glimmer-gold: #fde047;
-        }
-
-        body.christmas-theme {
-            --bg-gradient: linear-gradient(135deg, #022c22 0%, #064e3b 50%, #7f1d1d 100%);
-            --card-bg: rgba(15, 23, 42, 0.92);
-            --card-border: rgba(52, 211, 153, 0.4);
-            --text-color: #f0fdf4;
-            --accent-color: #059669;
-            --accent-glow: rgba(5, 150, 105, 0.5);
-            --glimmer-gold: #fbbf24;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        body {
-            background: var(--bg-gradient);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            padding-bottom: 70px;
-            transition: all 0.5s ease-in-out;
-        }
-
-        nav {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            padding: 14px 22px;
-            border-radius: 18px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .nav-btn {
-            background: none;
-            border: none;
-            color: #d1d5db;
-            font-size: 0.88rem;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 8px 14px;
-            border-radius: 10px;
-        }
-
-        .nav-btn.active,
-        .nav-btn:hover {
-            color: #fff;
-            background: rgba(217, 119, 6, 0.35);
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1000px;
-            display: none;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .container.active {
-            display: flex;
-        }
-
-        .auth-wrapper {
-            width: 100%;
-            min-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .auth-card {
-            background: var(--card-bg);
-            border: 2px solid var(--card-border);
-            border-radius: 28px;
-            padding: 45px;
-            max-width: 460px;
-            width: 100%;
-            text-align: center;
-            backdrop-filter: blur(20px);
-        }
-
-        .glimmer-card {
-            background: linear-gradient(
-                135deg,
-                rgba(255,255,255,0.06),
-                rgba(253,224,71,0.18),
-                rgba(255,255,255,0.06)
-            );
-            border: 2px solid var(--glimmer-gold);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 18px;
-        }
-
-        .timer-card,
-        .content-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .timer-card {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .timer-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .timer-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-
-        .countdown-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .time-box {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(245,158,11,0.25);
-            border-radius: 12px;
-            padding: 12px 5px;
-            text-align: center;
-        }
-
-        .time-value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #fff;
-        }
-
-        .time-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: #d1d5db;
-            margin-top: 4px;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(0,0,0,0.3);
-            margin-top: 15px;
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 14px 18px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .data-table th {
-            background: rgba(0,0,0,0.5);
-            color: var(--glimmer-gold);
-        }
-
-        .radio-player-box {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            background: rgba(0,0,0,0.35);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid var(--card-border);
-        }
-
-        .radio-stations {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .radio-station-btn {
-            background: rgba(255,255,255,.10);
-            border: 1px solid var(--card-border);
-            color: var(--text-color);
-            padding: 9px 13px;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .radio-station-btn:hover {
-            background: var(--accent-color);
-            color: white;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px,1fr));
-            gap: 12px;
-        }
-
-        .search-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin: 14px 0;
-        }
-
-        .search-row input {
-            flex: 1;
-            min-width: 180px;
-        }
-
-        .small-note {
-            color: #cbd5e1;
-            font-size: .82rem;
-            line-height: 1.5;
-        }
-
-        .btn {
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .btn-danger {
-            background: #b91c1c;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: var(--glimmer-gold);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--card-border);
-            background: rgba(0,0,0,0.3);
-            color: white;
-        }
-
-        @media (max-width: 600px) {
-            .countdown-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .auth-card {
-                padding: 25px;
-            }
-
-            nav {
-                justify-content: center;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feestdagen & Concerten Portaal</title>
+<style>
+:root{--bg1:#160b2b;--bg2:#30105b;--accent:#e9b8ff;--card:rgba(22,15,39,.88);--text:#fff7ff}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:22px;color:var(--text);font-family:system-ui,Arial;background:linear-gradient(135deg,var(--bg1),var(--bg2));transition:.3s}
+header,.panel,.auth{max-width:1050px;margin:0 auto 18px;background:var(--card);border:1px solid #ffffff30;border-radius:20px;padding:20px;box-shadow:0 12px 35px #0005;backdrop-filter:blur(12px)}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h1,h2,h3{margin-top:0}
+button,.button{border:0;border-radius:11px;padding:10px 15px;background:var(--accent);color:#21102d;font-weight:700;cursor:pointer}
+button.secondary{background:#ffffff20;color:white;border:1px solid #ffffff35}
+button.danger{background:#a82f4b;color:white}
+input,select{width:100%;padding:11px;border-radius:10px;border:1px solid #ffffff40;background:#160d25;color:white;margin:5px 0 12px}
+label{font-size:.9rem;color:#eadcf7}
+nav{display:flex;gap:8px;flex-wrap:wrap}
+.tab{display:none}
+.tab.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.count-card,.concert-card{position:relative;overflow:hidden;border:2px solid var(--edge,#d9a8ff);border-radius:18px;padding:18px;background:linear-gradient(135deg,var(--c1,#43205d),var(--c2,#20112f));box-shadow:0 0 20px var(--glow,#b76cff66)}
+.sparkle:after{content:'✦  ✧   ✦     ✧';position:absolute;right:10px;top:8px;color:#fff8;letter-spacing:8px;animation:twinkle 2s infinite alternate;pointer-events:none}
+@keyframes twinkle{from{opacity:.25;transform:translateY(0)}to{opacity:1;transform:translateY(3px)}}
+.digits{display:flex;gap:7px;margin-top:15px}
+.digit{flex:1;text-align:center;background:#09061188;padding:12px 3px;border-radius:10px}
+.digit b{display:block;font-size:1.5rem}
+.muted{color:#d8cce5;font-size:.9rem}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1;min-width:180px}
+.result{padding:10px;border-bottom:1px solid #ffffff25}
+.result a{color:#f1d1ff}
+.hidden{display:none!important}
+</style>
 </head>
+<body>
+
+<section class="auth" id="authBox">
+<h1>✨ Feestdagen & Concerten Portaal</h1>
+<p class="muted">Log in of maak een persoonlijk account aan. Beheerders hebben een aparte inlogknop.</p>
+
+<form id="authForm">
+<label>Gebruikersnaam</label>
+<input id="username" required minlength="3" autocomplete="username">
+
+<div id="emailWrap" class="hidden">
+<label>E-mailadres</label>
+<input id="email" type="email" autocomplete="email">
+</div>
+
+<label>Wachtwoord</label>
+<input id="password" type="password" required minlength="10" autocomplete="current-password">
+<p class="muted" id="pwHint">Gebruik minimaal 10 tekens.</p>
+<button id="authSubmit">Inloggen</button>
+</form>
+
+<p>
+<button class="secondary" id="toggleAuth" type="button">Nog geen account? Registreren</button>
+<button class="secondary" id="adminMode" type="button">Beheerder inloggen</button>
+</p>
+<p class="muted" id="authNotice">Je gegevens worden lokaal in deze browser opgeslagen.</p>
+</section>
+
+<div id="app" class="hidden">
+
+<header>
+<div>
+<h1>✨ Mijn Portaal</h1>
+<div class="muted" id="welcome"></div>
+</div>
+<div class="row" style="flex:0 1 auto">
+<button class="secondary" onclick="showTab('countdowns')">Countdowns</button>
+<button class="secondary" onclick="showTab('concerts')">Concerten</button>
+<button class="secondary" onclick="showTab('radio')">Radio</button>
+<button class="danger" onclick="logout()">Uitloggen</button>
+</div>
+</header>
+
+<section id="countdowns" class="panel tab active">
+<h2>✨ Mijn eigen countdowns</h2>
+<form id="timerForm">
+<div class="grid">
+<div><label>Titel</label><input id="timerTitle" required placeholder="Bijv. Mijn verjaardag"></div>
+<div><label>Datum en tijd</label><input id="timerDate" type="datetime-local" required></div>
+<div><label>Emoji</label><input id="timerIcon" maxlength="8" value="🎉"></div>
+<div><label>Stijl</label><select id="timerStyle"><option value="sparkle">Glinsterend ✨</option><option value="plain">Strak</option><option value="neon">Neon</option></select></div>
+<div><label>Achtergrondkleur 1</label><input id="timerColor1" type="color" value="#51236d"></div>
+<div><label>Achtergrondkleur 2</label><input id="timerColor2" type="color" value="#1b1233"></div>
+<div><label>Randkleur</label><input id="timerEdge" type="color" value="#e6b5ff"></div>
+</div>
+<button>Countdown opslaan</button>
+</form>
+<div id="timerList" class="grid" style="margin-top:18px"></div>
+</section>
+
+<section id="concerts" class="panel tab">
+<h2>🎤 Concerten zoeken</h2>
+<p class="muted">Zoek vrij op artiest, festival, stad of zaal. De links openen de actuele zoekresultaten bij meerdere concertsites; er is geen vaste lijst van vijf.</p>
+
+<form id="searchForm">
+<div class="row">
+<input id="concertQuery" placeholder="Bijv. Taylor Swift, Utrecht, festival..." required>
+<button>Zoeken op alle sites</button>
+</div>
+</form>
+<div id="searchResults"></div>
+
+<hr style="border-color:#ffffff25;margin:20px 0">
+<h3>➕ Zelf concert toevoegen</h3>
+
+<form id="concertForm">
+<div class="grid">
+<div><label>Artiest / evenement</label><input id="artist" required></div>
+<div><label>Locatie / zaal</label><input id="venue"></div>
+<div><label>Datum en tijd</label><input id="concertDate" type="datetime-local" required></div>
+<div><label>Notitie</label><input id="concertNote" placeholder="Bijv. Tickets gekocht!"></div>
+</div>
+<button>Concert opslaan</button>
+</form>
+
+<h3 style="margin-top:22px">Mijn opgeslagen concerten</h3>
+<div id="concertList" class="grid"></div>
+</section>
+
+<section id="radio" class="panel tab">
+<h2>📻 Radio</h2>
+<div class="row">
+<input id="radioSearch" placeholder="Zoek zender..." oninput="renderRadios()">
+<button class="secondary" onclick="document.getElementById('audio').pause()">Stop radio</button>
+</div>
+<p id="nowPlaying" class="muted">Geen zender geselecteerd</p>
+<audio id="audio" controls style="width:100%"></audio>
+<div id="radioList" class="grid" style="margin:15px 0"></div>
+
+<h3>Eigen zender toevoegen</h3>
+<form id="radioForm">
+<div class="row">
+<input id="radioName" placeholder="Naam zender" required>
+<input id="radioUrl" type="url" placeholder="https://... stream-URL" required>
+<button>Toevoegen</button>
+</div>
+</form>
+<p class="muted">Niet elke zender staat directe afspeelrechten toe of gebruikt een browsergeschikte stream.</p>
+</section>
+
+<section id="adminPanel" class="panel hidden">
+<h2>🛠 Beheeromgeving</h2>
+<p class="muted">Overzicht van accounts en hun opgeslagen gegevens. Wachtwoorden zijn niet zichtbaar.</p>
+<div id="adminOverview"></div>
+</section>
+
+<section class="panel">
+<h3>🎨 Websitekleuren</h3>
+<div class="row">
+<label>Achtergrondkleur 1<input id="bg1" type="color" value="#160b2b"></label>
+<label>Achtergrondkleur 2<input id="bg2" type="color" value="#30105b"></label>
+<label>Accentkleur<input id="accent" type="color" value="#e9b8ff"></label>
+</div>
+<button onclick="saveTheme()">Kleuren toepassen en opslaan</button>
+</section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let registering=false,adminMode=false,isAdmin=false,user=null,data={timers:[],concerts:[],radios:[]};
+
+const key=u=>'portal_account_'+u.toLowerCase();
+const enc=new TextEncoder();
+
+async function hashPassword(password,salt){
+ const k=await crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveBits']);
+ const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt,iterations:210000,hash:'SHA-256'},k,256);
+ return [...new Uint8Array(bits)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+function accounts(){return JSON.parse(localStorage.getItem('portal_accounts')||'{}')}
+function adminRecord(){return JSON.parse(localStorage.getItem('portal_admin')||'null')}
+
+function refreshAuthLabels(){
+ $('emailWrap').classList.toggle('hidden',!registering||adminMode);
+ $('email').required=registering&&!adminMode;
+ $('authSubmit').textContent=adminMode?(adminRecord()?'Beheerder inloggen':'Beheerdersaccount instellen'):(registering?'Account aanmaken':'Inloggen');
+ $('toggleAuth').classList.toggle('hidden',adminMode);
+ $('adminMode').textContent=adminMode?'Terug naar gebruikerslogin':'Beheerder inloggen';
+ $('authNotice').textContent=adminMode?'De beheerder stelt bij het eerste gebruik zelf een naam en wachtwoord in.':'Je gegevens worden lokaal in deze browser opgeslagen.';
+ $('pwHint').textContent='Gebruik minimaal 10 tekens.';
+}
+
+$('toggleAuth').onclick=()=>{
+ registering=!registering;
+ refreshAuthLabels();
+};
+
+$('adminMode').onclick=()=>{
+ adminMode=!adminMode;
+ registering=false;
+ $('authForm').reset();
+ refreshAuthLabels();
+};
+
+$('authForm').onsubmit=async e=>{
+ e.preventDefault();
+ const name=$('username').value.trim(),pw=$('password').value;
+
+ if(name.length<3||pw.length<10){
+  alert('Vul een naam in en gebruik minimaal 10 tekens voor het wachtwoord.');
+  return;
+ }
+
+ if(adminMode){
+  let a=adminRecord();
+
+  if(!a){
+   const salt=crypto.getRandomValues(new Uint8Array(16));
+   a={username:name,salt:[...salt],hash:await hashPassword(pw,salt)};
+   localStorage.setItem('portal_admin',JSON.stringify(a));
+   alert('Beheerdersaccount ingesteld. Bewaar je inloggegevens goed.');
+  }else{
+   const check=await hashPassword(pw,new Uint8Array(a.salt));
+   if(name.toLowerCase()!==a.username.toLowerCase()||check!==a.hash){
+    alert('Beheerdersnaam of wachtwoord onjuist.');
+    return;
+   }
+  }
+
+  isAdmin=true;
+  user=null;
+  data={timers:[],concerts:[],radios:[]};
+  $('authBox').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  $('welcome').textContent='Beheerder: '+a.username;
+  $('adminPanel').classList.remove('hidden');
+  document.querySelectorAll('.tab').forEach(x=>x.classList.add('hidden'));
+  renderAdmin();
+  return;
+ }
+
+ const all=accounts(),id=name.toLowerCase();
+
+ if(registering){
+  const email=$('email').value.trim();
+  if(!email){
+   alert('Vul je e-mailadres in.');
+   return;
+  }
+  if(all[id]){
+   alert('Deze gebruikersnaam bestaat al.');
+   return;
+  }
+  const salt=crypto.getRandomValues(new Uint8Array(16));
+  all[id]={username:name,email,salt:[...salt],hash:await hashPassword(pw,salt)};
+  localStorage.setItem('portal_accounts',JSON.stringify(all));
+ }else{
+  const a=all[id];
+  if(!a){
+   alert('Account niet gevonden. Registreer eerst.');
+   return;
+  }
+  if(await hashPassword(pw,new Uint8Array(a.salt))!==a.hash){
+   alert('Gebruikersnaam of wachtwoord onjuist.');
+   return;
+  }
+ }
+
+ user=name;
+ isAdmin=false;
+ data=JSON.parse(localStorage.getItem(key(name)+'_data')||'{"timers":[],"concerts":[],"radios":[]}');
+ $('authBox').classList.add('hidden');
+ $('app').classList.remove('hidden');
+ $('adminPanel').classList.add('hidden');
+ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('hidden'));
+ $('welcome').textContent='Ingelogd als '+name;
+ renderAll();
+};
+
+function save(){
+ if(user&&!isAdmin)localStorage.setItem(key(user)+'_data',JSON.stringify(data));
+}
+
+function logout(){
+ save();
+ user=null;
+ isAdmin=false;
+ $('app').classList.add('hidden');
+ $('authBox').classList.remove('hidden');
+ $('adminPanel').classList.add('hidden');
+ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('hidden'));
+ $('password').value='';
+ $('authForm').reset();
+ adminMode=false;
+ registering=false;
+ refreshAuthLabels();
+}
+
+function showTab(id){
+ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+ $(id).classList.add('active');
+}
+
+$('timerForm').onsubmit=e=>{
+ e.preventDefault();
+ data.timers.push({
+  id:Date.now(),
+  title:$('timerTitle').value,
+  date:$('timerDate').value,
+  icon:$('timerIcon').value||'✨',
+  style:$('timerStyle').value,
+  c1:$('timerColor1').value,
+  c2:$('timerColor2').value,
+  edge:$('timerEdge').value
+ });
+ save();
+ e.target.reset();
+ $('timerIcon').value='🎉';
+ renderTimers();
+};
+
+function remaining(date){
+ let ms=new Date(date)-Date.now();
+ if(ms<=0)return'🎉 Het moment is aangebroken!';
+ let d=Math.floor(ms/86400000);
+ ms%=86400000;
+ let h=Math.floor(ms/3600000);
+ ms%=3600000;
+ let m=Math.floor(ms/60000);
+ let s=Math.floor(ms%60000/1000);
+ return `${d} dagen ${h} uur ${m} min ${s} sec`;
+}
+
+function renderTimers(){
+ const box=$('timerList');
+ box.innerHTML='';
+
+ data.timers.forEach(t=>{
+  const el=document.createElement('article');
+  el.className='count-card '+(t.style==='sparkle'?'sparkle':'');
+  el.style.setProperty('--c1',t.c1);
+  el.style.setProperty('--c2',t.c2);
+  el.style.setProperty('--edge',t.edge);
+  el.innerHTML='<h3></h3><p class="digits"></p><p class="muted"></p><button class="danger">Verwijderen</button>';
+  el.querySelector('h3').textContent=(t.icon||'✨')+' '+t.title;
+  el.querySelector('.digits').textContent=remaining(t.date);
+  el.querySelector('.muted').textContent=new Date(t.date).toLocaleString('nl-NL');
+
+  el.querySelector('button').onclick=()=>{
+   data.timers=data.timers.filter(x=>x.id!==t.id);
+   save();
+   renderTimers();
+  };
+  box.append(el);
+ });
+}
+
+$('searchForm').onsubmit=e=>{
+ e.preventDefault();
+ const q=$('concertQuery').value.trim();
+ const v=encodeURIComponent(q);
+ const providers=[
+  ['Google','https://www.google.com/search?q='+encodeURIComponent(q+' concerten')],
+  ['Ticketmaster','https://www.ticketmaster.nl/search?q='+v],
+  ['Songkick','https://www.songkick.com/search?query='+v],
+  ['Bandsintown','https://www.bandsintown.com/search?query='+v],
+  ['JamBase','https://www.jambase.com/search?query='+v]
+ ];
+
+ $('searchResults').innerHTML='';
+ providers.forEach(([n,u])=>{
+  const d=document.createElement('div');
+  d.className='result';
+  const a=document.createElement('a');
+  a.href=u;
+  a.target='_blank';
+  a.rel='noopener noreferrer';
+  a.textContent='Zoek op '+n+' naar “'+q+'” ↗';
+  d.append(a);
+  $('searchResults').append(d);
+ });
+};
+
+$('concertForm').onsubmit=e=>{
+ e.preventDefault();
+ data.concerts.push({
+  id:Date.now(),
+  artist:$('artist').value,
+  venue:$('venue').value,
+  date:$('concertDate').value,
+  note:$('concertNote').value
+ });
+ save();
+ e.target.reset();
+ renderConcerts();
+};
+
+function renderConcerts(){
+ const box=$('concertList');
+ box.innerHTML='';
+
+ [...data.concerts].sort((a,b)=>new Date(a.date)-new Date(b.date)).forEach(c=>{
+  const el=document.createElement('article');
+  el.className='concert-card sparkle';
+  el.innerHTML='<h3></h3><p></p><p class="muted"></p><button class="danger">Verwijderen</button>';
+  el.querySelector('h3').textContent='🎤 '+c.artist;
+  el.querySelectorAll('p')[0].textContent='📍 '+(c.venue||'Locatie onbekend')+' '+(c.note||'');
+  el.querySelectorAll('p')[1].textContent=new Date(c.date).toLocaleString('nl-NL');
+
+  el.querySelector('button').onclick=()=>{
+   data.concerts=data.concerts.filter(x=>x.id!==c.id);
+   save();
+   renderConcerts();
+  };
+  box.append(el);
+ });
+}
+
+const defaultRadios=[
+ ['NPO Radio 1','https://icecast.omroep.nl/radio1-bb-mp3'],
+ ['NPO Radio 2','https://icecast.omroep.nl/radio2-bb-mp3'],
+ ['NPO 3FM','https://icecast.omroep.nl/3fm-bb-mp3'],
+ ['NPO Radio 5','https://icecast.omroep.nl/radio5-bb-mp3'],
+ ['NPO Klassiek','https://icecast.omroep.nl/radio4-bb-mp3'],
+ ['FunX','https://icecast.omroep.nl/funx-bb-mp3']
+];
+
+function renderRadios(){
+ const q=$('radioSearch').value.toLowerCase();
+ const all=[
+  ...defaultRadios.map(x=>({name:x[0],url:x[1]})),
+  ...data.radios
+ ].filter(x=>x.name.toLowerCase().includes(q));
+
+ $('radioList').innerHTML='';
+ all.forEach(r=>{
+  const b=document.createElement('button');
+  b.className='secondary';
+  b.textContent='▶ '+r.name;
+  b.onclick=()=>{
+   $('audio').src=r.url;
+   $('audio').play().catch(()=>alert('Deze stream kan niet worden afgespeeld.'));
+   $('nowPlaying').textContent='Nu afgespeeld: '+r.name;
+  };
+  $('radioList').append(b);
+ });
+}
+
+$('radioForm').onsubmit=e=>{
+ e.preventDefault();
+ const name=$('radioName').value.trim();
+ const url=$('radioUrl').value.trim();
+
+ if(!/^https?:\/\//i.test(url)){
+  alert('Gebruik een http- of https-streamadres.');
+  return;
+ }
+
+ data.radios.push({name,url});
+ save();
+ e.target.reset();
+ renderRadios();
+};
+
+function saveTheme(){
+ document.documentElement.style.setProperty('--bg1',$('bg1').value);
+ document.documentElement.style.setProperty('--bg2',$('bg2').value);
+ document.documentElement.style.setProperty('--accent',$('accent').value);
+
+ localStorage.setItem('portal_theme',JSON.stringify({
+  a:$('bg1').value,
+  b:$('bg2').value,
+  c:$('accent').value
+ }));
+}
+
+function loadTheme(){
+ try{
+  const t=JSON.parse(localStorage.getItem('portal_theme'));
+  if(t){
+   $('bg1').value=t.a;
+   $('bg2').value=t.b;
+   $('accent').value=t.c;
+   document.documentElement.style.setProperty('--bg1',t.a);
+   document.documentElement.style.setProperty('--bg2',t.b);
+   document.documentElement.style.setProperty('--accent',t.c);
+  }
+ }catch{}
+}
+
+function renderAll(){
+ renderTimers();
+ renderConcerts();
+ renderRadios();
+ loadTheme();
+}
+
+function renderAdmin(){
+ const box=$('adminOverview');
+ box.innerHTML='';
+ const all=accounts();
+ const entries=Object.entries(all);
+
+ const summary=document.createElement('p');
+ summary.textContent='Aantal gebruikers: '+entries.length;
+ box.append(summary);
+
+ entries.forEach(([id,a])=>{
+  let d={timers:[],concerts:[],radios:[]};
+
+  try{
+   d=JSON.parse(localStorage.getItem('portal_account_'+id+'_data')||'{"timers":[],"concerts":[],"radios":[]}');
+  }catch{}
+
+  const card=document.createElement('article');
+  card.className='concert-card';
+
+  const h=document.createElement('h3');
+  h.textContent=a.username;
+
+  const meta=document.createElement('p');
+  meta.textContent='E-mail: '+(a.email||'—')+
+   ' | Countdowns: '+d.timers.length+
+   ' | Concerten: '+d.concerts.length+
+   ' | Eigen radiozenders: '+d.radios.length;
+
+  const details=document.createElement('details');
+  const sum=document.createElement('summary');
+  sum.textContent='Alle opgeslagen gegevens bekijken';
+
+  const pre=document.createElement('pre');
+  pre.style.whiteSpace='pre-wrap';
+  pre.style.overflowWrap='anywhere';
+  pre.textContent=JSON.stringify({
+   countdowns:d.timers,
+   concerten:d.concerts,
+   radiozenders:d.radios
+  },null,2);
+
+  details.append(sum,pre);
+  card.append(h,meta,details);
+  box.append(card);
+ });
+}
+
+refreshAuthLabels();
+loadTheme();
+setInterval(()=>{
+ if(user&&!isAdmin)renderTimers();
+},1000);
+</script>
+</body>
+</html>
