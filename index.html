@@ -14,6 +14,7 @@
   --glow: rgba(139, 92, 246, 0.4);
 }
 
+/* ===== MASTER THEMES ===== */
 body.theme-cyberpunk {
   --bg: linear-gradient(135deg, #0b1329 0%, #172554 45%, #1e1b4b 100%);
   --card: rgba(15, 23, 42, 0.92);
@@ -97,7 +98,7 @@ body {
 }
 .auth-logo { font-size: 2.6rem; margin-bottom: 6px; }
 .auth-card h1 { font-size: 1.65rem; font-weight: 700; margin-bottom: 4px; }
-.auth-card .subtitle { color: #94a3b8; font-size: 0.92rem; margin-bottom: 26px; }
+.auth-card .subtitle { color: #94a3b8; font-size: 0.92rem; margin-bottom: 26px; text-align: center; }
 
 .auth-tabs {
   display: flex; background: rgba(0,0,0,0.3);
@@ -233,4 +234,3 @@ nav {
         </div>
         <div class="form-group">
           <label>Direct Opstartthema</label>
-          <select id="initialThemeSelect" onchange="changeTheme(this.value)">
