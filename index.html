@@ -1,648 +1,180 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portaal & Countdown Beheer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-gradient: linear-gradient(135deg, #0b1329 0%, #172554 50%, #1e1b4b 100%);
-            --card-bg: rgba(15, 23, 42, 0.85);
-            --card-border: rgba(59, 130, 246, 0.2);
-            --text-color: #f8fafc;
-            --accent-color: #8b5cf6;
-            --accent-glow: rgba(139, 92, 246, 0.4);
-            --staff-color: #f59e0b;
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+
+const PORT = process.env.PORT || 3000;
+const PUBLIC_DIR = path.join(__dirname, 'public');
+const DATA_DIR = path.join(__dirname, 'data');
+const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 dagen constant
+const EMAIL_RE = /^[\w@]+@[\w@]+\.[\w@]+$/;
+
+fs.mkdirSync(DATA_DIR, { recursive: true });
+
+// OPSLAG (JSON-bestanden)
+function loadJson(file, fallback) {
+    try {
+        return JSON.parse(fs.readFileSync(path.join(DATA_DIR, file), 'utf8'));
+    } catch {
+        return fallback;
+    }
+}
+
+function saveJson(file, obj) {
+    fs.writeFileSync(path.join(DATA_DIR, file), JSON.stringify(obj, null, 2));
+}
+
+let users = loadJson('users.json', []); // { id, email, role, createdAt, pass, tv, lastLogin }
+let logs = loadJson('logs.json', []); // { t, userId, email, action, ip, ua, detail }
+let content = loadJson('content.json', {}); // userid -> { countdowns: [], todos: [] }
+let secret = loadJson('secret.key', null);
+
+if (!secret || typeof secret !== 'string' || secret.length < 32) {
+    secret = crypto.randomBytes(48).toString('hex');
+    saveJson('secret.key', secret);
+}
+
+// WACHTWOORDEN (scrypt + salt)
+function hashPassword(password) {
+    const salt = crypto.randomBytes(16).toString('hex');
+    const hash = crypto.scryptSync(password, salt, 64).toString('hex');
+    return salt + ':' + hash;
+}
+
+function verifyPassword(password, stored) {
+    try {
+        const parts = String(stored).split(':');
+        if (parts.length !== 2) return false;
+        const salt = Buffer.from(parts[0], 'hex');
+        const test = crypto.scryptSync(password, salt, 64);
+        const orig = Buffer.from(parts[1], 'hex');
+        return test.length === orig.length && crypto.timingSafeEqual(orig, test);
+    } catch {
+        return false;
+    }
+}
+
+// SESSIE-TOKENS (HMAC-ondertekend)
+function signToken(payload) {
+    const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
+    const sig = crypto.createHmac('sha256', secret).update(body).digest('base64url');
+    return body + '.' + sig;
+}
+
+function verifyToken(token) {
+    try {
+        const parts = String(token).split('.');
+        if (parts.length !== 2) return null;
+        const constSig = crypto.createHmac('sha256', secret).update(parts[0]).digest('base64url');
+        const a = Buffer.from(parts[1]);
+        const b = Buffer.from(constSig);
+        if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
+        const payload = JSON.parse(Buffer.from(parts[0], 'base64url').toString('utf8'));
+        if (!payload || typeof payload.exp !== 'number' || payload.exp < Date.now()) return null;
+        return payload;
+    } catch {
+        return null;
+    }
+}
+
+function parseCookies(req) {
+    const out = {};
+    const header = req.headers.cookie;
+    if (!header) return out;
+    header.split(';').forEach(function(part) {
+        const i = part.indexOf('=');
+        if (i > -1) {
+            out[part.slice(0, i).trim()] = part.slice(i + 1).trim();
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
-        body {
-            background: var(--bg-gradient);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            padding-bottom: 50px;
-            position: relative;
-        }
+    });
+    return out;
+}
 
-        /* Navigatiebalk */
-        nav {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-            padding: 12px 20px;
-            border-radius: 16px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
-        .nav-btn {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 8px 14px;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-        .nav-btn.active, .nav-btn:hover { color: #fff; background: rgba(139, 92, 246, 0.2); }
-        .nav-btn.staff-tab { color: #fcd34d; border: 1px dashed rgba(245, 158, 11, 0.4); }
-        .nav-btn.staff-tab:hover { background: rgba(245, 158, 11, 0.2); }
+function setSessionCookie(res, token) {
+    res.setHeader('Set-Cookie', 'pcp_session=' + token + '; HttpOnly; Path=/; SameSite=Strict; Max-Age=' + Math.floor(TOKEN_TTL_MS / 1000));
+}
 
-        /* General Layout */
-        .container {
-            width: 100%;
-            max-width: 1000px;
-            display: none;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .container.active { display: flex; }
+function clearSessionCookie(res) {
+    res.setHeader('Set-Cookie', 'pcp_session=; HttpOnly; Path=/; SameSite=Strict; Max-Age=0');
+}
 
-        /* Login Pagina / Card */
-        .auth-wrapper {
-            width: 100%;
-            min-height: 80vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .auth-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 450px;
-            width: 100%;
-            text-align: center;
-            backdrop-filter: blur(16px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-        }
+// RATE LIMITING
+const loginAttempts = {};
 
-        /* Countdown Cards */
-        .timer-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .timer-header { display: flex; justify-content: space-between; align-items: center; }
-        .timer-title { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .time-box {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 15px 5px;
-            text-align: center;
-        }
-        .time-value { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1; text-shadow: 0 0 10px var(--accent-glow); }
-        .time-label { font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 600; margin-top: 5px; }
+function tooManyAttempts(key) {
+    const data = loginAttempts[key];
+    if (!data) return false;
+    if (Date.now() - a > WINDOW_MS) {
+        delete loginAttempts[key];
+        return false;
+    }
+    return data.count >= MAX_ATTEMPTS;
+}
 
-        /* Content & Tables */
-        .content-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(0,0,0,0.2);
-            border-radius: 12px;
-            overflow: hidden;
-            margin-top: 15px;
-        }
-        .data-table th, .data-table td {
-            padding: 14px 18px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .data-table th { background: rgba(0,0,0,0.4); color: #cbd5e1; font-size: 0.9rem; }
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        .status-actief { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .status-open { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
-        .status-gesloten { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+function recordFailedAttempt(key) {
+    const data = loginAttempts[key] || { count: 0, date: Date.now() };
+    data.count++;
+    loginAttempts[key] = data;
+}
 
-        /* Buttons & Forms */
-        .btn {
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px var(--accent-glow);
-        }
-        .btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
-        .btn-danger { background: #ef4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
-        .btn-staff { background: #d97706; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.4); }
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: #cbd5e1; }
-        .form-group input {
-            width: 100%; padding: 12px; background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 0.95rem;
-        }
-        .rules-list { list-style-type: decimal; margin-left: 20px; line-height: 1.8; color: #cbd5e1; }
-        .rules-list li { margin-bottom: 10px; }
+function clearAttempts(key) {
+    delete loginAttempts[key];
+}
 
-        /* Footer / Maker & Logootje rechtsonder */
-        .footer-badge {
-            position: fixed;
-            bottom: 15px;
-            right: 20px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid var(--card-border);
-            padding: 8px 14px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            color: #94a3b8;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        .verified-badge {
-            background: #3b82f6;
-            color: white;
-            border-radius: 50%;
-            width: 14px;
-            height: 14px;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.65rem;
-            font-weight: 800;
-        }
-    </style>
-</head>
-<body>
+// LOGBOEK
+function clientIp(req) {
+    const fwd = req.headers['x-forwarded-for'];
+    if (typeof fwd === 'string' && fwd.length > 0) return fwd.split(',')[0].trim();
+    return req.socket && req.socket.remoteAddress ? req.socket.remoteAddress : 'onbekend';
+}
 
-    <!-- Navigatiebalk -->
-    <nav id="topNav" style="display: none;">
-        <div class="nav-links">
-            <button class="nav-btn active" id="btnTimersTab" onclick="switchTab('timersTab')">⏳ Timers</button>
-            <button class="nav-btn" id="btnStaffTab" onclick="switchTab('staffTab')">👥 Staff & Maker</button>
-            <button class="nav-btn" id="btnTicketsTab" onclick="switchTab('ticketsTab')">🎫 Support Tickets</button>
-            <button class="nav-btn" id="btnRulesTab" onclick="switchTab('rulesTab')">📜 Voorwaarden & Regels</button>
-            <button class="nav-btn staff-tab" id="btnStaffControlTab" style="display: none;" onclick="switchTab('staffControlTab')">👑 Staff Paneel</button>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="userDisplay" style="font-size: 0.9rem; font-weight: 700; color: #f8fafc;"></span>
-            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="logout()">Uitloggen</button>
-        </div>
-    </nav>
+function logEvent(user, action, req, detail) {
+    logs.push({
+        t: new Date().toISOString(),
+        userId: user ? user.id : null,
+        email: user ? user.email : null,
+        action: action,
+        ip: clientIp(req),
+        ua: req.headers['user-agent'] || '',
+        detail: String(detail || '')
+    });
+    if (logs.length > 5000) logs.shift();
+    saveJson('logs.json', logs);
+}
 
-    <!-- LOGIN PAGINA -->
-    <div id="authWrapper" class="auth-wrapper">
-        <div class="auth-card">
-            <h2 id="authTitle" style="margin-bottom: 8px;">Inloggen Portaal</h2>
-            <p id="authSubtitle" style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 25px;">Voer je gebruikersnaam in</p>
-            
-            <form onsubmit="handleAuth(event)">
-                <div class="form-group">
-                    <label>Gebruikersnaam</label>
-                    <input type="text" id="authUsername" required placeholder="<naam> (bijv. David)">
-                </div>
-                <div class="form-group" id="passwordGroup" style="display: none;">
-                    <label>Eigenaar / Staff Code</label>
-                    <input type="password" id="staffSecretCode" placeholder="Code van de owner">
-                </div>
-                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;" id="authSubmitBtn">Inloggen</button>
-            </form>
+// HULPFUNCTIES
+function publicUser(u) {
+    return { id: u.id, email: u.email, role: u.role, createdAt: u.createdAt, lastLogin: u.lastLogin };
+}
 
-            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
-                <p style="font-size: 0.9rem; color: #94a3b8;">
-                    <span id="authToggleText">Nog geen gratis account?</span>
-                    <a href="#" onclick="toggleAuthMode()" style="color: var(--accent-color); text-decoration: none; font-weight: 600;"> Registreren</a>
-                </p>
-                <button class="btn btn-staff" style="width: 100%; font-size: 0.85rem; padding: 8px;" onclick="toggleStaffLoginMode()">👑 Speciale Staff / Eigenaar Inlog</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 1: Timers -->
-    <div id="timersTab" class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>Actieve Countdowns</h2>
-            <button class="btn" onclick="openAddTimerModal()">➕ Nieuwe Timer</button>
-        </div>
-        <div id="timersList" style="display: flex; flex-direction: column; gap: 20px;"></div>
-    </div>
-
-    <!-- TAB 2: Staff & Maker -->
-    <div id="staffTab" class="container">
-        <div class="content-card">
-            <h2 style="margin-bottom: 10px;">👑 Maker & Ontwikkeling</h2>
-            <p style="color: #cbd5e1; margin-bottom: 20px;">Deze applicatie is ontworpen en ontwikkeld door <strong>DitIsToevalligIemand</strong> <span class="verified-badge" title="Officieel">✓</span>.</p>
-            
-            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
-
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2>👥 Staffleden & Team Overzicht</h2>
-                <button class="btn staff-action" onclick="openAddStaffModal()" style="display: none;">➕ Stafflid Toevoegen</button>
-            </div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Gebruikersnaam</th>
-                        <th>Functie / Rol</th>
-                        <th>Status</th>
-                        <th class="staff-action" style="display: none;">Actie</th>
-                    </tr>
-                </thead>
-                <tbody id="staffTableBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- TAB 3: Support Tickets -->
-    <div id="ticketsTab" class="container">
-        <div class="content-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <div>
-                    <h2>🎫 Support Tickets Systeem</h2>
-                    <p style="font-size: 0.85rem; color: #94a3b8;">Meld hier een probleem. Je ziet alleen je eigen ingediende tickets.</p>
-                </div>
-                <button class="btn" onclick="openCreateTicketModal()">➕ Nieuw Ticket Inschieten</button>
-            </div>
-
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Ticket ID</th>
-                        <th>Onderwerp / Probleem</th>
-                        <th>Status</th>
-                        <th>Actie</th>
-                    </tr>
-                </thead>
-                <tbody id="ticketsTableBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- TAB 4: Voorwaarden & Regels -->
-    <div id="rulesTab" class="container">
-        <div class="content-card">
-            <h2 style="margin-bottom: 15px;">📜 Algemene Voorwaarden & Regels</h2>
-            <ol class="rules-list">
-                <li><strong>Respectvol Gebruik:</strong> Het is niet toegestaan om ongewenste of kwetsende content te plaatsen.</li>
-                <li><strong>Account & Opslag:</strong> Elk account bewaart al je timers automatisch op basis van je unieke gebruikersnaam.</li>
-                <li><strong>Support Systeem:</strong> Meldingen via tickets zijn uitsluitend voor vragen en technische ondersteuning.</li>
-                <li><strong>Eigendom:</strong> Dit portaal is officieel eigendom van <strong>DitIsToevalligIemand ✓</strong>.</li>
-            </ol>
-        </div>
-    </div>
-
-    <!-- TAB 5: Staff Control Panel -->
-    <div id="staffControlTab" class="container">
-        <div class="content-card" style="border-color: rgba(245, 158, 11, 0.4);">
-            <h2 style="color: #fcd34d; margin-bottom: 10px;">👑 Speciale Eigenaar & Staff Beheeromgeving</h2>
-            <p style="color: #cbd5e1; margin-bottom: 20px;">Hier kun je alle inkomende support tickets van alle gebruikers inzien en de statussen wijzigen of verwijderen.</p>
-
-            <h3 style="margin-bottom: 10px;">Alle Inkomende Support Tickets</h3>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Ticket ID</th>
-                        <th>Onderwerp</th>
-                        <th>Gebruiker</th>
-                        <th>Status</th>
-                        <th>Acties</th>
-                    </tr>
-                </thead>
-                <tbody id="staffTicketsTableBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Klein logootje & Maker badge rechtsonder -->
-    <div class="footer-badge">
-        <span>⏱️</span> <strong>DitIsToevalligIemand</strong> <span class="verified-badge">✓</span>
-    </div>
-
-    <script>
-        let isLogin = true;
-        let isStaffLoginMode = false;
-        let currentUser = null;
-        let isStaffUser = false;
-        let timerInterval = null;
-        let appData = { timers: [], staff: [], tickets: [] };
-
-        function toggleAuthMode() {
-            isLogin = !isLogin;
-            isStaffLoginMode = false;
-            document.getElementById('passwordGroup').style.display = 'none';
-            document.getElementById('authTitle').innerText = isLogin ? 'Inloggen Portaal' : 'Gratis Account Aanmaken';
-            document.getElementById('authSubtitle').innerText = isLogin ? 'Voer je gebruikersnaam in' : 'Maak direct een gratis account aan';
-            document.getElementById('authSubmitBtn').innerText = isLogin ? 'Inloggen' : 'Account Aanmaken & Opslaan';
-            document.getElementById('authToggleText').innerText = isLogin ? 'Nog geen gratis account?' : 'Al een account?';
-        }
-
-        function toggleStaffLoginMode() {
-            isStaffLoginMode = !isStaffLoginMode;
-            const pwdGroup = document.getElementById('passwordGroup');
-            if (isStaffLoginMode) {
-                pwdGroup.style.display = 'block';
-                document.getElementById('authTitle').innerText = '👑 Speciale Staff / Eigenaar Inlog';
-                document.getElementById('authSubtitle').innerText = 'Voer staff-naam en code van de owner in';
-                document.getElementById('authSubmitBtn').innerText = 'Inloggen als Eigenaar/Staff';
-                document.getElementById('authUsername').value = 'Staff';
-            } else {
-                pwdGroup.style.display = 'none';
-                document.getElementById('authTitle').innerText = 'Inloggen Portaal';
-                document.getElementById('authSubtitle').innerText = 'Voer je gebruikersnaam in';
-                document.getElementById('authSubmitBtn').innerText = 'Inloggen';
-                document.getElementById('authUsername').value = '';
+function readBody(req) {
+    return new Promise(function(resolve, reject) {
+        let size = 0;
+        let chunks = [];
+        let aborted = false;
+        
+        req.on('data', function(chunk) {
+            if (aborted) return;
+            size += chunk.length;
+            if (size > 102400) {
+                aborted = true;
+                reject(new Error('Verzoek te groot'));
+                req.destroy();
+                return;
             }
-        }
-
-        function handleAuth(e) {
-            e.preventDefault();
-            const username = document.getElementById('authUsername').value.trim();
-            if (!username) return;
-
-            if (isStaffLoginMode) {
-                const secretCode = document.getElementById('staffSecretCode').value;
-                // Vaste code van de owner (aan te passen indien gewenst)
-                if (secretCode !== 'owner123' && secretCode !== 'staff123') {
-                    alert('Onjuiste code van de owner!');
-                    return;
-                }
-                isStaffUser = true;
-            } else {
-                isStaffUser = (username.toLowerCase() === 'staff' || username.toLowerCase() === 'ditistoevalligiemand');
+            chunks.push(chunk);
+        });
+        
+        req.on('end', function() {
+            if (aborted) return;
+            if (chunks.length === 0) return resolve({});
+            try {
+                resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));
+            } catch {
+                resolve({});
             }
-            
-            currentUser = username;
-
-            // Opslag ophalen per gebruikersnaam
-            const savedData = localStorage.getItem('portal_user_' + currentUser.toLowerCase());
-            if (savedData) {
-                appData = JSON.parse(savedData);
-            } else {
-                appData = {
-                    timers: [
-                        { id: 1, title: 'Project Oplevering', date: new Date(Date.now() + 86400000 * 5).toISOString(), icon: '🚀' },
-                        { id: 2, title: 'Kwartaal Meeting', date: new Date(Date.now() + 86400000 * 12).toISOString(), icon: '📊' }
-                    ],
-                    staff: [
-                        { id: 1, naam: 'DitIsToevalligIemand', functie: 'Maker & Eigenaar', status: 'Actief' },
-                        { id: 2, naam: 'Staff', functie: 'Hoofd Moderator', status: 'Actief' }
-                    ],
-                    tickets: []
-                };
-                saveData();
-            }
-
-            document.getElementById('authWrapper').style.display = 'none';
-            document.getElementById('topNav').style.display = 'flex';
-            document.getElementById('userDisplay').innerText = (isStaffUser ? '👑 ' : '👤 ') + currentUser;
-            
-            if (isStaffUser) {
-                document.getElementById('btnStaffControlTab').style.display = 'inline-block';
-                document.querySelectorAll('.staff-action').forEach(el => el.style.display = 'table-cell');
-            } else {
-                document.getElementById('btnStaffControlTab').style.display = 'none';
-                document.querySelectorAll('.staff-action').forEach(el => el.style.display = 'none');
-            }
-
-            switchTab(isStaffUser ? 'staffControlTab' : 'timersTab');
-            startTimers();
-            renderStaff();
-            renderTickets();
-            renderStaffControl();
-        }
-
-        function saveData() {
-            if (currentUser) {
-                localStorage.setItem('portal_user_' + currentUser.toLowerCase(), JSON.stringify(appData));
-            }
-        }
-
-        function logout() {
-            if (timerInterval) clearInterval(timerInterval);
-            currentUser = null;
-            isStaffUser = false;
-            isStaffLoginMode = false;
-            document.getElementById('topNav').style.display = 'none';
-            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
-            document.getElementById('authWrapper').style.display = 'flex';
-            document.getElementById('authUsername').value = '';
-            document.getElementById('staffSecretCode').value = '';
-            document.getElementById('passwordGroup').style.display = 'none';
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            document.getElementById(tabId).classList.add('active');
-            const btnId = 'btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1);
-            if (document.getElementById(btnId)) {
-                document.getElementById(btnId).classList.add('active');
-            }
-        }
-
-        /* Timers */
-        function renderTimers() {
-            const list = document.getElementById('timersList');
-            if (!list) return;
-            list.innerHTML = '';
-
-            appData.timers.forEach(t => {
-                const target = new Date(t.date).getTime();
-                const now = new Date().getTime();
-                const diff = target - now;
-
-                const days = Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
-                const hours = Math.max(0, Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-                const minutes = Math.max(0, Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
-                const seconds = Math.max(0, Math.floor((diff % (1000 * 60)) / 1000));
-
-                const card = document.createElement('div');
-                card.className = 'timer-card';
-                card.innerHTML = `
-                    <div class="timer-header">
-                        <div class="timer-title"><span>${t.icon}</span> ${t.title}</div>
-                        ${isStaffUser ? `<button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.8rem;" onclick="deleteTimer(${t.id})">Verwijderen</button>` : ''}
-                    </div>
-                    <div class="countdown-grid">
-                        <div class="time-box"><div class="time-value">${String(days).padStart(2,'0')}</div><div class="time-label">Dagen</div></div>
-                        <div class="time-box"><div class="time-value">${String(hours).padStart(2,'0')}</div><div class="time-label">Uur</div></div>
-                        <div class="time-box"><div class="time-value">${String(minutes).padStart(2,'0')}</div><div class="time-label">Minuten</div></div>
-                        <div class="time-box"><div class="time-value">${String(seconds).padStart(2,'0')}</div><div class="time-label">Seconden</div></div>
-                    </div>
-                `;
-                list.appendChild(card);
-            });
-        }
-
-        function startTimers() {
-            renderTimers();
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(renderTimers, 1000);
-        }
-
-        function openAddTimerModal() {
-            const title = prompt('Titel van de countdown:');
-            const date = prompt('Datum en tijd (bijv: 2026-12-31T00:00):');
-            const icon = prompt('Emoji icoon (bijv. 🚀 of ⏱️):', '⏱️');
-            if (title && date) {
-                appData.timers.push({ id: Date.now(), title, date, icon: icon || '⏱️' });
-                saveData();
-                renderTimers();
-            }
-        }
-
-        function deleteTimer(id) {
-            if (!isStaffUser) return;
-            appData.timers = appData.timers.filter(t => t.id !== id);
-            saveData();
-            renderTimers();
-        }
-
-        /* Staff */
-        function renderStaff() {
-            const tbody = document.getElementById('staffTableBody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            appData.staff.forEach(m => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight: 600;">${m.naam}</td>
-                    <td>${m.functie}</td>
-                    <td><span class="status-badge status-actief">${m.status}</span></td>
-                    ${isStaffUser ? `<td><button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="deleteStaff(${m.id})">Verwijderen</button></td>` : ''}
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function openAddStaffModal() {
-            if (!isStaffUser) return;
-            const naam = prompt('Gebruikersnaam van stafflid:');
-            const functie = prompt('Functie / Rol:');
-            if (naam && functie) {
-                appData.staff.push({ id: Date.now(), naam, functie, status: 'Actief' });
-                saveData();
-                renderStaff();
-            }
-        }
-
-        function deleteStaff(id) {
-            if (!isStaffUser) return;
-            appData.staff = appData.staff.filter(m => m.id !== id);
-            saveData();
-            renderStaff();
-        }
-
-        /* Tickets (Leden zien alleen eigen tickets, staff ziet alles) */
-        function renderTickets() {
-            const tbody = document.getElementById('ticketsTableBody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            // Filter zodat members alleen hun eigen tickets zien
-            const userTickets = appData.tickets.filter(t => t.door === currentUser);
-
-            userTickets.forEach(t => {
-                const tr = document.createElement('tr');
-                const statusClass = t.status === 'Open' ? 'status-open' : 'status-gesloten';
-                tr.innerHTML = `
-                    <td style="font-weight: 700; color: var(--accent-color);">${t.id}</td>
-                    <td>${t.onderwerp}</td>
-                    <td><span class="status-badge ${statusClass}">${t.status}</span></td>
-                    <td><span style="color: #94a3b8; font-size: 0.8rem;">In behandeling bij Staff</span></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function openCreateTicketModal() {
-            const onderwerp = prompt('Omschrijf het probleem of je vraag voor de Staff:');
-            if (onderwerp) {
-                const id = '#' + Math.floor(1000 + Math.random() * 9000);
-                appData.tickets.push({ id, onderwerp, door: currentUser, status: 'Open' });
-                saveData();
-                renderTickets();
-                renderStaffControl();
-            }
-        }
-
-        /* Staff Control Panel (Beheert alle tickets van iedereen en kan verwijderen) */
-        function renderStaffControl() {
-            const tbody = document.getElementById('staffTicketsTableBody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            appData.tickets.forEach(t => {
-                const tr = document.createElement('tr');
-                const statusClass = t.status === 'Open' ? 'status-open' : 'status-gesloten';
-                tr.innerHTML = `
-                    <td style="font-weight: 700; color: #fcd34d;">${t.id}</td>
-                    <td>${t.onderwerp}</td>
-                    <td>${t.door}</td>
-                    <td><span class="status-badge ${statusClass}">${t.status}</span></td>
-                    <td style="display: flex; gap: 6px;">
-                        <button class="btn btn-staff" style="padding: 4px 8px; font-size: 0.75rem;" onclick="toggleTicketStatus('${t.id}')">Status</button>
-                        <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteTicket('${t.id}')">Verwijderen</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function toggleTicketStatus(id) {
-            if (!isStaffUser) return;
-            const ticket = appData.tickets.find(t => t.id === id);
-            if (ticket) {
-                ticket.status = ticket.status === 'Open' ? 'Gesloten' : 'Open';
-                saveData();
-                renderTickets();
-                renderStaffControl();
-            }
-        }
-
-        function deleteTicket(id) {
-            if (!isStaffUser) return;
-            appData.tickets = appData.tickets.filter(t => t.id !== id);
-            saveData();
-            renderTickets();
-            renderStaffControl();
-        }
-    </script>
-</body>
-</html>
+        });
+        
+        req.on('error', reject);
+    });
+}
