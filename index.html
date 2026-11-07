@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countdown & Medewerkers Portaal</title>
+    <title>Minestad — Medewerkers & Countdown Portaal</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --card-border: rgba(255, 255, 255, 0.1);
+            --bg-gradient: linear-gradient(135deg, #0b1329 0%, #172554 50%, #1e1b4b 100%);
+            --card-bg: rgba(15, 23, 42, 0.75);
+            --card-border: rgba(59, 130, 246, 0.2);
             --text-color: #f8fafc;
-            --accent-color: #8b5cf6;
+            --accent-color: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.4);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
         body {
@@ -24,19 +26,20 @@
             padding: 20px;
         }
 
-        /* Navigatie */
+        /* Navigatiebalk */
         nav {
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
             padding: 15px 25px;
             border-radius: 16px;
             margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
         .nav-links { display: flex; gap: 15px; }
         .nav-btn {
@@ -50,19 +53,19 @@
             border-radius: 8px;
             transition: all 0.2s;
         }
-        .nav-btn.active, .nav-btn:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
+        .nav-btn.active, .nav-btn:hover { color: #fff; background: rgba(59, 130, 246, 0.2); }
 
         /* Algemene Layout */
         .container {
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
             display: none;
             flex-direction: column;
             gap: 20px;
         }
         .container.active { display: flex; }
 
-        /* Auth Kaart */
+        /* Inlog / Registratie Scherm */
         .auth-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -70,9 +73,10 @@
             padding: 40px;
             max-width: 450px;
             width: 100%;
-            margin: 40px auto;
+            margin: 60px auto;
             text-align: center;
             backdrop-filter: blur(16px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
         /* Countdown Kaarten Onder Elkaar */
@@ -91,14 +95,14 @@
         .timer-title { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .time-box {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 12px;
             padding: 15px 5px;
             text-align: center;
         }
-        .time-value { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1; }
-        .time-label { font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 600; }
+        .time-value { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1; text-shadow: 0 0 10px var(--accent-glow); }
+        .time-label { font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 600; margin-top: 5px; }
 
         /* Medewerkers Tabel */
         .medewerkers-table {
@@ -109,16 +113,17 @@
             border-radius: 16px;
             overflow: hidden;
             border: 1px solid var(--card-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         .medewerkers-table th, .medewerkers-table td {
             padding: 16px 20px;
             text-align: left;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .medewerkers-table th { background: rgba(0,0,0,0.3); font-weight: 700; color: #cbd5e1; }
+        .medewerkers-table th { background: rgba(0,0,0,0.4); font-weight: 700; color: #cbd5e1; }
         .status-badge {
             display: inline-block;
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
@@ -136,13 +141,14 @@
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: 0 4px 15px var(--accent-glow);
         }
-        .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
-        .btn-danger { background: #ef4444; }
+        .btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+        .btn-danger { background: #ef4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: #cbd5e1; }
         .form-group input {
-            width: 100%; padding: 12px; background: rgba(0,0,0,0.3);
+            width: 100%; padding: 12px; background: rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 0.95rem;
         }
     </style>
@@ -163,11 +169,11 @@
 
     <!-- Inlog / Registratie Scherm -->
     <div id="authScreen" class="auth-card">
-        <h2 id="authTitle" style="margin-bottom: 20px;">Inloggen</h2>
+        <h2 id="authTitle" style="margin-bottom: 20px;">Inloggen Portaal</h2>
         <form onsubmit="handleAuth(event)">
             <div class="form-group">
-                <label>E-mailadres</label>
-                <input type="email" id="authEmail" required placeholder="naam@bedrijf.nl">
+                <label>E-mailadres (Gratis Account)</label>
+                <input type="email" id="authEmail" required placeholder="jouw@email.nl">
             </div>
             <div class="form-group">
                 <label>Wachtwoord</label>
@@ -212,41 +218,59 @@
 
     <script>
         let isLogin = true;
+        let currentUser = null;
         let timerInterval = null;
-
-        let appData = {
-            timers: [
-                { id: 1, title: 'Project Oplevering', date: new Date(Date.now() + 86400000 * 5).toISOString(), icon: '🚀' },
-                { id: 2, title: 'Kwartaal Meeting', date: new Date(Date.now() + 86400000 * 12).toISOString(), icon: '📊' }
-            ],
-            medewerkers: [
-                { id: 1, naam: 'David Kwek', functie: 'Beheerder', email: 'david@voorbeeld.nl', status: 'Actief' },
-                { id: 2, naam: 'Sarah de Jong', functie: 'Developer', email: 'sarah@voorbeeld.nl', status: 'Actief' }
-            ]
-        };
+        let appData = { timers: [], medewerkers: [] };
 
         function toggleAuthMode() {
             isLogin = !isLogin;
-            document.getElementById('authTitle').innerText = isLogin ? 'Inloggen' : 'Account Aanmaken';
-            document.getElementById('authSubmitBtn').innerText = isLogin ? 'Inloggen' : 'Registreren';
+            document.getElementById('authTitle').innerText = isLogin ? 'Inloggen Portaal' : 'Gratis Account Aanmaken';
+            document.getElementById('authSubmitBtn').innerText = isLogin ? 'Inloggen' : 'Registreren & Opslaan';
             document.getElementById('authToggleText').innerText = isLogin ? 'Nog geen account?' : 'Al een account?';
         }
 
         function handleAuth(e) {
             e.preventDefault();
-            const email = document.getElementById('authEmail').value;
+            const email = document.getElementById('authEmail').value.trim().toLowerCase();
+            currentUser = email;
             
+            // Laad opgeslagen data per account uit localStorage
+            const savedData = localStorage.getItem('minestad_data_' + currentUser);
+            if (savedData) {
+                appData = JSON.parse(savedData);
+            } else {
+                // Standaard demo data voor nieuwe accounts
+                appData = {
+                    timers: [
+                        { id: 1, title: Jubileum Event, date: new Date(Date.now() + 86400000 * 7).toISOString(), icon: '🎉' },
+                        { id: 2, title: Update Release, date: new Date(Date.now() + 86400000 * 3).toISOString(), icon: '⛏️' }
+                    ],
+                    medewerkers: [
+                        { id: 1, naam: 'David Kwek', functie: 'Eigenaar / Beheerder', email: email, status: 'Actief' },
+                        { id: 2, naam: 'Moderator Team', functie: 'Staff', email: 'staff@minestad.nl', status: 'Actief' }
+                    ]
+                };
+                saveData();
+            }
+
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('topNav').style.display = 'flex';
-            document.getElementById('userEmailDisplay').innerText = email;
+            document.getElementById('userEmailDisplay').innerText = currentUser;
             
             switchTab('timersTab');
             startTimers();
             renderMedewerkers();
         }
 
+        function saveData() {
+            if (currentUser) {
+                localStorage.setItem('minestad_data_' + currentUser, JSON.stringify(appData));
+            }
+        }
+
         function logout() {
             if (timerInterval) clearInterval(timerInterval);
+            currentUser = null;
             document.getElementById('topNav').style.display = 'none';
             document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
             document.getElementById('authScreen').style.display = 'block';
@@ -285,7 +309,7 @@
                 card.innerHTML = `
                     <div class="timer-header">
                         <div class="timer-title"><span>${t.icon}</span> ${t.title}</div>
-                        <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem;" onclick="deleteTimer(${t.id})">Verwijderen</button>
+                        <button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.8rem;" onclick="deleteTimer(${t.id})">Verwijderen</button>
                     </div>
                     <div class="countdown-grid">
                         <div class="time-box"><div class="time-value">${String(days).padStart(2,'0')}</div><div class="time-label">Dagen</div></div>
@@ -307,14 +331,17 @@
         function openAddTimerModal() {
             const title = prompt('Titel van de countdown:');
             const date = prompt('Datum en tijd (bijv: 2026-12-31T00:00):');
+            const icon = prompt('Emoji icoon (bijv. 🚀 of ⛏️):', '⏱️');
             if (title && date) {
-                appData.timers.push({ id: Date.now(), title, date, icon: '⏱️' });
+                appData.timers.push({ id: Date.now(), title, date, icon: icon || '⏱️' });
+                saveData();
                 renderTimers();
             }
         }
 
         function deleteTimer(id) {
             appData.timers = appData.timers.filter(t => t.id !== id);
+            saveData();
             renderTimers();
         }
 
@@ -331,7 +358,7 @@
                     <td>${m.functie}</td>
                     <td style="color: #94a3b8;">${m.email}</td>
                     <td><span class="status-badge status-actief">${m.status}</span></td>
-                    <td><button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteMedewerker(${m.id})">Verwijderen</button></td>
+                    <td><button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="deleteMedewerker(${m.id})">Verwijderen</button></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -339,16 +366,18 @@
 
         function openAddMedewerkerModal() {
             const naam = prompt('Naam medewerker:');
-            const functie = prompt('Functie / Rol:');
+            const functie = prompt('Functie / Rol (bijv. Developer, Admin):');
             const email = prompt('E-mailadres:');
             if (naam && functie && email) {
                 appData.medewerkers.push({ id: Date.now(), naam, functie, email, status: 'Actief' });
+                saveData();
                 renderMedewerkers();
             }
         }
 
         function deleteMedewerker(id) {
             appData.medewerkers = appData.medewerkers.filter(m => m.id !== id);
+            saveData();
             renderMedewerkers();
         }
     </script>
