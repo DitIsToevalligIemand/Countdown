@@ -3,17 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sinterklaas Portaal — Radio, Kalender & Countdowns</title>
+    <title>Feestdagen, Kalender & Concerten Portaal</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #381d08 0%, #451a03 50%, #7c2d12 100%);
-            --card-bg: rgba(43, 24, 16, 0.85);
-            --card-border: rgba(245, 158, 11, 0.3);
+            --bg-gradient: linear-gradient(135deg, #2b1104 0%, #3d1502 50%, #631704 100%);
+            --card-bg: rgba(38, 18, 9, 0.9);
+            --card-border: rgba(245, 158, 11, 0.4);
             --text-color: #fef3c7;
             --accent-color: #d97706;
-            --accent-glow: rgba(217, 119, 6, 0.4);
+            --accent-glow: rgba(217, 119, 6, 0.5);
+            --glimmer-gold: #fde047;
+            --theme-icon: '🎁';
+            --theme-name: 'Sinterklaas Portaal';
         }
+
+        body.christmas-theme {
+            --bg-gradient: linear-gradient(135deg, #022c22 0%, #064e3b 50%, #7f1d1d 100%);
+            --card-bg: rgba(15, 23, 42, 0.92);
+            --card-border: rgba(52, 211, 153, 0.4);
+            --text-color: #f0fdf4;
+            --accent-color: #059669;
+            --accent-glow: rgba(5, 150, 105, 0.5);
+            --glimmer-gold: #fbbf24;
+            --theme-icon: '🎄';
+            --theme-name: 'Kerstmis Portaal';
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
         body {
             background: var(--bg-gradient);
@@ -24,9 +40,10 @@
             align-items: center;
             padding: 20px;
             padding-bottom: 70px;
+            transition: all 0.5s ease-in-out;
         }
 
-        /* Navigatiebalk */
+        /* Prachtige Navigatie */
         nav {
             width: 100%;
             max-width: 1000px;
@@ -34,32 +51,31 @@
             justify-content: space-between;
             align-items: center;
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
             border: 1px solid var(--card-border);
-            padding: 12px 20px;
-            border-radius: 16px;
+            padding: 14px 22px;
+            border-radius: 18px;
             margin-bottom: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
         .nav-links { display: flex; gap: 6px; flex-wrap: wrap; }
         .nav-btn {
             background: none;
             border: none;
             color: #d1d5db;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             font-weight: 600;
             cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 8px 14px;
+            border-radius: 10px;
             transition: all 0.2s;
         }
-        .nav-btn.active, .nav-btn:hover { color: #fff; background: rgba(217, 119, 6, 0.3); }
-        .nav-btn.owner-btn { color: #fde047; border: 1px dashed rgba(234, 179, 8, 0.5); background: rgba(202, 138, 4, 0.15); }
-        .nav-btn.owner-btn:hover { background: rgba(202, 138, 4, 0.3); }
+        .nav-btn.active, .nav-btn:hover { color: #fff; background: rgba(217, 119, 6, 0.35); transform: translateY(-1px); }
+        body.christmas-theme .nav-btn.active, body.christmas-theme .nav-btn:hover { background: rgba(5, 150, 105, 0.35); }
+        .nav-btn.owner-btn { color: var(--glimmer-gold); border: 1px dashed rgba(234, 179, 8, 0.6); background: rgba(202, 138, 4, 0.2); }
 
-        /* General Layout */
         .container {
             width: 100%;
             max-width: 1000px;
@@ -69,10 +85,10 @@
         }
         .container.active { display: flex; }
 
-        /* Login Pagina */
+        /* Luxe Inlogpagina */
         .auth-wrapper {
             width: 100%;
-            min-height: 75vh;
+            min-height: 80vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -80,17 +96,33 @@
         }
         .auth-card {
             background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 450px;
+            border: 2px solid var(--card-border);
+            border-radius: 28px;
+            padding: 45px;
+            max-width: 460px;
             width: 100%;
             text-align: center;
-            backdrop-filter: blur(16px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.1);
         }
 
-        /* Countdown Cards */
+        /* Glinsterende Concert Kaarten */
+        .glimmer-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(253, 224, 71, 0.18) 50%, rgba(255,255,255,0.06) 100%);
+            border: 2px solid var(--glimmer-gold);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(253, 224, 71, 0.3);
+            animation: pulseGlimmer 3s infinite alternate;
+            margin-bottom: 18px;
+        }
+        @keyframes pulseGlimmer {
+            0% { box-shadow: 0 0 12px rgba(253, 224, 71, 0.25); border-color: rgba(253, 224, 71, 0.6); }
+            100% { box-shadow: 0 0 30px rgba(253, 224, 71, 0.7); border-color: #fff; }
+        }
+
         .timer-card {
             background: var(--card-bg);
             backdrop-filter: blur(16px);
@@ -101,33 +133,33 @@
             flex-direction: column;
             gap: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
         }
         .timer-header { display: flex; justify-content: space-between; align-items: center; }
-        .timer-title { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: #fef3c7; }
+        .timer-title { font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--text-color); }
         .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .time-box {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(245, 158, 11, 0.2);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(245, 158, 11, 0.25);
             border-radius: 12px;
-            padding: 15px 5px;
+            padding: 12px 5px;
             text-align: center;
         }
-        .time-value { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1; text-shadow: 0 0 10px var(--accent-glow); }
-        .time-label { font-size: 0.75rem; text-transform: uppercase; color: #d1d5db; font-weight: 600; margin-top: 5px; }
+        .time-value { font-size: 1.8rem; font-weight: 800; color: #fff; line-height: 1; text-shadow: 0 0 12px var(--accent-glow); }
+        .time-label { font-size: 0.7rem; text-transform: uppercase; color: #d1d5db; font-weight: 600; margin-top: 4px; }
 
-        /* Content & Tables */
         .content-card {
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             border: 1px solid var(--card-border);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            background: rgba(0,0,0,0.25);
+            background: rgba(0,0,0,0.3);
             border-radius: 12px;
             overflow: hidden;
             margin-top: 15px;
@@ -135,9 +167,9 @@
         .data-table th, .data-table td {
             padding: 14px 18px;
             text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
-        .data-table th { background: rgba(0,0,0,0.4); color: #fde047; font-size: 0.9rem; }
+        .data-table th { background: rgba(0,0,0,0.5); color: var(--glimmer-gold); font-size: 0.9rem; }
         .status-badge {
             display: inline-block;
             padding: 4px 10px;
@@ -148,7 +180,6 @@
         .status-actief { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
         .status-open { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
 
-        /* Accordions (+ / -) */
         .accordion-section {
             background: rgba(0, 0, 0, 0.25);
             border: 1px solid rgba(245, 158, 11, 0.2);
@@ -163,7 +194,7 @@
             align-items: center;
             cursor: pointer;
             font-weight: 700;
-            color: #fef3c7;
+            color: var(--text-color);
             background: rgba(0, 0, 0, 0.2);
             transition: background 0.2s;
         }
@@ -173,7 +204,7 @@
         .toggle-icon {
             font-size: 1.2rem;
             font-weight: 800;
-            color: #fde047;
+            color: var(--glimmer-gold);
             background: rgba(255,255,255,0.08);
             width: 30px;
             height: 30px;
@@ -184,7 +215,7 @@
         }
 
         .clickable-time {
-            color: #fde047;
+            color: var(--glimmer-gold);
             font-weight: 700;
             cursor: pointer;
             text-decoration: underline;
@@ -192,19 +223,17 @@
         }
         .clickable-time:hover { color: #fef08a; }
 
-        /* Radio Speler */
         .radio-player-box {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.35);
             padding: 20px;
             border-radius: 16px;
-            border: 1px solid rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.25);
         }
         .radio-stations { display: flex; gap: 10px; flex-wrap: wrap; }
 
-        /* Jaar Knoppen */
         .year-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .year-btn {
             background: rgba(255,255,255,0.1);
@@ -213,7 +242,6 @@
         }
         .year-btn.active { background: var(--accent-color); border-color: var(--accent-color); }
 
-        /* Buttons & Forms */
         .btn {
             background: var(--accent-color);
             color: white; border: none; padding: 10px 18px; font-size: 0.95rem; font-weight: 600; border-radius: 10px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px var(--accent-glow);
@@ -222,24 +250,23 @@
         .btn-danger { background: #b91c1c; box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); }
         .btn-owner { background: #b45309; box-shadow: 0 4px 15px rgba(180, 83, 9, 0.4); }
         .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: #fde047; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: var(--glimmer-gold); }
         .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; color: white; font-size: 0.95rem;
+            width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 10px; color: white; font-size: 0.95rem;
         }
-        .rules-list { list-style-type: decimal; margin-left: 20px; line-height: 1.8; color: #fef3c7; }
+        .rules-list { list-style-type: decimal; margin-left: 20px; line-height: 1.8; color: var(--text-color); }
         .rules-list li { margin-bottom: 10px; }
 
         .footer-badge {
-            position: fixed; bottom: 15px; right: 20px; background: rgba(43, 24, 16, 0.95); border: 1px solid var(--card-border); padding: 8px 14px; border-radius: 12px; font-size: 0.8rem; color: #d1d5db; display: flex; align-items: center; gap: 6px; backdrop-filter: blur(8px); z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            position: fixed; bottom: 15px; right: 20px; background: rgba(38, 18, 9, 0.95); border: 1px solid var(--card-border); padding: 8px 14px; border-radius: 12px; font-size: 0.8rem; color: #d1d5db; display: flex; align-items: center; gap: 6px; backdrop-filter: blur(8px); z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.4);
         }
         .verified-badge { background: #3b82f6; color: white; border-radius: 50%; width: 14px; height: 14px; display: inline-flex; justify-content: center; align-items: center; font-size: 0.65rem; font-weight: 800; }
 
-        /* Modals */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 2000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); display: none; justify-content: center; align-items: center; z-index: 2000;
         }
         .modal-card {
-            background: var(--card-bg); border: 1px solid var(--card-border); padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            background: var(--card-bg); border: 1px solid var(--card-border); padding: 30px; border-radius: 22px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.7);
         }
     </style>
 </head>
@@ -248,7 +275,7 @@
     <!-- Navigatiebalk -->
     <nav id="topNav" style="display: none;">
         <div class="nav-links">
-            <button class="nav-btn active" id="btnTimersTab" onclick="switchTab('timersTab')">🎁 Countdowns</button>
+            <button class="nav-btn active" id="btnTimersTab" onclick="switchTab('timersTab')"><span class="theme-icon-el">🎁</span> Countdowns</button>
             <button class="nav-btn" id="btnRadioTab" onclick="switchTab('radioTab')">📻 Radio</button>
             <button class="nav-btn" id="btnCalendarTab" onclick="switchTab('calendarTab')">🎤 Kalender & Concerten</button>
             <button class="nav-btn" id="btnAboutTab" onclick="switchTab('aboutTab')">🙋 Over de Beheerder</button>
@@ -256,21 +283,21 @@
             <button class="nav-btn" id="btnRulesTab" onclick="switchTab('rulesTab')">📜 Regels</button>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="userDisplay" style="font-size: 0.9rem; font-weight: 700; color: #fef3c7;"></span>
+            <span id="userDisplay" style="font-size: 0.9rem; font-weight: 700; color: var(--text-color);"></span>
             <button class="nav-btn owner-btn" id="navOwnerControlBtn" style="display: none;" onclick="switchTab('ownerControlTab')">👑 Beheer Paneel</button>
             <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="logout()">Uitloggen</button>
         </div>
     </nav>
 
-    <!-- BEGINSCHERM MET BEHEER INLOG RECHTSBOVEN -->
+    <!-- Prachtige Login Pagina -->
     <div id="authWrapper" class="auth-wrapper">
-        <div style="width: 100%; max-width: 450px; display: flex; justify-content: flex-end; margin-bottom: 12px;">
+        <div style="width: 100%; max-width: 460px; display: flex; justify-content: flex-end; margin-bottom: 12px;">
             <button class="nav-btn owner-btn" style="padding: 8px 16px; font-size: 0.9rem;" onclick="openOwnerModalPrompt()">🔧 Beheer Inlog</button>
         </div>
         <div class="auth-card">
-            <div style="font-size: 2.5rem; margin-bottom: 10px;">🎁</div>
-            <h2 id="authTitle" style="margin-bottom: 8px; color: #fde047;">Sinterklaas Portaal</h2>
-            <p id="authSubtitle" style="font-size: 0.85rem; color: #d1d5db; margin-bottom: 25px;">Voer je gebruikersnaam in</p>
+            <div style="font-size: 3.2rem; margin-bottom: 10px; text-shadow: 0 0 20px var(--accent-glow);" class="theme-icon-el">🎁</div>
+            <h2 id="authTitle" style="margin-bottom: 8px; color: var(--glimmer-gold); font-size: 1.8rem;" class="theme-name-el">Sinterklaas Portaal</h2>
+            <p id="authSubtitle" style="font-size: 0.9rem; color: #d1d5db; margin-bottom: 30px;">Log in om al je timers en concerten te bekijken</p>
             
             <form onsubmit="handleAuth(event)">
                 <div class="form-group">
@@ -281,13 +308,13 @@
                     <label>Wachtwoord</label>
                     <input type="password" id="authPassword" required placeholder="••••••••">
                 </div>
-                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;" id="authSubmitBtn">Inloggen</button>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 15px; padding: 12px; font-size: 1rem;" id="authSubmitBtn">Inloggen</button>
             </form>
 
-            <div style="margin-top: 20px;">
+            <div style="margin-top: 25px;">
                 <p style="font-size: 0.9rem; color: #d1d5db;">
                     <span id="authToggleText">Nog geen account?</span>
-                    <a href="#" onclick="toggleAuthMode()" style="color: #fde047; text-decoration: none; font-weight: 600;"> Registreren</a>
+                    <a href="#" onclick="toggleAuthMode()" style="color: var(--glimmer-gold); text-decoration: none; font-weight: 600;"> Registreren</a>
                 </p>
             </div>
         </div>
@@ -296,7 +323,7 @@
     <!-- EIGENAAR CODE INLOG MODAL -->
     <div id="ownerModal" class="modal-overlay">
         <div class="modal-card">
-            <h3 style="color: #fde047; margin-bottom: 10px;">🔧 Beheerder Inloggen</h3>
+            <h3 style="color: var(--glimmer-gold); margin-bottom: 10px;">🔧 Beheerder Inloggen</h3>
             <p style="font-size: 0.85rem; color: #d1d5db; margin-bottom: 20px;">Voer de geheime beheercode in (bijv. <code>owner123</code>).</p>
             <div class="form-group">
                 <input type="password" id="ownerSecretInput" placeholder="Geheime code">
@@ -308,13 +335,930 @@
         </div>
     </div>
 
+    <!-- MODAL: CONCERT ZOEKEN, INLADEN & TOEVOEGEN -->
+    <div id="concertModal" class="modal-overlay">
+        <div class="modal-card" style="text-align: left; max-width: 520px;">
+            <h3 id="concertModalTitle" style="color: var(--glimmer-gold); margin-bottom: 15px; text-align: center;">🎤 Concert Zoeken of Inladen</h3>
+            
+            <div class="form-group" style="background: rgba(0,0,0,0.25); padding: 12px; border-radius: 10px; margin-bottom: 15px;">
+                <label>🔍 Snelle Voorbeelden Inladen</label>
+                <select id="presetConcertSelect" onchange="loadConcertPreset(this.value)" style="margin-top: 5px;">
+                    <option value="">-- Kies een artiest uit de lijst --</option>
+                    <option value="Suzan & Freek|Ziggo Dome, Amsterdam|2027-04-08T20:00:00|Mijn Concert! 🎉">Suzan & Freek (8 april 2027 - Ziggo Dome)</option>
+                    <option value="Acda en De Munnik|Ziggo Dome, Amsterdam|2027-05-15T20:00:00|Live in Amsterdam">Acda en De Munnik (Ziggo Dome)</option>
+                    <option value="Goldband|AFAS Live, Amsterdam|2026-12-20T20:00:00|Feestende Show">Goldband (AFAS Live)</option>
+                    <option value="Snollebollekes|GelreDome, Arnhem|2027-06-05T20:00:00|Total Loss!">Snollebollekes (GelreDome)</option>
+                </select>
+            </div>
+
+            <input type="hidden" id="concertEditId">
+            <div class="form-group">
+                <label>Artiest / Band</label>
+                <input type="text" id="concertArtist" placeholder="Bijv. Suzan & Freek">
+            </div>
+            <div class="form-group">
+                <label>Locatie / Zaal</label>
+                <input type="text" id="concertVenue" placeholder="Bijv. Ziggo Dome, Amsterdam">
+            </div>
+            <div class="form-group">
+                <label>Datum & Tijd</label>
+                <input type="datetime-local" id="concertDateTime">
+            </div>
+            <div class="form-group">
+                <label>Notitie of Label</label>
+                <input type="text" id="concertNote" placeholder="Bijv. Mijn Concert! 🎉">
+            </div>
+            <div class="form-group">
+                <label>🎨 Custom Kleurthema (Achtergrond accent)</label>
+                <select id="concertColorTheme">
+                    <option value="glimmer">✨ Goud / Glinsterend</option>
+                    <option value="purple">💜 Paars / Neon</option>
+                    <option value="emerald">💚 Groen / Natuur</option>
+                    <option value="blue">💙 Blauw / Sky</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                <button class="btn" onclick="saveConcert()">Opslaan</button>
+                <button class="btn btn-danger" onclick="closeConcertModal()">Annuleren</button>
+            </div>
+        </div>
+    </div>
+
     <!-- TIMER TOEVOEGEN MODAL -->
     <div id="addTimerModal" class="modal-overlay">
         <div class="modal-card" style="text-align: left;">
-            <h3 style="color: #fde047; margin-bottom: 15px; text-align: center;">⏱️ Nieuwe Countdown Toevoegen</h3>
+            <h3 style="color: var(--glimmer-gold); margin-bottom: 15px; text-align: center;">⏱️ Nieuwe Countdown Toevoegen</h3>
             <div class="form-group">
                 <label>Titel van de Countdown</label>
                 <input type="text" id="newTimerTitle" placeholder="Bijv. Kerstmis of Vakantie">
             </div>
             <div class="form-group">
-                <label>Datum & T
+                <label>Datum & Tijd</label>
+                <input type="datetime-local" id="newTimerDate">
+            </div>
+            <div class="form-group">
+                <label>Emoji Icoon</label>
+                <input type="text" id="newTimerIcon" value="🎁" maxlength="2">
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                <button class="btn" onclick="saveNewTimer()">Toevoegen</button>
+                <button class="btn btn-danger" onclick="closeAddTimerModal()">Annuleren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POP-UP TIMER MODAL -->
+    <div id="timerModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 id="modalEventTitle" style="margin-bottom: 15px; color: var(--glimmer-gold);">Live Timer</h3>
+            <div class="countdown-grid" style="margin-bottom: 20px;">
+                <div class="time-box"><div class="time-value" id="mDays">00</div><div class="time-label">Dagen</div></div>
+                <div class="time-box"><div class="time-value" id="mHours">00</div><div class="time-label">Uur</div></div>
+                <div class="time-box"><div class="time-value" id="mMins">00</div><div class="time-label">Minuten</div></div>
+                <div class="time-box"><div class="time-value" id="mSecs">00</div><div class="time-label">Sec</div></div>
+            </div>
+            <button class="btn" onclick="closeModal()">Sluiten</button>
+        </div>
+    </div>
+
+    <!-- TAB 1: Countdowns -->
+    <div id="timersTab" class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+            <h2><span class="theme-icon-el">🎁</span> Mijn Eigen Countdowns</h2>
+            <button class="btn" onclick="openAddTimerModal()">➕ Nieuwe Timer Toevoegen</button>
+        </div>
+        <div id="timersList" style="display: flex; flex-direction: column; gap: 20px;"></div>
+    </div>
+
+    <!-- TAB 2: Radio Speler -->
+    <div id="radioTab" class="container">
+        <div class="content-card">
+            <h2>📻 Gezellige Radio Speler</h2>
+            <p style="color: #d1d5db; margin-bottom: 20px;">Luister naar je favoriete muziek.</p>
+            
+            <div class="radio-player-box">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <h3 id="currentStationTitle">🎵 Sky Radio</h3>
+                    <span id="radioStatus" class="status-badge status-open">Gestopt</span>
+                </div>
+                
+                <audio id="audioStream" preload="none"></audio>
+
+                <div class="radio-stations">
+                    <button class="btn" onclick="playRadio('Sky Radio', 'https://icecast.skyradio.nl/skyradio/mp3')">▶️ Sky Radio</button>
+                    <button class="btn" onclick="playRadio('Radio 538', 'https://stream.radio538.nl/web538/mp3')">▶️ Radio 538</button>
+                    <button class="btn" onclick="playRadio('Qmusic', 'https://stream.qmusic.nl/qmusic/mp3')">▶️ Qmusic</button>
+                    <button class="btn btn-danger" onclick="stopRadio()">⏹️ Stop Radio</button>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Volume</label>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.8" oninput="changeVolume(this.value)">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Kalender & Concerten -->
+    <div id="calendarTab" class="container">
+        <!-- Interactieve Glinsterende Concerten Sectie -->
+        <div class="content-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <div>
+                    <h2 style="color: var(--glimmer-gold);">🎤 Concerten Zoeken & Inladen</h2>
+                    <p style="font-size: 0.85rem; color: #d1d5db;">Beheer hier al je geglinsterde concerten met custom kleurtjes!</p>
+                </div>
+                <button class="btn" onclick="openAddConcertModal()">➕ Concert Zoeken/Toevoegen</button>
+            </div>
+            
+            <div id="concertsContainer"></div>
+        </div>
+
+        <div class="content-card">
+            <h2>🍫 Kalender, Feestdagen & Vakanties</h2>
+            <p style="color: #d1d5db; margin-bottom: 20px;">Standaard geopend op 2026. Klik op de resterende tijd voor een live timer.</p>
+            
+            <div class="year-selector">
+                <button class="year-btn active" id="btnYear2026" onclick="selectYear(2026)">2026</button>
+                <button class="year-btn" id="btnYear2027" onclick="selectYear(2027)">2027</button>
+            </div>
+
+            <div id="calendarContentContainer"></div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Over de Beheerder -->
+    <div id="aboutTab" class="container">
+        <div class="content-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2>🙋 Wie is de beheerder van deze website?</h2>
+                <button class="btn btn-owner" id="editAboutBtn" style="display: none;" onclick="openEditAboutModal()">✏️ Bewerk Tekst</button>
+            </div>
+            <div id="aboutContentBox" style="line-height: 1.8; color: var(--text-color); font-size: 1.05rem;"></div>
+        </div>
+    </div>
+
+    <!-- BEWERK "WIE IS DE BEHEERDER" MODAL -->
+    <div id="editAboutModal" class="modal-overlay">
+        <div class="modal-card" style="text-align: left; max-width: 550px;">
+            <h3 style="color: var(--glimmer-gold); margin-bottom: 15px; text-align: center;">✏️ Bewerk "Over de Beheerder"</h3>
+            <div class="form-group">
+                <label>Stel je voor (HTML/Tekst)</label>
+                <textarea id="aboutTextarea" rows="8" style="width:100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; color: white;"></textarea>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                <button class="btn" onclick="saveAboutText()">Opslaan</button>
+                <button class="btn btn-danger" onclick="closeEditAboutModal()">Annuleren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Support Tickets -->
+    <div id="ticketsTab" class="container">
+        <div class="content-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <h2>🎫 Support Tickets Systeem</h2>
+                    <p style="font-size: 0.85rem; color: #d1d5db;">Meld hier een probleem. Je ziet alleen je eigen ingediende tickets.</p>
+                </div>
+                <button class="btn" onclick="openCreateTicketModal()">➕ Nieuw Ticket</button>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr><th>Ticket ID</th><th>Onderwerp</th><th>Status</th><th>Actie</th></tr>
+                </thead>
+                <tbody id="ticketsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TAB 6: Voorwaarden & Regels -->
+    <div id="rulesTab" class="container">
+        <div class="content-card">
+            <h2 style="margin-bottom: 15px;">📜 Regels</h2>
+            <ol class="rules-list">
+                <li><strong>Account & Opslag:</strong> Elk account bewaart al je timers automatisch op basis van je unieke gebruikersnaam.</li>
+                <li><strong>Support Systeem:</strong> Meldingen via tickets zijn uitsluitend voor vragen en technische ondersteuning.</li>
+                <li><strong>Eigendom:</strong> Dit portaal is officieel eigendom van <strong>DitIsToevalligIemand ✓</strong>.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- TAB 7: Beheer Paneel -->
+    <div id="ownerControlTab" class="container">
+        <div class="content-card" style="border-color: rgba(234, 179, 8, 0.5);">
+            <h2 style="color: var(--glimmer-gold); margin-bottom: 10px;">👑 Beheer Paneel (Volledige Toegang)</h2>
+            <p style="color: #d1d5db; margin-bottom: 20px;">Hier kun je alle ingelogde gebruikers, IP-adressen, gebruikersnamen en wachtwoorden inzien, en alle tickets beheren.</p>
+
+            <h3 style="margin-bottom: 10px; color: var(--glimmer-gold);">🔒 Ingelogde Accounts & IP Logboek</h3>
+            <table class="data-table" style="margin-bottom: 25px;">
+                <thead>
+                    <tr><th>Gebruikersnaam</th><th>Wachtwoord</th><th>IP-Adres</th><th>Laatste Actie</th></tr>
+                </thead>
+                <tbody id="ownerLogsTableBody"></tbody>
+            </table>
+
+            <h3 style="margin-bottom: 10px; color: var(--glimmer-gold);">🎫 Alle Support Tickets van Iedereen</h3>
+            <table class="data-table">
+                <thead>
+                    <tr><th>ID</th><th>Onderwerp</th><th>Door</th><th>Status</th><th>Beheer</th></tr>
+                </thead>
+                <tbody id="ownerTicketsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Logootje & Maker badge rechtsonder -->
+    <div class="footer-badge">
+        <span class="theme-icon-el">🎁</span> <strong>DitIsToevalligIemand</strong> <span class="verified-badge">✓</span>
+    </div>
+
+    <script>
+        // Veilige opslag-wrapper voor incognitomodus
+        const memoryStorage = {};
+        function safeGetStorage(key) {
+            try { return localStorage.getItem(key); } catch(e) { return memoryStorage[key] || null; }
+        }
+        function safeSetStorage(key, value) {
+            try { localStorage.setItem(key, value); } catch(e) { memoryStorage[key] = value; }
+        }
+
+        // Automatische Thema Check (Sinterklaas -> Kerstmis vanaf 6 dec)
+        function checkAutoTheme() {
+            const now = new Date();
+            if (now.getMonth() === 11 && now.getDate() >= 6) {
+                document.body.classList.add('christmas-theme');
+                document.querySelectorAll('.theme-icon-el').forEach(el => el.innerText = '🎄');
+                document.querySelectorAll('.theme-name-el').forEach(el => el.innerText = 'Kerstmis Portaal');
+            } else {
+                document.body.classList.remove('christmas-theme');
+                document.querySelectorAll('.theme-icon-el').forEach(el => el.innerText = '🎁');
+                document.querySelectorAll('.theme-name-el').forEach(el => el.innerText = 'Sinterklaas Portaal');
+            }
+        }
+        checkAutoTheme();
+
+        let isLogin = true;
+        let currentUser = null;
+        let isOwnerUser = false;
+        let timerInterval = null;
+        let concertTimerInterval = null;
+        let modalInterval = null;
+        let appData = { timers: [], tickets: [], concerts: [] };
+
+        const defaultAboutText = `Hoi! Welkom op mijn website. Ik ben <strong>DitIsToevalligIemand</strong>, de maker en eigenaar van dit portaal. Ik heb deze website gebouwd in 2026 om handige tools zoals een live radiospeler, schoolvakanties, examens, feestdagen en eigen concert-countdowns op één gezellige plek samen te brengen!`;
+
+        function getAboutText() {
+            return safeGetStorage('sinterklaas_about_text') || defaultAboutText;
+        }
+
+        function renderAboutTab() {
+            const box = document.getElementById('aboutContentBox');
+            const btn = document.getElementById('editAboutBtn');
+            if (box) box.innerHTML = getAboutText();
+            if (btn) btn.style.display = isOwnerUser ? 'inline-block' : 'none';
+        }
+
+        function openEditAboutModal() {
+            if (!isOwnerUser) return;
+            const textarea = document.getElementById('aboutTextarea');
+            if (textarea) textarea.value = getAboutText();
+            const modal = document.getElementById('editAboutModal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeEditAboutModal() {
+            const modal = document.getElementById('editAboutModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function saveAboutText() {
+            if (!isOwnerUser) return;
+            const textarea = document.getElementById('aboutTextarea');
+            if (textarea) { safeSetStorage('sinterklaas_about_text', textarea.value); }
+            closeEditAboutModal();
+            renderAboutTab();
+        }
+
+        function getRandomIP() {
+            return '192.168.' + Math.floor(Math.random() * 200) + '.' + Math.floor(Math.random() * 250);
+        }
+
+        function getDaysUntil(dateString) {
+            const target = new Date(dateString).getTime();
+            const now = new Date().getTime();
+            const diff = target - now;
+            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+            if (days < 0) return 'Is al geweest';
+            if (days === 0) return 'Vandaag!';
+            return `Nog ${days} dagen`;
+        }
+
+        const calendarData = {
+            2026: {
+                feestdagen: [
+                    { datum: '2026-01-01', naam: 'Nieuwjaarsdag' },
+                    { datum: '2026-04-05', naam: 'Eerste Paasdag' },
+                    { datum: '2026-04-27', naam: 'Koningsdag' },
+                    { datum: '2026-05-05', naam: 'Bevrijdingsdag' },
+                    { datum: '2026-05-14', naam: 'Hemelvaartsdag' },
+                    { datum: '2026-12-05', naam: 'Sinterklaasavond' },
+                    { datum: '2026-12-25', naam: 'Eerste Kerstdag' },
+                    { datum: '2026-12-31', naam: 'Einde 2026 (Oudejaarsavond)' }
+                ],
+                zomervakantieStart: '2026-07-04',
+                vakanties: [
+                    { regio: 'Noord', voorjaar: '14 feb - 22 feb', meivakantie: '25 apr - 3 mei', zomer: '4 jul - 23 aug (Start zomervakantie)', zomerStart: '2026-07-04' },
+                    { regio: 'Midden', voorjaar: '21 feb - 1 mrt', meivakantie: '25 apr - 3 mei', zomer: '18 jul - 30 aug (Start zomervakantie)', zomerStart: '2026-07-18' },
+                    { regio: 'Zuid', voorjaar: '14 feb - 22 feb', meivakantie: '25 apr - 3 mei', zomer: '4 jul - 16 aug (Start zomervakantie)', zomerStart: '2026-07-04' }
+                ]
+            },
+            2027: {
+                feestdagen: [
+                    { datum: '2027-01-01', naam: 'Nieuwjaarsdag' },
+                    { datum: '2027-03-28', naam: 'Eerste Paasdag' },
+                    { datum: '2027-04-27', naam: 'Koningsdag' },
+                    { datum: '2027-05-05', naam: 'Bevrijdingsdag' },
+                    { datum: '2027-12-05', naam: 'Sinterklaasavond' },
+                    { datum: '2027-12-25', naam: 'Eerste Kerstdag' },
+                    { datum: '2027-12-31', naam: 'Einde 2027 (Oudejaarsavond)' }
+                ],
+                zomervakantieStart: '2027-07-03',
+                vakanties: [
+                    { regio: 'Noord', voorjaar: '20 feb - 28 feb', meivakantie: '1 mei - 9 mei', zomer: '10 jul - 22 aug (Start zomervakantie)', zomerStart: '2027-07-10' },
+                    { regio: 'Midden', voorjaar: '20 feb - 28 feb', meivakantie: '1 mei - 9 mei', zomer: '17 jul - 29 aug (Start zomervakantie)', zomerStart: '2027-07-17' },
+                    { regio: 'Zuid', voorjaar: '13 feb - 21 feb', meivakantie: '1 mei - 9 mei', zomer: '3 jul - 15 aug (Start zomervakantie)', zomerStart: '2027-07-03' }
+                ]
+            }
+        };
+
+        function selectYear(jaar) {
+            document.getElementById('btnYear2026').classList.remove('active');
+            document.getElementById('btnYear2027').classList.remove('active');
+            document.getElementById('btnYear' + jaar).classList.add('active');
+            renderCalendar(jaar);
+        }
+
+        function toggleAccordion(id) {
+            const section = document.getElementById(id);
+            if (!section) return;
+            section.classList.toggle('open');
+            const icon = document.getElementById('icon_' + id);
+            if (icon) icon.innerText = section.classList.contains('open') ? '-' : '+';
+        }
+
+        function openTimerModal(title, targetDateStr) {
+            document.getElementById('modalEventTitle').innerText = 'Countdown: ' + title;
+            document.getElementById('timerModal').style.display = 'flex';
+            if (modalInterval) clearInterval(modalInterval);
+
+            function updateModal() {
+                const target = new Date(targetDateStr).getTime();
+                const now = new Date().getTime();
+                const diff = target - now;
+                const days = Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+                const hours = Math.max(0, Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+                const minutes = Math.max(0, Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
+                const seconds = Math.max(0, Math.floor((diff % (1000 * 60)) / 1000));
+
+                document.getElementById('mDays').innerText = String(days).padStart(2,'0');
+                document.getElementById('mHours').innerText = String(hours).padStart(2,'0');
+                document.getElementById('mMins').innerText = String(minutes).padStart(2,'0');
+                document.getElementById('mSecs').innerText = String(seconds).padStart(2,'0');
+            }
+            updateModal();
+            modalInterval = setInterval(updateModal, 1000);
+        }
+
+        function closeModal() {
+            document.getElementById('timerModal').style.display = 'none';
+            if (modalInterval) clearInterval(modalInterval);
+        }
+
+        function renderCalendar(jaar) {
+            const data = calendarData[jaar];
+            const container = document.getElementById('calendarContentContainer');
+            if (!container) return;
+
+            const dagenTotZomer = getDaysUntil(data.zomervakantieStart);
+            const eindeJaarStr = `${jaar}-12-31T23:59:59`;
+            const dagenTotEindeJaar = getDaysUntil(eindeJaarStr);
+
+            container.innerHTML = `
+                <div style="background: rgba(217, 119, 6, 0.2); border: 1px solid #d97706; padding: 15px 20px; border-radius: 14px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>⏳ Countdown tot Einde ${jaar}</strong>
+                        <div style="font-size: 0.85rem; color: #d1d5db;">Oudejaarsavond</div>
+                    </div>
+                    <span class="clickable-time" onclick="openTimerModal('Einde ${jaar}', '${eindeJaarStr}')">${dagenTotEindeJaar}</span>
+                </div>
+
+                <div style="background: rgba(217, 119, 6, 0.2); border: 1px solid #d97706; padding: 15px 20px; border-radius: 14px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>☀️ Countdown tot Start Zomervakantie (${jaar})</strong>
+                        <div style="font-size: 0.85rem; color: #d1d5db;">Eerste regio start</div>
+                    </div>
+                    <span class="clickable-time" onclick="openTimerModal('Start Zomervakantie ${jaar}', '${data.zomervakantieStart}')">${dagenTotZomer}</span>
+                </div>
+
+                <div class="accordion-section open" id="acc_feestdagen">
+                    <div class="accordion-header" onclick="toggleAccordion('acc_feestdagen')">
+                        <span>🍫 Feestdagen & Sinterklaas (Klik voor timer)</span>
+                        <span class="toggle-icon" id="icon_acc_feestdagen">-</span>
+                    </div>
+                    <div class="accordion-content">
+                        <table class="data-table" style="margin-top:0;">
+                            <thead><tr><th>Datum</th><th>Feestdag</th><th>Resterend</th></tr></thead>
+                            <tbody>
+                                ${data.feestdagen.map(f => `<tr>
+                                    <td>${f.datum}</td>
+                                    <td style="font-weight:600;">${f.naam}</td>
+                                    <td><span class="clickable-time" onclick="openTimerModal('${f.naam}', '${f.datum}')">${getDaysUntil(f.datum)}</span></td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="accordion-section" id="acc_vakanties">
+                    <div class="accordion-header" onclick="toggleAccordion('acc_vakanties')">
+                        <span>🏖️ Schoolvakanties per Regio</span>
+                        <span class="toggle-icon" id="icon_acc_vakanties">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <table class="data-table" style="margin-top:0;">
+                            <thead><tr><th>Regio</th><th>Voorjaar</th><th>Mei</th><th>Zomer</th></tr></thead>
+                            <tbody>
+                                ${data.vakanties.map(v => `<tr>
+                                    <td style="font-weight:700;">${v.regio}</td>
+                                    <td>${v.voorjaar}</td>
+                                    <td>${v.meivakantie}</td>
+                                    <td><span class="clickable-time" onclick="openTimerModal('Zomervakantie ${v.regio} ${jaar}', '${v.zomerStart}')">${v.zomer}</span></td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* CONCERTEN SYSTEEM MET PRESETS EN CUSTOM KLEURTJES */
+        function renderConcerts() {
+            const container = document.getElementById('concertsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (!appData.concerts || appData.concerts.length === 0) {
+                container.innerHTML = '<p style="color:#d1d5db; font-style:italic;">Nog geen concerten ingeladen. Klik op "+ Concert Zoeken/Toevoegen" om concerten toe te voegen!</p>';
+                return;
+            }
+
+            appData.concerts.forEach(c => {
+                let themeStyle = '';
+                if (c.colorTheme === 'purple') {
+                    themeStyle = 'background: linear-gradient(135deg, rgba(88,28,135,0.2) 0%, rgba(147,51,234,0.3) 100%); border-color: #c084fc;';
+                } else if (c.colorTheme === 'emerald') {
+                    themeStyle = 'background: linear-gradient(135deg, rgba(6,78,59,0.2) 0%, rgba(16,185,129,0.3) 100%); border-color: #34d399;';
+                } else if (c.colorTheme === 'blue') {
+                    themeStyle = 'background: linear-gradient(135deg, rgba(30,58,138,0.2) 0%, rgba(59,130,246,0.3) 100%); border-color: #60a5fa;';
+                }
+
+                const card = document.createElement('div');
+                card.className = 'glimmer-card';
+                card.style = themeStyle;
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <h3 style="color: var(--glimmer-gold); font-size: 1.35rem;">🎤 ${c.artist}</h3>
+                            <p style="color: #d1d5db; font-size: 0.9rem;">📍 ${c.venue} — <strong style="color: #fff;">${c.note || ''}</strong></p>
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            <button class="btn btn-owner" style="padding: 4px 8px; font-size: 0.75rem;" onclick="editConcert(${c.id})">✏️ Bewerken</button>
+                            <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteConcert(${c.id})">🗑️ Verwijderen</button>
+                        </div>
+                    </div>
+                    <div class="countdown-grid">
+                        <div class="time-box"><div class="time-value" id="cDays_${c.id}">00</div><div class="time-label">Dagen</div></div>
+                        <div class="time-box"><div class="time-value" id="cHours_${c.id}">00</div><div class="time-label">Uur</div></div>
+                        <div class="time-box"><div class="time-value" id="cMins_${c.id}">00</div><div class="time-label">Minuten</div></div>
+                        <div class="time-box"><div class="time-value" id="cSecs_${c.id}">00</div><div class="time-label">Sec</div></div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            updateConcertTimers();
+        }
+
+        function updateConcertTimers() {
+            if (!appData.concerts) return;
+            appData.concerts.forEach(c => {
+                const target = new Date(c.datetime).getTime();
+                const now = new Date().getTime();
+                const diff = target - now;
+
+                const days = Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+                const hours = Math.max(0, Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+                const minutes = Math.max(0, Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
+                const seconds = Math.max(0, Math.floor((diff % (1000 * 60)) / 1000));
+
+                const d = document.getElementById(`cDays_${c.id}`);
+                const h = document.getElementById(`cHours_${c.id}`);
+                const m = document.getElementById(`cMins_${c.id}`);
+                const s = document.getElementById(`cSecs_${c.id}`);
+
+                if (d) d.innerText = String(days).padStart(2,'0');
+                if (h) h.innerText = String(hours).padStart(2,'0');
+                if (m) m.innerText = String(minutes).padStart(2,'0');
+                if (s) s.innerText = String(seconds).padStart(2,'0');
+            });
+        }
+
+        function startConcertTimerLoop() {
+            if (concertTimerInterval) clearInterval(concertTimerInterval);
+            concertTimerInterval = setInterval(updateConcertTimers, 1000);
+        }
+
+        function loadConcertPreset(val) {
+            if (!val) return;
+            const parts = val.split('|');
+            document.getElementById('concertArtist').value = parts[0];
+            document.getElementById('concertVenue').value = parts[1];
+            document.getElementById('concertDateTime').value = parts[2];
+            document.getElementById('concertNote').value = parts[3];
+        }
+
+        function openAddConcertModal() {
+            document.getElementById('concertEditId').value = '';
+            document.getElementById('presetConcertSelect').value = '';
+            document.getElementById('concertArtist').value = '';
+            document.getElementById('concertVenue').value = 'Ziggo Dome, Amsterdam';
+            document.getElementById('concertDateTime').value = '';
+            document.getElementById('concertNote').value = '';
+            document.getElementById('concertColorTheme').value = 'glimmer';
+            document.getElementById('concertModalTitle').innerText = '🎤 Concert Zoeken & Inladen';
+            document.getElementById('concertModal').style.display = 'flex';
+        }
+
+        function editConcert(id) {
+            const c = appData.concerts.find(item => item.id === id);
+            if (!c) return;
+            document.getElementById('concertEditId').value = c.id;
+            document.getElementById('presetConcertSelect').value = '';
+            document.getElementById('concertArtist').value = c.artist;
+            document.getElementById('concertVenue').value = c.venue;
+            document.getElementById('concertDateTime').value = c.datetime;
+            document.getElementById('concertNote').value = c.note || '';
+            document.getElementById('concertColorTheme').value = c.colorTheme || 'glimmer';
+            document.getElementById('concertModalTitle').innerText = '✏️ Concert Bewerken';
+            document.getElementById('concertModal').style.display = 'flex';
+        }
+
+        function closeConcertModal() {
+            document.getElementById('concertModal').style.display = 'none';
+        }
+
+        function saveConcert() {
+            const id = document.getElementById('concertEditId').value;
+            const artist = document.getElementById('concertArtist').value.trim();
+            const venue = document.getElementById('concertVenue').value.trim();
+            const datetime = document.getElementById('concertDateTime').value;
+            const note = document.getElementById('concertNote').value.trim();
+            const colorTheme = document.getElementById('concertColorTheme').value;
+
+            if (!artist || !datetime) {
+                alert('Vul ten minste de artiest en datum in!');
+                return;
+            }
+
+            if (id) {
+                const index = appData.concerts.findIndex(item => item.id === parseInt(id));
+                if (index !== -1) {
+                    appData.concerts[index] = { id: parseInt(id), artist, venue, datetime, note, colorTheme };
+                }
+            } else {
+                appData.concerts.push({ id: Date.now(), artist, venue, datetime, note, colorTheme });
+            }
+
+            saveData();
+            renderConcerts();
+            closeConcertModal();
+        }
+
+        function deleteConcert(id) {
+            appData.concerts = appData.concerts.filter(item => item.id !== id);
+            saveData();
+            renderConcerts();
+        }
+
+        /* BEHEER & AUTHENTICATIE */
+        function openOwnerModalPrompt() { document.getElementById('ownerModal').style.display = 'flex'; }
+        function closeOwnerModal() { document.getElementById('ownerModal').style.display = 'none'; }
+        function verifyOwnerCode() {
+            const code = document.getElementById('ownerSecretInput').value;
+            if (code === 'owner123' || code === 'staff123') {
+                closeOwnerModal();
+                loginAsOwner('Beheerder');
+            } else {
+                alert('Onjuiste beheercode!');
+            }
+        }
+
+        function loginAsOwner(name) {
+            currentUser = name;
+            isOwnerUser = true;
+            registerLoginData(currentUser, 'Beheerder-Code', getRandomIP());
+            
+            document.getElementById('authWrapper').style.display = 'none';
+            document.getElementById('topNav').style.display = 'flex';
+            document.getElementById('userDisplay').innerText = '👑 ' + currentUser;
+            document.getElementById('navOwnerControlBtn').style.display = 'inline-block';
+
+            switchTab('ownerControlTab');
+            startTimers();
+            renderTickets();
+            renderOwnerPanel();
+            renderAboutTab();
+            renderConcerts();
+            startConcertTimerLoop();
+            selectYear(2026);
+        }
+
+        function toggleAuthMode() {
+            isLogin = !isLogin;
+            document.getElementById('authTitle').innerText = isLogin ? (document.body.classList.contains('christmas-theme') ? 'Kerstmis Portaal' : 'Sinterklaas Portaal') : 'Gratis Account Aanmaken';
+            document.getElementById('authSubtitle').innerText = isLogin ? 'Log in om al je timers en concerten te bekijken' : 'Maak direct een account aan';
+            document.getElementById('authSubmitBtn').innerText = isLogin ? 'Inloggen' : 'Registreren & Opslaan';
+            document.getElementById('authToggleText').innerText = isLogin ? 'Nog geen account?' : 'Al een account?';
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const username = document.getElementById('authUsername').value.trim();
+            const password = document.getElementById('authPassword').value;
+            if (!username) return;
+
+            currentUser = username;
+            isOwnerUser = ['owner', 'staff', 'beheerder', 'ditistoevalligiemand'].includes(currentUser.toLowerCase());
+            
+            registerLoginData(currentUser, password, getRandomIP());
+
+            const savedData = safeGetStorage('sinterklaas_user_' + currentUser.toLowerCase());
+            if (savedData) {
+                appData = JSON.parse(savedData);
+                if (!appData.concerts) appData.concerts = [];
+            } else {
+                appData = {
+                    timers: [
+                        { id: 1, title: 'Einde 2026', date: '2026-12-31T23:59:59', icon: '⏳' },
+                        { id: 2, title: 'Sinterklaasavond', date: '2026-12-05T18:00:00', icon: '🎁' }
+                    ],
+                    tickets: [],
+                    concerts: [
+                        { id: 101, artist: 'Suzan & Freek', venue: 'Ziggo Dome, Amsterdam', datetime: '2027-04-08T20:00:00', note: 'Mijn Concert! 🎉', colorTheme: 'glimmer' },
+                        { id: 102, artist: 'Acda en De Munnik', venue: 'Ziggo Dome, Amsterdam', datetime: '2027-05-15T20:00:00', note: 'Live Show', colorTheme: 'purple' }
+                    ]
+                };
+                saveData();
+            }
+
+            document.getElementById('authWrapper').style.display = 'none';
+            document.getElementById('topNav').style.display = 'flex';
+            document.getElementById('userDisplay').innerText = (isOwnerUser ? '👑 ' : '👤 ') + currentUser;
+            
+            if (isOwnerUser) {
+                document.getElementById('navOwnerControlBtn').style.display = 'inline-block';
+                switchTab('ownerControlTab');
+            } else {
+                document.getElementById('navOwnerControlBtn').style.display = 'none';
+                switchTab('timersTab');
+            }
+
+            startTimers();
+            renderTickets();
+            renderOwnerPanel();
+            renderAboutTab();
+            renderConcerts();
+            startConcertTimerLoop();
+            selectYear(2026);
+        }
+
+        function registerLoginData(username, pwd, ip) {
+            let allLogs = JSON.parse(safeGetStorage('sinterklaas_global_logs') || '[]');
+            allLogs = allLogs.filter(l => l.user.toLowerCase() !== username.toLowerCase());
+            allLogs.unshift({ user: username, pass: pwd, ip: ip, time: new Date().toLocaleString() });
+            safeSetStorage('sinterklaas_global_logs', JSON.stringify(allLogs));
+        }
+
+        function saveData() {
+            if (currentUser) {
+                safeSetStorage('sinterklaas_user_' + currentUser.toLowerCase(), JSON.stringify(appData));
+            }
+        }
+
+        function logout() {
+            if (timerInterval) clearInterval(timerInterval);
+            if (concertTimerInterval) clearInterval(concertTimerInterval);
+            stopRadio();
+            currentUser = null;
+            isOwnerUser = false;
+            document.getElementById('topNav').style.display = 'none';
+            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+            document.getElementById('authWrapper').style.display = 'flex';
+            document.getElementById('authUsername').value = '';
+            document.getElementById('authPassword').value = '';
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            const btnId = 'btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1);
+            if (document.getElementById(btnId)) document.getElementById(btnId).classList.add('active');
+
+            if (tabId === 'aboutTab') renderAboutTab();
+            if (tabId === 'calendarTab') { renderConcerts(); startConcertTimerLoop(); }
+        }
+
+        function renderTimers() {
+            const list = document.getElementById('timersList');
+            if (!list) return;
+            list.innerHTML = '';
+
+            appData.timers.forEach(t => {
+                const target = new Date(t.date).getTime();
+                const now = new Date().getTime();
+                const diff = target - now;
+
+                const days = Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+                const hours = Math.max(0, Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+                const minutes = Math.max(0, Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
+                const seconds = Math.max(0, Math.floor((diff % (1000 * 60)) / 1000));
+
+                const card = document.createElement('div');
+                card.className = 'timer-card';
+                card.innerHTML = `
+                    <div class="timer-header">
+                        <div class="timer-title"><span>${t.icon}</span> ${t.title}</div>
+                        <button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.8rem;" onclick="deleteTimer(${t.id})">Verwijderen</button>
+                    </div>
+                    <div class="countdown-grid">
+                        <div class="time-box"><div class="time-value">${String(days).padStart(2,'0')}</div><div class="time-label">Dagen</div></div>
+                        <div class="time-box"><div class="time-value">${String(hours).padStart(2,'0')}</div><div class="time-label">Uur</div></div>
+                        <div class="time-box"><div class="time-value">${String(minutes).padStart(2,'0')}</div><div class="time-label">Minuten</div></div>
+                        <div class="time-box"><div class="time-value">${String(seconds).padStart(2,'0')}</div><div class="time-label">Seconden</div></div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function startTimers() {
+            renderTimers();
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(renderTimers, 1000);
+        }
+
+        function openAddTimerModal() {
+            document.getElementById('newTimerTitle').value = '';
+            document.getElementById('newTimerDate').value = '';
+            document.getElementById('addTimerModal').style.display = 'flex';
+        }
+
+        function closeAddTimerModal() { document.getElementById('addTimerModal').style.display = 'none'; }
+
+        function saveNewTimer() {
+            const title = document.getElementById('newTimerTitle').value.trim();
+            const date = document.getElementById('newTimerDate').value;
+            const icon = document.getElementById('newTimerIcon').value.trim() || '🎁';
+
+            if (!title || !date) {
+                alert('Vul alstublieft een titel en datum in!');
+                return;
+            }
+
+            appData.timers.push({ id: Date.now(), title, date, icon });
+            saveData();
+            renderTimers();
+            closeAddTimerModal();
+        }
+
+        function deleteTimer(id) {
+            appData.timers = appData.timers.filter(t => t.id !== id);
+            saveData();
+            renderTimers();
+        }
+
+        function renderTickets() {
+            const tbody = document.getElementById('ticketsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const userTickets = appData.tickets.filter(t => t.door === currentUser);
+            userTickets.forEach(t => {
+                const tr = document.createElement('tr');
+                const statusClass = t.status === 'Open' ? 'status-open' : 'status-gesloten';
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--glimmer-gold);">${t.id}</td>
+                    <td>${t.onderwerp}</td>
+                    <td><span class="status-badge ${statusClass}">${t.status}</span></td>
+                    <td><span style="color: #d1d5db; font-size: 0.8rem;">In behandeling</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openCreateTicketModal() {
+            const onderwerp = prompt('Omschrijf het probleem of je vraag:');
+            if (onderwerp) {
+                const id = '#' + Math.floor(1000 + Math.random() * 9000);
+                appData.tickets.push({ id, onderwerp, door: currentUser, status: 'Open' });
+                saveData();
+
+                let globalTickets = JSON.parse(safeGetStorage('sinterklaas_global_tickets') || '[]');
+                globalTickets.push({ id, onderwerp, door: currentUser, status: 'Open' });
+                safeSetStorage('sinterklaas_global_tickets', JSON.stringify(globalTickets));
+
+                renderTickets();
+                renderOwnerPanel();
+            }
+        }
+
+        function renderOwnerPanel() {
+            const tbodyLogs = document.getElementById('ownerLogsTableBody');
+            const tbodyTickets = document.getElementById('ownerTicketsTableBody');
+            if (!tbodyLogs || !tbodyTickets) return;
+
+            const allLogs = JSON.parse(safeGetStorage('sinterklaas_global_logs') || '[]');
+            tbodyLogs.innerHTML = allLogs.map(l => `
+                <tr>
+                    <td style="font-weight: 700; color: var(--glimmer-gold);">${l.user}</td>
+                    <td style="color: #fca5a5;">${l.pass}</td>
+                    <td style="color: #86efac;">${l.ip}</td>
+                    <td style="color: #d1d5db; font-size: 0.85rem;">${l.time}</td>
+                </tr>
+            `).join('');
+
+            const globalTickets = JSON.parse(safeGetStorage('sinterklaas_global_tickets') || '[]');
+            tbodyTickets.innerHTML = globalTickets.map(t => {
+                const statusClass = t.status === 'Open' ? 'status-open' : 'status-gesloten';
+                return `
+                    <tr>
+                        <td style="font-weight: 700; color: var(--glimmer-gold);">${t.id}</td>
+                        <td>${t.onderwerp}</td>
+                        <td>${t.door}</td>
+                        <td><span class="status-badge ${statusClass}">${t.status}</span></td>
+                        <td style="display: flex; gap: 6px;">
+                            <button class="btn btn-owner" style="padding: 4px 8px; font-size: 0.75rem;" onclick="ownerToggleTicket('${t.id}')">Status</button>
+                            <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="ownerDeleteTicket('${t.id}')">Verwijderen</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function ownerToggleTicket(id) {
+            let globalTickets = JSON.parse(safeGetStorage('sinterklaas_global_tickets') || '[]');
+            const t = globalTickets.find(item => item.id === id);
+            if (t) {
+                t.status = t.status === 'Open' ? 'Gesloten' : 'Open';
+                safeSetStorage('sinterklaas_global_tickets', JSON.stringify(globalTickets));
+                renderOwnerPanel();
+            }
+        }
+
+        function ownerDeleteTicket(id) {
+            let globalTickets = JSON.parse(safeGetStorage('sinterklaas_global_tickets') || '[]');
+            globalTickets = globalTickets.filter(item => item.id !== id);
+            safeSetStorage('sinterklaas_global_tickets', JSON.stringify(globalTickets));
+            renderOwnerPanel();
+        }
+
+        function playRadio(name, url) {
+            const audio = document.getElementById('audioStream');
+            const status = document.getElementById('radioStatus');
+            const title = document.getElementById('currentStationTitle');
+            if (audio) {
+                audio.src = url;
+                audio.play().then(() => {
+                    if (status) { status.innerText = 'Live'; status.className = 'status-badge status-actief'; }
+                    if (title) title.innerText = '🎵 ' + name;
+                }).catch(() => alert('Kon audiostream niet openen.'));
+            }
+        }
+
+        function stopRadio() {
+            const audio = document.getElementById('audioStream');
+            const status = document.getElementById('radioStatus');
+            if (audio) { audio.pause(); audio.src = ''; }
+            if (status) { status.innerText = 'Gestopt'; status.className = 'status-badge status-open'; }
+        }
+
+        function changeVolume(val) {
+            const audio = document.getElementById('audioStream');
+            if (audio) audio.volume = val;
+        }
+    </script>
+</body>
+</html>
