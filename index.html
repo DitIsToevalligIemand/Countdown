@@ -8,12 +8,11 @@
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #0b1329 0%, #172554 50%, #1e1b4b 100%);
-            --card-bg: rgba(15, 23, 42, 0.85);
-            --card-border: rgba(59, 130, 246, 0.2);
+            --card-bg: rgba(15, 23, 42, 0.88);
+            --card-border: rgba(59, 130, 246, 0.25);
             --text-color: #f8fafc;
             --accent-color: #8b5cf6;
-            --accent-glow: rgba(139, 92, 246, 0.4);
-            --staff-color: #f59e0b;
+            --accent-glow: rgba(139, 92, 246, 0.45);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
         body {
@@ -24,241 +23,316 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
-            padding-bottom: 50px;
-            position: relative;
+            padding-bottom: 60px;
         }
-        /* Navigatiebalk */
         nav {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1100px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: var(--card-bg);
             backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
-            padding: 12px 20px;
+            padding: 12px 18px;
             border-radius: 16px;
             margin-bottom: 25px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             flex-wrap: wrap;
             gap: 10px;
         }
-        .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+        .nav-links { display: flex; gap: 5px; flex-wrap: wrap; }
         .nav-btn {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 8px 14px;
-            border-radius: 8px;
-            transition: all 0.2s;
+            background: none; border: none; color: #94a3b8;
+            font-size: 0.85rem; font-weight: 600; cursor: pointer;
+            padding: 8px 11px; border-radius: 8px; transition: all 0.2s;
         }
-        .nav-btn.active, .nav-btn:hover { color: #fff; background: rgba(139, 92, 246, 0.2); }
+        .nav-btn.active, .nav-btn:hover { color: #fff; background: rgba(139, 92, 246, 0.25); }
         .nav-btn.staff-tab { color: #fcd34d; border: 1px dashed rgba(245, 158, 11, 0.4); }
-        .nav-btn.staff-tab:hover { background: rgba(245, 158, 11, 0.2); }
-        /* General Layout */
-        .container {
-            width: 100%;
-            max-width: 1000px;
-            display: none;
-            flex-direction: column;
-            gap: 20px;
-        }
+        .container { width: 100%; max-width: 1100px; display: none; flex-direction: column; gap: 20px; }
         .container.active { display: flex; }
-        /* Login Pagina / Card */
-        .auth-wrapper {
-            width: 100%;
-            min-height: 80vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+
+        .auth-wrapper { width: 100%; min-height: 80vh; display: flex; justify-content: center; align-items: center; }
         .auth-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 450px;
-            width: 100%;
-            text-align: center;
-            backdrop-filter: blur(16px);
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 24px; padding: 40px; max-width: 440px; width: 100%;
+            text-align: center; backdrop-filter: blur(16px);
             box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
-        /* Countdown Cards */
-        .timer-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+        .timer-card, .holiday-card {
+            background: var(--card-bg); backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border); border-radius: 20px;
+            padding: 24px; display: flex; flex-direction: column; gap: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: transform 0.2s;
         }
+        .timer-card:hover, .holiday-card:hover { transform: translateY(-3px); }
         .timer-header { display: flex; justify-content: space-between; align-items: center; }
-        .timer-title { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .timer-title { font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .time-box {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 15px 5px;
-            text-align: center;
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 14px 5px; text-align: center;
         }
-        .time-value { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1; text-shadow: 0 0 10px var(--accent-glow); }
-        .time-label { font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 600; margin-top: 5px; }
-        /* Content & Tables */
+        .time-value { font-size: 1.85rem; font-weight: 800; color: #fff; line-height: 1; text-shadow: 0 0 12px var(--accent-glow); }
+        .time-label { font-size: 0.7rem; text-transform: uppercase; color: #94a3b8; font-weight: 600; margin-top: 5px; }
+
+        .holiday-card.sinterklaas { border-color: rgba(239,68,68,0.4); background: linear-gradient(145deg, rgba(30,20,40,0.9), rgba(60,20,30,0.7)); }
+        .holiday-card.kerst { border-color: rgba(34,197,94,0.45); background: linear-gradient(145deg, rgba(15,40,25,0.9), rgba(20,50,30,0.7)); }
+        .holiday-card.nieuwjaar { border-color: rgba(250,204,21,0.4); background: linear-gradient(145deg, rgba(40,30,10,0.9), rgba(50,40,15,0.7)); }
+        .holiday-card.valentijn { border-color: rgba(244,114,182,0.45); background: linear-gradient(145deg, rgba(40,15,30,0.9), rgba(50,20,40,0.7)); }
+        .holiday-card.koningsdag { border-color: rgba(249,115,22,0.45); background: linear-gradient(145deg, rgba(40,25,10,0.9), rgba(50,30,15,0.7)); }
+
         .content-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: var(--card-bg); backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border); border-radius: 20px;
+            padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(0,0,0,0.2);
-            border-radius: 12px;
-            overflow: hidden;
-            margin-top: 15px;
-        }
-        .data-table th, .data-table td {
-            padding: 14px 18px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .data-table th { background: rgba(0,0,0,0.4); color: #cbd5e1; font-size: 0.9rem; }
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        .status-actief { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .status-open { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
-        .status-gesloten { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-        /* Buttons & Forms */
+        .data-table { width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.2); border-radius: 12px; overflow: hidden; margin-top: 15px; }
+        .data-table th, .data-table td { padding: 13px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .data-table th { background: rgba(0,0,0,0.4); color: #cbd5e1; font-size: 0.88rem; }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
+        .status-actief { background: rgba(34,197,94,0.2); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+        .status-open { background: rgba(234,179,8,0.2); color: #facc15; border: 1px solid rgba(234,179,8,0.3); }
+        .status-gesloten { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+
         .btn {
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: var(--accent-color); color: white; border: none;
+            padding: 10px 18px; font-size: 0.93rem; font-weight: 600;
+            border-radius: 10px; cursor: pointer; transition: all 0.2s;
             box-shadow: 0 4px 15px var(--accent-glow);
         }
         .btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
-        .btn-danger { background: #ef4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
-        .btn-staff { background: #d97706; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.4); }
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: #cbd5e1; }
-        .form-group input {
-            width: 100%; padding: 12px; background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 0.95rem;
+        .btn-danger { background: #ef4444; box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
+        .btn-staff { background: #d97706; box-shadow: 0 4px 15px rgba(217,119,6,0.4); }
+        .btn-ghost { background: rgba(255,255,255,0.08); box-shadow: none; }
+        .btn-ghost:hover { background: rgba(255,255,255,0.15); }
+
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #cbd5e1; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 12px 14px; background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
+            color: white; font-size: 0.95rem; outline: none;
         }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-color); }
+        .form-group textarea { min-height: 90px; resize: vertical; }
+
         .rules-list { list-style-type: decimal; margin-left: 20px; line-height: 1.8; color: #cbd5e1; }
         .rules-list li { margin-bottom: 10px; }
-        /* Footer / Maker & Logootje rechtsonder */
+
         .footer-badge {
-            position: fixed;
-            bottom: 15px;
-            right: 20px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid var(--card-border);
-            padding: 8px 14px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            color: #94a3b8;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: fixed; bottom: 15px; right: 20px;
+            background: rgba(15,23,42,0.92); border: 1px solid var(--card-border);
+            padding: 8px 14px; border-radius: 12px; font-size: 0.8rem; color: #94a3b8;
+            display: flex; align-items: center; gap: 6px; backdrop-filter: blur(8px); z-index: 1000;
         }
         .verified-badge {
-            background: #3b82f6;
-            color: white;
-            border-radius: 50%;
-            width: 14px;
-            height: 14px;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.65rem;
-            font-weight: 800;
+            background: #3b82f6; color: white; border-radius: 50%;
+            width: 14px; height: 14px; display: inline-flex; justify-content: center;
+            align-items: center; font-size: 0.65rem; font-weight: 800;
         }
+
+        .holiday-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .fun-card { background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 22px; }
+
+        /* ===== KALENDER ===== */
+        .calendar-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+        }
+        .calendar-nav { display: flex; align-items: center; gap: 12px; }
+        .calendar-nav button {
+            background: rgba(139,92,246,0.2); border: 1px solid rgba(139,92,246,0.3);
+            color: white; width: 38px; height: 38px; border-radius: 10px;
+            cursor: pointer; font-size: 1.1rem; transition: all 0.2s;
+        }
+        .calendar-nav button:hover { background: rgba(139,92,246,0.4); }
+        .calendar-month { font-size: 1.4rem; font-weight: 700; min-width: 180px; text-align: center; }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+        .cal-day-name {
+            text-align: center; font-size: 0.78rem; font-weight: 600;
+            color: #94a3b8; padding: 8px 0; text-transform: uppercase;
+        }
+        .cal-day {
+            aspect-ratio: 1;
+            background: rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.15s; position: relative;
+            font-weight: 600; font-size: 0.95rem;
+        }
+        .cal-day:hover { background: rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.4); }
+        .cal-day.other-month { opacity: 0.3; }
+        .cal-day.today { border-color: #8b5cf6; background: rgba(139,92,246,0.25); }
+        .cal-day.has-event { background: rgba(139,92,246,0.15); }
+        .cal-day.selected { background: rgba(139,92,246,0.45); border-color: #a78bfa; }
+        .cal-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            position: absolute; bottom: 6px;
+        }
+        .cal-dot.timer { background: #8b5cf6; }
+        .cal-dot.holiday { background: #f59e0b; }
+
+        .event-list { margin-top: 24px; }
+        .event-item {
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 14px 16px; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .event-item .icon { font-size: 1.4rem; }
+        .event-item .info { flex: 1; }
+        .event-item .title { font-weight: 600; }
+        .event-item .date { font-size: 0.82rem; color: #94a3b8; margin-top: 2px; }
+        .legend { display: flex; gap: 18px; margin-top: 16px; font-size: 0.85rem; color: #94a3b8; }
+        .legend span { display: flex; align-items: center; gap: 6px; }
+        .legend .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(6px); display: none; justify-content: center;
+            align-items: center; z-index: 2000; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: #0f172a; border: 1px solid rgba(139,92,246,0.35);
+            border-radius: 20px; padding: 28px; width: 100%; max-width: 460px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6); animation: modalIn 0.25s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal h3 { margin-bottom: 6px; font-size: 1.35rem; }
+        .modal p.sub { color: #94a3b8; font-size: 0.88rem; margin-bottom: 22px; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .modal-actions .btn { flex: 1; }
     </style>
 </head>
 <body>
-    <!-- Navigatiebalk -->
     <nav id="topNav" style="display: none;">
         <div class="nav-links">
             <button class="nav-btn active" id="btnTimersTab" onclick="switchTab('timersTab')">⏳ Timers</button>
-            <button class="nav-btn" id="btnStaffTab" onclick="switchTab('staffTab')">👥 Staff & Maker</button>
-            <button class="nav-btn" id="btnTicketsTab" onclick="switchTab('ticketsTab')">🎫 Support Tickets</button>
-            <button class="nav-btn" id="btnRulesTab" onclick="switchTab('rulesTab')">📜 Voorwaarden & Regels</button>
+            <button class="nav-btn" id="btnHolidaysTab" onclick="switchTab('holidaysTab')">🎄 Feestdagen</button>
+            <button class="nav-btn" id="btnCalendarTab" onclick="switchTab('calendarTab')">📅 Kalender</button>
+            <button class="nav-btn" id="btnFunTab" onclick="switchTab('funTab')">🎉 Fun Zone</button>
+            <button class="nav-btn" id="btnStaffTab" onclick="switchTab('staffTab')">👥 Staff</button>
+            <button class="nav-btn" id="btnTicketsTab" onclick="switchTab('ticketsTab')">🎫 Support</button>
+            <button class="nav-btn" id="btnRulesTab" onclick="switchTab('rulesTab')">📜 Regels</button>
             <button class="nav-btn staff-tab" id="btnStaffControlTab" style="display: none;" onclick="switchTab('staffControlTab')">👑 Staff Paneel</button>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="userDisplay" style="font-size: 0.9rem; font-weight: 700; color: #f8fafc;"></span>
+            <span id="userDisplay" style="font-size: 0.9rem; font-weight: 700;"></span>
             <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="logout()">Uitloggen</button>
         </div>
     </nav>
-    <!-- LOGIN PAGINA -->
+
+    <!-- LOGIN -->
     <div id="authWrapper" class="auth-wrapper">
         <div class="auth-card">
             <h2 id="authTitle" style="margin-bottom: 8px;">Inloggen Portaal</h2>
             <p id="authSubtitle" style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 25px;">Voer je gebruikersnaam in</p>
-            
             <form onsubmit="handleAuth(event)">
                 <div class="form-group">
                     <label>Gebruikersnaam</label>
-                    <input type="text" id="authUsername" required placeholder="<naam> (bijv. David)">
+                    <input type="text" id="authUsername" required placeholder="bijv. David">
                 </div>
                 <div class="form-group" id="passwordGroup" style="display: none;">
                     <label>Eigenaar / Staff Code</label>
                     <input type="password" id="staffSecretCode" placeholder="Code van de owner">
                 </div>
-                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;" id="authSubmitBtn">Inloggen</button>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 8px;" id="authSubmitBtn">Inloggen</button>
             </form>
-            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="margin-top: 22px; display: flex; flex-direction: column; gap: 10px;">
                 <p style="font-size: 0.9rem; color: #94a3b8;">
                     <span id="authToggleText">Nog geen gratis account?</span>
                     <a href="#" onclick="toggleAuthMode()" style="color: var(--accent-color); text-decoration: none; font-weight: 600;"> Registreren</a>
                 </p>
-                <button class="btn btn-staff" style="width: 100%; font-size: 0.85rem; padding: 8px;" onclick="toggleStaffLoginMode()">👑 Speciale Staff / Eigenaar Inlog</button>
+                <button class="btn btn-staff" style="width: 100%; font-size: 0.85rem; padding: 9px;" onclick="toggleStaffLoginMode()">👑 Speciale Staff / Eigenaar Inlog</button>
             </div>
         </div>
     </div>
-    <!-- TAB 1: Timers -->
+
+    <!-- TIMERS -->
     <div id="timersTab" class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
             <h2>Actieve Countdowns</h2>
-            <button class="btn" onclick="openAddTimerModal()">➕ Nieuwe Timer</button>
+            <button class="btn" onclick="openModal('addTimerModal')">➕ Nieuwe Timer</button>
         </div>
-        <div id="timersList" style="display: flex; flex-direction: column; gap: 20px;"></div>
+        <div id="timersList" style="display: flex; flex-direction: column; gap: 18px;"></div>
     </div>
-    <!-- TAB 2: Staff & Maker -->
+
+    <!-- FEESTDAGEN -->
+    <div id="holidaysTab" class="container">
+        <div class="content-card">
+            <h2 style="margin-bottom: 6px;">🎄 Nederlandse Feestdagen</h2>
+            <p style="color: #94a3b8; margin-bottom: 24px;">Sfeervolle countdowns naar de mooiste momenten van het jaar</p>
+            <div class="holiday-grid" id="holidaysList"></div>
+        </div>
+    </div>
+
+    <!-- KALENDER (nieuw) -->
+    <div id="calendarTab" class="container">
+        <div class="content-card">
+            <div class="calendar-header">
+                <h2>📅 Kalender</h2>
+                <div class="calendar-nav">
+                    <button onclick="changeMonth(-1)">‹</button>
+                    <div class="calendar-month" id="calMonthLabel">November 2026</div>
+                    <button onclick="changeMonth(1)">›</button>
+                </div>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- wordt gevuld door JS -->
+            </div>
+
+            <div class="legend">
+                <span><div class="dot" style="background:#8b5cf6"></div> Eigen timer</span>
+                <span><div class="dot" style="background:#f59e0b"></div> Feestdag</span>
+                <span style="margin-left:auto; opacity:0.7;">Klik op een dag voor details</span>
+            </div>
+
+            <div class="event-list" id="selectedDayEvents">
+                <p style="color:#94a3b8; text-align:center; padding: 20px 0;">Selecteer een dag om de events te zien</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FUN ZONE -->
+    <div id="funTab" class="container">
+        <div class="content-card">
+            <h2 style="margin-bottom: 18px;">🎉 Fun Zone</h2>
+            <div style="display: grid; gap: 18px;">
+                <div class="fun-card">
+                    <h3 style="margin-bottom: 10px;">💡 Countdown Ideeën</h3>
+                    <p style="color: #cbd5e1; line-height: 1.6;" id="funIdea">Klik hieronder voor een random idee!</p>
+                    <button class="btn" style="margin-top: 14px;" onclick="newFunIdea()">🎲 Nieuw idee</button>
+                </div>
+                <div class="fun-card">
+                    <h3 style="margin-bottom: 10px;">🔥 Motivatie van de dag</h3>
+                    <p style="color: #cbd5e1; font-size: 1.1rem; font-style: italic;" id="motivationQuote">"Elke seconde telt — maak er iets moois van."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STAFF -->
     <div id="staffTab" class="container">
         <div class="content-card">
             <h2 style="margin-bottom: 10px;">👑 Maker & Ontwikkeling</h2>
-            <p style="color: #cbd5e1; margin-bottom: 20px;">Deze applicatie is ontworpen en ontwikkeld door <strong>DitIsToevalligIemand</strong> <span class="verified-badge" title="Officieel">✓</span>.</p>
-            
+            <p style="color: #cbd5e1; margin-bottom: 20px;">Deze applicatie is ontworpen en ontwikkeld door <strong>DitIsToevalligIemand</strong> <span class="verified-badge">✓</span>.</p>
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2>👥 Staffleden & Team Overzicht</h2>
-                <button class="btn staff-action" onclick="openAddStaffModal()" style="display: none;">➕ Stafflid Toevoegen</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <h2>👥 Staffleden & Team</h2>
+                <button class="btn staff-action" onclick="openModal('addStaffModal')" style="display: none;">➕ Stafflid Toevoegen</button>
             </div>
             <table class="data-table">
                 <thead>
@@ -273,21 +347,22 @@
             </table>
         </div>
     </div>
-    <!-- TAB 3: Support Tickets -->
+
+    <!-- TICKETS -->
     <div id="ticketsTab" class="container">
         <div class="content-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
                 <div>
-                    <h2>🎫 Support Tickets Systeem</h2>
-                    <p style="font-size: 0.85rem; color: #94a3b8;">Meld hier een probleem. Je ziet alleen je eigen ingediende tickets.</p>
+                    <h2>🎫 Support Tickets</h2>
+                    <p style="font-size: 0.85rem; color: #94a3b8;">Je ziet alleen je eigen tickets.</p>
                 </div>
-                <button class="btn" onclick="openCreateTicketModal()">➕ Nieuw Ticket Inschieten</button>
+                <button class="btn" onclick="openModal('addTicketModal')">➕ Nieuw Ticket</button>
             </div>
             <table class="data-table">
                 <thead>
                     <tr>
                         <th>Ticket ID</th>
-                        <th>Onderwerp / Probleem</th>
+                        <th>Onderwerp</th>
                         <th>Status</th>
                         <th>Actie</th>
                     </tr>
@@ -296,7 +371,8 @@
             </table>
         </div>
     </div>
-    <!-- TAB 4: Voorwaarden & Regels -->
+
+    <!-- REGELS -->
     <div id="rulesTab" class="container">
         <div class="content-card">
             <h2 style="margin-bottom: 15px;">📜 Algemene Voorwaarden & Regels</h2>
@@ -307,12 +383,12 @@
             </ol>
         </div>
     </div>
-    <!-- TAB 5: Staff Control Panel -->
+
+    <!-- STAFF CONTROL -->
     <div id="staffControlTab" class="container">
-        <div class="content-card" style="border-color: rgba(245, 158, 11, 0.4);">
-            <h2 style="color: #fcd34d; margin-bottom: 10px;">👑 Speciale Eigenaar & Staff Beheeromgeving</h2>
-            <p style="color: #cbd5e1; margin-bottom: 20px;">Hier kun je alle inkomende support tickets van alle gebruikers inzien en de statussen wijzigen of verwijderen.</p>
-            <h3 style="margin-bottom: 10px;">Alle Inkomende Support Tickets</h3>
+        <div class="content-card" style="border-color: rgba(245,158,11,0.45);">
+            <h2 style="color: #fcd34d; margin-bottom: 10px;">👑 Staff Beheeromgeving</h2>
+            <p style="color: #cbd5e1; margin-bottom: 20px;">Alle tickets van alle gebruikers beheren.</p>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -327,10 +403,69 @@
             </table>
         </div>
     </div>
-    <!-- Klein logootje & Maker badge rechtsonder -->
+
     <div class="footer-badge">
         <span>⏱️</span> <strong>DitIsToevalligIemand</strong> <span class="verified-badge">✓</span>
     </div>
+
+    <!-- MODALS -->
+    <div class="modal-overlay" id="addTimerModal">
+        <div class="modal">
+            <h3>➕ Nieuwe Countdown</h3>
+            <p class="sub">Vul de gegevens in en klik op toevoegen</p>
+            <div class="form-group">
+                <label>Titel</label>
+                <input type="text" id="timerTitle" placeholder="Bijv. Project oplevering">
+            </div>
+            <div class="form-group">
+                <label>Datum & tijd</label>
+                <input type="datetime-local" id="timerDate">
+            </div>
+            <div class="form-group">
+                <label>Emoji (optioneel)</label>
+                <input type="text" id="timerIcon" placeholder="🚀" maxlength="2">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeModal('addTimerModal')">Annuleren</button>
+                <button class="btn" onclick="submitAddTimer()">Toevoegen</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addTicketModal">
+        <div class="modal">
+            <h3>🎫 Nieuw Support Ticket</h3>
+            <p class="sub">Beschrijf je vraag of probleem zo duidelijk mogelijk</p>
+            <div class="form-group">
+                <label>Onderwerp / Probleem</label>
+                <textarea id="ticketSubject" placeholder="Waar heb je hulp bij nodig?"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeModal('addTicketModal')">Annuleren</button>
+                <button class="btn" onclick="submitAddTicket()">Versturen</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addStaffModal">
+        <div class="modal">
+            <h3>➕ Stafflid Toevoegen</h3>
+            <p class="sub">Alleen zichtbaar voor staff</p>
+            <div class="form-group">
+                <label>Gebruikersnaam</label>
+                <input type="text" id="staffName" placeholder="Naam van het stafflid">
+            </div>
+            <div class="form-group">
+                <label>Functie / Rol</label>
+                <input type="text" id="staffRole" placeholder="Bijv. Moderator">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeModal('addStaffModal')">Annuleren</button>
+                <button class="btn" onclick="submitAddStaff()">Toevoegen</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let isLogin = true;
         let isStaffLoginMode = false;
@@ -338,6 +473,50 @@
         let isStaffUser = false;
         let timerInterval = null;
         let appData = { timers: [], staff: [], tickets: [] };
+
+        // Kalender state
+        let calYear = new Date().getFullYear();
+        let calMonth = new Date().getMonth(); // 0-11
+        let selectedDate = null;
+
+        const holidays = [
+            { title: "Sinterklaas", date: "2026-12-05T18:00:00", icon: "🎅", theme: "sinterklaas" },
+            { title: "Kerstavond", date: "2026-12-24T18:00:00", icon: "🎄", theme: "kerst" },
+            { title: "Eerste Kerstdag", date: "2026-12-25T00:00:00", icon: "🎁", theme: "kerst" },
+            { title: "Oud & Nieuw", date: "2026-12-31T23:59:00", icon: "🎆", theme: "nieuwjaar" },
+            { title: "Valentijnsdag", date: "2027-02-14T00:00:00", icon: "❤️", theme: "valentijn" },
+            { title: "Koningsdag", date: "2027-04-27T00:00:00", icon: "🧡", theme: "koningsdag" }
+        ];
+
+        const funIdeas = [
+            "Countdown naar je volgende vakantie ✈️",
+            "Countdown naar je verjaardag 🎂",
+            "Countdown naar de release van een game of serie 🎮",
+            "Countdown naar je examen of presentatie 📚",
+            "Countdown naar een concert of festival 🎤",
+            "Countdown naar je bruiloft of jubileum 💍",
+            "Countdown naar de start van het voetbalseizoen ⚽",
+            "Countdown naar de zomer (21 juni) ☀️",
+            "Countdown naar Black Friday 🛍️",
+            "Countdown naar je volgende salaris 💰"
+        ];
+
+        const motivations = [
+            "Elke seconde telt — maak er iets moois van.",
+            "De beste momenten komen sneller dan je denkt.",
+            "Geduld is niet wachten, het is hoe je wacht.",
+            "Jouw countdown is jouw verhaal.",
+            "Klein beginnen is nog steeds beginnen."
+        ];
+
+        const monthNames = ["Januari","Februari","Maart","April","Mei","Juni","Juli","Augustus","September","Oktober","November","December"];
+        const dayNames = ["Ma","Di","Wo","Do","Vr","Za","Zo"];
+
+        // ===== MODAL =====
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        // ===== AUTH =====
         function toggleAuthMode() {
             isLogin = !isLogin;
             isStaffLoginMode = false;
@@ -347,6 +526,7 @@
             document.getElementById('authSubmitBtn').innerText = isLogin ? 'Inloggen' : 'Account Aanmaken & Opslaan';
             document.getElementById('authToggleText').innerText = isLogin ? 'Nog geen gratis account?' : 'Al een account?';
         }
+
         function toggleStaffLoginMode() {
             isStaffLoginMode = !isStaffLoginMode;
             const pwdGroup = document.getElementById('passwordGroup');
@@ -364,13 +544,14 @@
                 document.getElementById('authUsername').value = '';
             }
         }
+
         function handleAuth(e) {
             e.preventDefault();
             const username = document.getElementById('authUsername').value.trim();
             if (!username) return;
+
             if (isStaffLoginMode) {
                 const secretCode = document.getElementById('staffSecretCode').value;
-                // Vaste code van de owner (aan te passen indien gewenst)
                 if (secretCode !== 'owner123' && secretCode !== 'staff123') {
                     alert('Onjuiste code van de owner!');
                     return;
@@ -379,9 +560,8 @@
             } else {
                 isStaffUser = (username.toLowerCase() === 'staff' || username.toLowerCase() === 'ditistoevalligiemand');
             }
-            
+
             currentUser = username;
-            // Opslag ophalen per gebruikersnaam
             const savedData = localStorage.getItem('portal_user_' + currentUser.toLowerCase());
             if (savedData) {
                 appData = JSON.parse(savedData);
@@ -399,10 +579,11 @@
                 };
                 saveData();
             }
+
             document.getElementById('authWrapper').style.display = 'none';
             document.getElementById('topNav').style.display = 'flex';
             document.getElementById('userDisplay').innerText = (isStaffUser ? '👑 ' : '👤 ') + currentUser;
-            
+
             if (isStaffUser) {
                 document.getElementById('btnStaffControlTab').style.display = 'inline-block';
                 document.querySelectorAll('.staff-action').forEach(el => el.style.display = 'table-cell');
@@ -410,17 +591,21 @@
                 document.getElementById('btnStaffControlTab').style.display = 'none';
                 document.querySelectorAll('.staff-action').forEach(el => el.style.display = 'none');
             }
+
             switchTab(isStaffUser ? 'staffControlTab' : 'timersTab');
             startTimers();
             renderStaff();
             renderTickets();
             renderStaffControl();
+            renderHolidays();
+            renderCalendar();
+            newFunIdea();
         }
+
         function saveData() {
-            if (currentUser) {
-                localStorage.setItem('portal_user_' + currentUser.toLowerCase(), JSON.stringify(appData));
-            }
+            if (currentUser) localStorage.setItem('portal_user_' + currentUser.toLowerCase(), JSON.stringify(appData));
         }
+
         function logout() {
             if (timerInterval) clearInterval(timerInterval);
             currentUser = null;
@@ -433,68 +618,241 @@
             document.getElementById('staffSecretCode').value = '';
             document.getElementById('passwordGroup').style.display = 'none';
         }
+
         function switchTab(tabId) {
             document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
             document.getElementById(tabId).classList.add('active');
             const btnId = 'btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1);
-            if (document.getElementById(btnId)) {
-                document.getElementById(btnId).classList.add('active');
-            }
+            if (document.getElementById(btnId)) document.getElementById(btnId).classList.add('active');
+            if (tabId === 'calendarTab') renderCalendar();
         }
-        /* Timers */
+
+        // ===== TIMERS =====
         function renderTimers() {
             const list = document.getElementById('timersList');
             if (!list) return;
             list.innerHTML = '';
+            if (appData.timers.length === 0) {
+                list.innerHTML = '<p style="color:#94a3b8; text-align:center; padding:40px 0;">Nog geen timers. Voeg er een toe!</p>';
+                return;
+            }
             appData.timers.forEach(t => {
-                const target = new Date(t.date).getTime();
-                const now = new Date().getTime();
-                const diff = target - now;
-                const days = Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
-                const hours = Math.max(0, Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-                const minutes = Math.max(0, Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
-                const seconds = Math.max(0, Math.floor((diff % (1000 * 60)) / 1000));
+                const { days, hours, minutes, seconds } = getTimeLeft(t.date);
                 const card = document.createElement('div');
                 card.className = 'timer-card';
                 card.innerHTML = `
                     <div class="timer-header">
                         <div class="timer-title"><span>${t.icon}</span> ${t.title}</div>
-                        ${isStaffUser ? `<button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.8rem;" onclick="deleteTimer(${t.id})">Verwijderen</button>` : ''}
+                        ${isStaffUser ? `<button class="btn btn-danger" style="padding:4px 10px;font-size:0.8rem;" onclick="deleteTimer(${t.id})">Verwijderen</button>` : ''}
                     </div>
                     <div class="countdown-grid">
-                        <div class="time-box"><div class="time-value">${String(days).padStart(2,'0')}</div><div class="time-label">Dagen</div></div>
-                        <div class="time-box"><div class="time-value">${String(hours).padStart(2,'0')}</div><div class="time-label">Uur</div></div>
-                        <div class="time-box"><div class="time-value">${String(minutes).padStart(2,'0')}</div><div class="time-label">Minuten</div></div>
-                        <div class="time-box"><div class="time-value">${String(seconds).padStart(2,'0')}</div><div class="time-label">Seconden</div></div>
-                    </div>
-                `;
+                        <div class="time-box"><div class="time-value">${pad(days)}</div><div class="time-label">Dagen</div></div>
+                        <div class="time-box"><div class="time-value">${pad(hours)}</div><div class="time-label">Uur</div></div>
+                        <div class="time-box"><div class="time-value">${pad(minutes)}</div><div class="time-label">Minuten</div></div>
+                        <div class="time-box"><div class="time-value">${pad(seconds)}</div><div class="time-label">Seconden</div></div>
+                    </div>`;
                 list.appendChild(card);
             });
         }
-        function startTimers() {
+
+        function submitAddTimer() {
+            const title = document.getElementById('timerTitle').value.trim();
+            const date = document.getElementById('timerDate').value;
+            const icon = document.getElementById('timerIcon').value.trim() || '⏱️';
+            if (!title || !date) return alert('Vul minimaal een titel en datum in.');
+            appData.timers.push({ id: Date.now(), title, date: new Date(date).toISOString(), icon });
+            saveData();
             renderTimers();
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(renderTimers, 1000);
+            renderCalendar();
+            closeModal('addTimerModal');
+            document.getElementById('timerTitle').value = '';
+            document.getElementById('timerDate').value = '';
+            document.getElementById('timerIcon').value = '';
         }
-        function openAddTimerModal() {
-            const title = prompt('Titel van de countdown:');
-            const date = prompt('Datum en tijd (bijv: 2026-12-31T00:00):');
-            const icon = prompt('Emoji icoon (bijv. 🚀 of ⏱️):', '⏱️');
-            if (title && date) {
-                appData.timers.push({ id: Date.now(), title, date, icon: icon || '⏱️' });
-                saveData();
-                renderTimers();
-            }
-        }
+
         function deleteTimer(id) {
             if (!isStaffUser) return;
             appData.timers = appData.timers.filter(t => t.id !== id);
             saveData();
             renderTimers();
+            renderCalendar();
         }
-        /* Staff */
+
+        // ===== FEESTDAGEN =====
+        function renderHolidays() {
+            const list = document.getElementById('holidaysList');
+            if (!list) return;
+            list.innerHTML = '';
+            holidays.forEach(h => {
+                const { days, hours, minutes, seconds } = getTimeLeft(h.date);
+                const card = document.createElement('div');
+                card.className = `holiday-card ${h.theme}`;
+                card.innerHTML = `
+                    <div class="timer-title"><span style="font-size:1.6rem">${h.icon}</span> ${h.title}</div>
+                    <div class="countdown-grid">
+                        <div class="time-box"><div class="time-value">${pad(days)}</div><div class="time-label">Dagen</div></div>
+                        <div class="time-box"><div class="time-value">${pad(hours)}</div><div class="time-label">Uur</div></div>
+                        <div class="time-box"><div class="time-value">${pad(minutes)}</div><div class="time-label">Minuten</div></div>
+                        <div class="time-box"><div class="time-value">${pad(seconds)}</div><div class="time-label">Seconden</div></div>
+                    </div>`;
+                list.appendChild(card);
+            });
+        }
+
+        // ===== KALENDER =====
+        function changeMonth(delta) {
+            calMonth += delta;
+            if (calMonth > 11) { calMonth = 0; calYear++; }
+            if (calMonth < 0) { calMonth = 11; calYear--; }
+            selectedDate = null;
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            if (!grid) return;
+
+            document.getElementById('calMonthLabel').innerText = monthNames[calMonth] + ' ' + calYear;
+
+            // Verzamel alle events voor deze maand
+            const eventsByDay = {};
+
+            // Eigen timers
+            appData.timers.forEach(t => {
+                const d = new Date(t.date);
+                if (d.getFullYear() === calYear && d.getMonth() === calMonth) {
+                    const day = d.getDate();
+                    if (!eventsByDay[day]) eventsByDay[day] = [];
+                    eventsByDay[day].push({ type: 'timer', title: t.title, icon: t.icon, date: t.date });
+                }
+            });
+
+            // Feestdagen
+            holidays.forEach(h => {
+                const d = new Date(h.date);
+                if (d.getFullYear() === calYear && d.getMonth() === calMonth) {
+                    const day = d.getDate();
+                    if (!eventsByDay[day]) eventsByDay[day] = [];
+                    eventsByDay[day].push({ type: 'holiday', title: h.title, icon: h.icon, date: h.date });
+                }
+            });
+
+            // Bouw grid
+            grid.innerHTML = '';
+
+            // Dagnamen
+            dayNames.forEach(name => {
+                const el = document.createElement('div');
+                el.className = 'cal-day-name';
+                el.innerText = name;
+                grid.appendChild(el);
+            });
+
+            const firstDay = new Date(calYear, calMonth, 1);
+            let startDay = firstDay.getDay(); // 0 = zo
+            startDay = startDay === 0 ? 6 : startDay - 1; // Maandag eerst
+
+            const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+            const daysInPrev = new Date(calYear, calMonth, 0).getDate();
+
+            // Vorige maand dagen
+            for (let i = startDay - 1; i >= 0; i--) {
+                const el = document.createElement('div');
+                el.className = 'cal-day other-month';
+                el.innerText = daysInPrev - i;
+                grid.appendChild(el);
+            }
+
+            // Huidige maand
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const el = document.createElement('div');
+                el.className = 'cal-day';
+                if (day === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear()) {
+                    el.classList.add('today');
+                }
+                if (eventsByDay[day]) el.classList.add('has-event');
+                if (selectedDate && selectedDate.day === day && selectedDate.month === calMonth && selectedDate.year === calYear) {
+                    el.classList.add('selected');
+                }
+
+                el.innerHTML = day;
+
+                if (eventsByDay[day]) {
+                    const hasTimer = eventsByDay[day].some(e => e.type === 'timer');
+                    const hasHoliday = eventsByDay[day].some(e => e.type === 'holiday');
+                    if (hasTimer) {
+                        const dot = document.createElement('div');
+                        dot.className = 'cal-dot timer';
+                        el.appendChild(dot);
+                    }
+                    if (hasHoliday) {
+                        const dot = document.createElement('div');
+                        dot.className = 'cal-dot holiday';
+                        dot.style.bottom = hasTimer ? '14px' : '6px';
+                        el.appendChild(dot);
+                    }
+                }
+
+                el.onclick = () => selectDay(day, eventsByDay[day] || []);
+                grid.appendChild(el);
+            }
+
+            // Volgende maand opvullen
+            const totalCells = startDay + daysInMonth;
+            const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+            for (let i = 1; i <= remaining; i++) {
+                const el = document.createElement('div');
+                el.className = 'cal-day other-month';
+                el.innerText = i;
+                grid.appendChild(el);
+            }
+
+            // Events lijst
+            renderSelectedEvents();
+        }
+
+        function selectDay(day, events) {
+            selectedDate = { day, month: calMonth, year: calYear, events };
+            renderCalendar(); // hertekenen voor selected class
+        }
+
+        function renderSelectedEvents() {
+            const container = document.getElementById('selectedDayEvents');
+            if (!selectedDate) {
+                container.innerHTML = '<p style="color:#94a3b8; text-align:center; padding: 20px 0;">Selecteer een dag om de events te zien</p>';
+                return;
+            }
+
+            const dateStr = `${selectedDate.day} ${monthNames[selectedDate.month]} ${selectedDate.year}`;
+            if (!selectedDate.events || selectedDate.events.length === 0) {
+                container.innerHTML = `<p style="color:#94a3b8; text-align:center; padding: 20px 0;">Geen events op ${dateStr}</p>`;
+                return;
+            }
+
+            let html = `<h3 style="margin-bottom:14px; font-size:1.1rem;">Events op ${dateStr}</h3>`;
+            selectedDate.events.forEach(e => {
+                const time = new Date(e.date).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+                html += `
+                    <div class="event-item">
+                        <div class="icon">${e.icon}</div>
+                        <div class="info">
+                            <div class="title">${e.title}</div>
+                            <div class="date">${e.type === 'holiday' ? 'Feestdag' : 'Eigen timer'} • ${time}</div>
+                        </div>
+                    </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // ===== FUN =====
+        function newFunIdea() {
+            document.getElementById('funIdea').innerText = funIdeas[Math.floor(Math.random() * funIdeas.length)];
+            document.getElementById('motivationQuote').innerText = '"' + motivations[Math.floor(Math.random() * motivations.length)] + '"';
+        }
+
+        // ===== STAFF =====
         function renderStaff() {
             const tbody = document.getElementById('staffTableBody');
             if (!tbody) return;
@@ -502,80 +860,92 @@
             appData.staff.forEach(m => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="font-weight: 600;">${m.naam}</td>
+                    <td style="font-weight:600;">${m.naam}</td>
                     <td>${m.functie}</td>
                     <td><span class="status-badge status-actief">${m.status}</span></td>
-                    ${isStaffUser ? `<td><button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="deleteStaff(${m.id})">Verwijderen</button></td>` : ''}
-                `;
+                    ${isStaffUser ? `<td><button class="btn btn-danger" style="padding:4px 10px;font-size:0.75rem;" onclick="deleteStaff(${m.id})">Verwijderen</button></td>` : ''}`;
                 tbody.appendChild(tr);
             });
         }
-        function openAddStaffModal() {
+
+        function submitAddStaff() {
             if (!isStaffUser) return;
-            const naam = prompt('Gebruikersnaam van stafflid:');
-            const functie = prompt('Functie / Rol:');
-            if (naam && functie) {
-                appData.staff.push({ id: Date.now(), naam, functie, status: 'Actief' });
-                saveData();
-                renderStaff();
-            }
+            const naam = document.getElementById('staffName').value.trim();
+            const functie = document.getElementById('staffRole').value.trim();
+            if (!naam || !functie) return alert('Vul beide velden in.');
+            appData.staff.push({ id: Date.now(), naam, functie, status: 'Actief' });
+            saveData();
+            renderStaff();
+            closeModal('addStaffModal');
+            document.getElementById('staffName').value = '';
+            document.getElementById('staffRole').value = '';
         }
+
         function deleteStaff(id) {
             if (!isStaffUser) return;
             appData.staff = appData.staff.filter(m => m.id !== id);
             saveData();
             renderStaff();
         }
-        /* Tickets (Leden zien alleen eigen tickets, staff ziet alles) */
+
+        // ===== TICKETS =====
         function renderTickets() {
             const tbody = document.getElementById('ticketsTableBody');
             if (!tbody) return;
             tbody.innerHTML = '';
-            // Filter zodat members alleen hun eigen tickets zien
             const userTickets = appData.tickets.filter(t => t.door === currentUser);
+            if (userTickets.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:30px;">Nog geen tickets ingediend</td></tr>';
+                return;
+            }
             userTickets.forEach(t => {
                 const tr = document.createElement('tr');
                 const statusClass = t.status === 'Open' ? 'status-open' : 'status-gesloten';
                 tr.innerHTML = `
-                    <td style="font-weight: 700; color: var(--accent-color);">${t.id}</td>
+                    <td style="font-weight:700;color:var(--accent-color);">${t.id}</td>
                     <td>${t.onderwerp}</td>
                     <td><span class="status-badge ${statusClass}">${t.status}</span></td>
-                    <td><span style="color: #94a3b8; font-size: 0.8rem;">In behandeling bij Staff</span></td>
-                `;
+                    <td><span style="color:#94a3b8;font-size:0.8rem;">In behandeling</span></td>`;
                 tbody.appendChild(tr);
             });
         }
-        function openCreateTicketModal() {
-            const onderwerp = prompt('Omschrijf het probleem of je vraag voor de Staff:');
-            if (onderwerp) {
-                const id = '#' + Math.floor(1000 + Math.random() * 9000);
-                appData.tickets.push({ id, onderwerp, door: currentUser, status: 'Open' });
-                saveData();
-                renderTickets();
-                renderStaffControl();
-            }
+
+        function submitAddTicket() {
+            const onderwerp = document.getElementById('ticketSubject').value.trim();
+            if (!onderwerp) return alert('Schrijf even een onderwerp.');
+            const id = '#' + Math.floor(1000 + Math.random() * 9000);
+            appData.tickets.push({ id, onderwerp, door: currentUser, status: 'Open' });
+            saveData();
+            renderTickets();
+            renderStaffControl();
+            closeModal('addTicketModal');
+            document.getElementById('ticketSubject').value = '';
         }
-        /* Staff Control Panel (Beheert alle tickets van iedereen en kan verwijderen) */
+
         function renderStaffControl() {
             const tbody = document.getElementById('staffTicketsTableBody');
             if (!tbody) return;
             tbody.innerHTML = '';
+            if (appData.tickets.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:30px;">Geen tickets</td></tr>';
+                return;
+            }
             appData.tickets.forEach(t => {
                 const tr = document.createElement('tr');
                 const statusClass = t.status === 'Open' ? 'status-open' : 'status-gesloten';
                 tr.innerHTML = `
-                    <td style="font-weight: 700; color: #fcd34d;">${t.id}</td>
+                    <td style="font-weight:700;color:#fcd34d;">${t.id}</td>
                     <td>${t.onderwerp}</td>
                     <td>${t.door}</td>
                     <td><span class="status-badge ${statusClass}">${t.status}</span></td>
-                    <td style="display: flex; gap: 6px;">
-                        <button class="btn btn-staff" style="padding: 4px 8px; font-size: 0.75rem;" onclick="toggleTicketStatus('${t.id}')">Status</button>
-                        <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteTicket('${t.id}')">Verwijderen</button>
-                    </td>
-                `;
+                    <td style="display:flex;gap:6px;">
+                        <button class="btn btn-staff" style="padding:4px 8px;font-size:0.75rem;" onclick="toggleTicketStatus('${t.id}')">Status</button>
+                        <button class="btn btn-danger" style="padding:4px 8px;font-size:0.75rem;" onclick="deleteTicket('${t.id}')">Verwijderen</button>
+                    </td>`;
                 tbody.appendChild(tr);
             });
         }
+
         function toggleTicketStatus(id) {
             if (!isStaffUser) return;
             const ticket = appData.tickets.find(t => t.id === id);
@@ -586,6 +956,7 @@
                 renderStaffControl();
             }
         }
+
         function deleteTicket(id) {
             if (!isStaffUser) return;
             appData.tickets = appData.tickets.filter(t => t.id !== id);
@@ -593,6 +964,36 @@
             renderTickets();
             renderStaffControl();
         }
+
+        // ===== HELPERS =====
+        function getTimeLeft(dateStr) {
+            const diff = new Date(dateStr).getTime() - Date.now();
+            return {
+                days: Math.max(0, Math.floor(diff / 86400000)),
+                hours: Math.max(0, Math.floor((diff % 86400000) / 3600000)),
+                minutes: Math.max(0, Math.floor((diff % 3600000) / 60000)),
+                seconds: Math.max(0, Math.floor((diff % 60000) / 1000))
+            };
+        }
+        function pad(n) { return String(n).padStart(2, '0'); }
+
+        function startTimers() {
+            renderTimers();
+            renderHolidays();
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                renderTimers();
+                renderHolidays();
+            }, 1000);
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) overlay.classList.remove('active');
+            });
+        });
     </script>
+</body>
+</html>
 </body>
 </html>
