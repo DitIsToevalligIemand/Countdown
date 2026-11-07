@@ -13,7 +13,6 @@
             --text-color: #fef3c7;
             --accent-color: #d97706;
             --accent-glow: rgba(217, 119, 6, 0.4);
-            --staff-color: #f59e0b;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
         body {
@@ -70,11 +69,19 @@
         }
         .container.active { display: flex; }
 
-        /* Login Pagina */
+        /* Login Pagina met Beheerknop rechtsboven */
+        .auth-top-bar {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
         .auth-wrapper {
             width: 100%;
-            min-height: 80vh;
+            min-height: 75vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
         }
@@ -242,145 +249,6 @@
         .btn-owner { background: #b45309; box-shadow: 0 4px 15px rgba(180, 83, 9, 0.4); }
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: #fde047; }
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%; padding: 12px; background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; color: white; font-size: 0.95rem;
-        }
-        .rules-list { list-style-type: decimal; margin-left: 20px; line-height: 1.8; color: #fef3c7; }
-        .rules-list li { margin-bottom: 10px; }
-
-        /* Footer badge */
-        .footer-badge {
-            position: fixed;
-            bottom: 15px;
-            right: 20px;
-            background: rgba(43, 24, 16, 0.95);
-            border: 1px solid var(--card-border);
-            padding: 8px 14px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            color: #d1d5db;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-        }
-        .verified-badge {
-            background: #3b82f6;
-            color: white;
-            border-radius: 50%;
-            width: 14px;
-            height: 14px;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.65rem;
-            font-weight: 800;
-        }
-
-        /* Modal / Timer Pop-up */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.75); backdrop-filter: blur(5px);
-            display: none; justify-content: center; align-items: center; z-index: 2000;
-        }
-        .modal-card {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Navigatiebalk met Eigenaar-knop rechtboven -->
-    <nav id="topNav" style="display: none;">
-        <div class="nav-links">
-            <button class="nav-btn active" id="btnTimersTab" onclick="switchTab('timersTab')">🎁 Timers</button>
-            <button class="nav-btn" id="btnRadioTab" onclick="switchTab('radioTab')">📻 Radio</button>
-            <button class="nav-btn" id="btnCalendarTab" onclick="switchTab('calendarTab')">🍫 Kalender & Sinterklaas</button>
-            <button class="nav-btn" id="btnStaffTab" onclick="switchTab('staffTab')">👥 Maker & Team</button>
-            <button class="nav-btn" id="btnTicketsTab" onclick="switchTab('ticketsTab')">🎫 Tickets</button>
-            <button class="nav-btn" id="btnRulesTab" onclick="switchTab('rulesTab')">📜 Regels</button>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="userDisplay" style="font-size: 0.9rem; font-weight: 700; color: #fef3c7;"></span>
-            <button class="nav-btn owner-btn" onclick="openOwnerModalPrompt()">👑 Eigenaar Inlog</button>
-            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="logout()">Uitloggen</button>
-        </div>
-    </nav>
-
-    <!-- SINTERKLAAS LOGIN PAGINA -->
-    <div id="authWrapper" class="auth-wrapper">
-        <div class="auth-card">
-            <div style="font-size: 2.5rem; margin-bottom: 10px;">🎁</div>
-            <h2 id="authTitle" style="margin-bottom: 8px; color: #fde047;">Sinterklaas Portaal</h2>
-            <p id="authSubtitle" style="font-size: 0.85rem; color: #d1d5db; margin-bottom: 25px;">Voer je gebruikersnaam in (<naam>)</p>
-            
-            <form onsubmit="handleAuth(event)">
-                <div class="form-group">
-                    <label>Gebruikersnaam</label>
-                    <input type="text" id="authUsername" required placeholder="Bijv. Pietje of <naam>">
-                </div>
-                <div class="form-group">
-                    <label>Wachtwoord</label>
-                    <input type="password" id="authPassword" required placeholder="••••••••">
-                </div>
-                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;" id="authSubmitBtn">Inloggen</button>
-            </form>
-
-            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
-                <p style="font-size: 0.9rem; color: #d1d5db;">
-                    <span id="authToggleText">Nog geen account?</span>
-                    <a href="#" onclick="toggleAuthMode()" style="color: #fde047; text-decoration: none; font-weight: 600;"> Registreren</a>
-                </p>
-                <button class="btn btn-owner" style="width: 100%; font-size: 0.85rem; padding: 8px;" onclick="openOwnerModalPrompt()">👑 Direct Inloggen als Eigenaar (Code)</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- EIGENAAR CODE INLOG MODAL -->
-    <div id="ownerModal" class="modal-overlay">
-        <div class="modal-card">
-            <h3 style="color: #fde047; margin-bottom: 10px;">👑 Eigenaar Beveiligde Inlog</h3>
-            <p style="font-size: 0.85rem; color: #d1d5db; margin-bottom: 20px;">Voer de speciale code van de eigenaar in om volledige rechten te krijgen.</p>
-            <div class="form-group">
-                <input type="password" id="ownerSecretInput" placeholder="Geheime eigenaar code">
-            </div>
-            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
-                <button class="btn btn-owner" onclick="verifyOwnerCode()">Inloggen</button>
-                <button class="btn btn-danger" onclick="closeOwnerModal()">Annuleren</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- POP-UP TIMER MODAL -->
-    <div id="timerModal" class="modal-overlay">
-        <div class="modal-card">
-            <h3 id="modalEventTitle" style="margin-bottom: 15px; color: #fde047;">Live Timer</h3>
-            <div class="countdown-grid" style="margin-bottom: 20px;">
-                <div class="time-box"><div class="time-value" id="mDays">00</div><div class="time-label">Dagen</div></div>
-                <div class="time-box"><div class="time-value" id="mHours">00</div><div class="time-label">Uur</div></div>
-                <div class="time-box"><div class="time-value" id="mMins">00</div><div class="time-label">Minuten</div></div>
-                <div class="time-box"><div class="time-value" id="mSecs">00</div><div class="time-label">Sec</div></div>
-            </div>
-            <button class="btn" onclick="closeModal()">Sluiten</button>
-        </div>
-    </div>
-
-    <!-- TAB 1: Timers -->
-    <div id="timersTab" class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>🎁 Actieve Sinterklaas Countdowns</h2>
-            <button class="btn" onclick="openAddTimerModal()">➕ Nieuwe Timer</button>
-        </div>
-        <div id="timersList" style="display: flex; flex-direction: column; gap: 20px;"></div>
-    </div>
-
-    <!-- TAB 2: Radio Speler -->
-    <div id="radioTab" class="container">
-        <div class="content-card">
-            <h2>📻 Gezellige Sinterklaas & Radio Speler</h2>
-            <p style="color: #d
+            border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; color: white; font-size: 0.9
