@@ -24,6 +24,8 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
+            padding-bottom: 50px;
+            position: relative;
         }
 
         /* Navigatiebalk */
@@ -72,7 +74,7 @@
         /* Login Pagina / Card */
         .auth-wrapper {
             width: 100%;
-            min-height: 85vh;
+            min-height: 80vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -172,6 +174,37 @@
         }
         .rules-list { list-style-type: decimal; margin-left: 20px; line-height: 1.8; color: #cbd5e1; }
         .rules-list li { margin-bottom: 10px; }
+
+        /* Footer / Maker & Logootje rechtsonder */
+        .footer-badge {
+            position: fixed;
+            bottom: 15px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--card-border);
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .verified-badge {
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.65rem;
+            font-weight: 800;
+        }
     </style>
 </head>
 <body>
@@ -191,7 +224,7 @@
         </div>
     </nav>
 
-    <!-- INLOG / REGISTRATIE PAGINA -->
+    <!-- LOGIN PAGINA -->
     <div id="authWrapper" class="auth-wrapper">
         <div class="auth-card">
             <h2 id="authTitle" style="margin-bottom: 8px;">Inloggen Portaal</h2>
@@ -203,8 +236,8 @@
                     <input type="text" id="authUsername" required placeholder="<naam> (bijv. David)">
                 </div>
                 <div class="form-group" id="passwordGroup" style="display: none;">
-                    <label>Staff Toegangscode (van de owner)</label>
-                    <input type="password" id="staffSecretCode" placeholder="Voer staffcode in">
+                    <label>Eigenaar / Staff Code</label>
+                    <input type="password" id="staffSecretCode" placeholder="Code van de owner">
                 </div>
                 <button type="submit" class="btn" style="width: 100%; margin-top: 10px;" id="authSubmitBtn">Inloggen</button>
             </form>
@@ -214,7 +247,7 @@
                     <span id="authToggleText">Nog geen gratis account?</span>
                     <a href="#" onclick="toggleAuthMode()" style="color: var(--accent-color); text-decoration: none; font-weight: 600;"> Registreren</a>
                 </p>
-                <button class="btn btn-staff" style="width: 100%; font-size: 0.85rem; padding: 8px;" onclick="toggleStaffLoginMode()">👑 Aparte Staff Inlog</button>
+                <button class="btn btn-staff" style="width: 100%; font-size: 0.85rem; padding: 8px;" onclick="toggleStaffLoginMode()">👑 Speciale Staff / Eigenaar Inlog</button>
             </div>
         </div>
     </div>
@@ -232,7 +265,7 @@
     <div id="staffTab" class="container">
         <div class="content-card">
             <h2 style="margin-bottom: 10px;">👑 Maker & Ontwikkeling</h2>
-            <p style="color: #cbd5e1; margin-bottom: 20px;">Deze applicatie is ontworpen en ontwikkeld door <strong>DitIsToevalligIemand</strong>.</p>
+            <p style="color: #cbd5e1; margin-bottom: 20px;">Deze applicatie is ontworpen en ontwikkeld door <strong>DitIsToevalligIemand</strong> <span class="verified-badge" title="Officieel">✓</span>.</p>
             
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
 
@@ -260,7 +293,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <div>
                     <h2>🎫 Support Tickets Systeem</h2>
-                    <p style="font-size: 0.85rem; color: #94a3b8;">Meld hier een probleem. Gekoppeld aan het Staff-team.</p>
+                    <p style="font-size: 0.85rem; color: #94a3b8;">Meld hier een probleem. Je ziet alleen je eigen ingediende tickets.</p>
                 </div>
                 <button class="btn" onclick="openCreateTicketModal()">➕ Nieuw Ticket Inschieten</button>
             </div>
@@ -270,9 +303,8 @@
                     <tr>
                         <th>Ticket ID</th>
                         <th>Onderwerp / Probleem</th>
-                        <th>Gemeld Door</th>
                         <th>Status</th>
-                        <th>Acties</th>
+                        <th>Actie</th>
                     </tr>
                 </thead>
                 <tbody id="ticketsTableBody"></tbody>
@@ -285,10 +317,10 @@
         <div class="content-card">
             <h2 style="margin-bottom: 15px;">📜 Algemene Voorwaarden & Regels</h2>
             <ol class="rules-list">
-                <li><strong>Respectvol Gebruik:</strong> Het is niet toegestaan om ongewenste of kwetsende content in timers of tickets te plaatsen.</li>
-                <li><strong>Account & Opslag:</strong> Elk gratis account bewaart al je timers automatisch op basis van je gebruikersnaam.</li>
-                <li><strong>Support Systeem:</strong> Meldingen via tickets zijn uitsluitend voor vragen en technische ondersteuning aan de Staff.</li>
-                <li><strong>Eigendom:</strong> Dit portaal is eigendom van <strong>DitIsToevalligIemand</strong>.</li>
+                <li><strong>Respectvol Gebruik:</strong> Het is niet toegestaan om ongewenste of kwetsende content te plaatsen.</li>
+                <li><strong>Account & Opslag:</strong> Elk account bewaart al je timers automatisch op basis van je unieke gebruikersnaam.</li>
+                <li><strong>Support Systeem:</strong> Meldingen via tickets zijn uitsluitend voor vragen en technische ondersteuning.</li>
+                <li><strong>Eigendom:</strong> Dit portaal is officieel eigendom van <strong>DitIsToevalligIemand ✓</strong>.</li>
             </ol>
         </div>
     </div>
@@ -296,10 +328,10 @@
     <!-- TAB 5: Staff Control Panel -->
     <div id="staffControlTab" class="container">
         <div class="content-card" style="border-color: rgba(245, 158, 11, 0.4);">
-            <h2 style="color: #fcd34d; margin-bottom: 10px;">👑 Aparte Staff Beheeromgeving</h2>
-            <p style="color: #cbd5e1; margin-bottom: 20px;">Hier kun je als Staff alle inkomende support tickets inzien en de statussen wijzigen.</p>
+            <h2 style="color: #fcd34d; margin-bottom: 10px;">👑 Speciale Eigenaar & Staff Beheeromgeving</h2>
+            <p style="color: #cbd5e1; margin-bottom: 20px;">Hier kun je alle inkomende support tickets van alle gebruikers inzien en de statussen wijzigen of verwijderen.</p>
 
-            <h3 style="margin-bottom: 10px;">Inkomende Support Tickets</h3>
+            <h3 style="margin-bottom: 10px;">Alle Inkomende Support Tickets</h3>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -307,12 +339,17 @@
                         <th>Onderwerp</th>
                         <th>Gebruiker</th>
                         <th>Status</th>
-                        <th>Actie Wijzigen</th>
+                        <th>Acties</th>
                     </tr>
                 </thead>
                 <tbody id="staffTicketsTableBody"></tbody>
             </table>
         </div>
+    </div>
+
+    <!-- Klein logootje & Maker badge rechtsonder -->
+    <div class="footer-badge">
+        <span>⏱️</span> <strong>DitIsToevalligIemand</strong> <span class="verified-badge">✓</span>
     </div>
 
     <script>
@@ -338,9 +375,9 @@
             const pwdGroup = document.getElementById('passwordGroup');
             if (isStaffLoginMode) {
                 pwdGroup.style.display = 'block';
-                document.getElementById('authTitle').innerText = '👑 Aparte Staff Inlog';
-                document.getElementById('authSubtitle').innerText = 'Voer staff-naam en owner code in';
-                document.getElementById('authSubmitBtn').innerText = 'Inloggen als Staff';
+                document.getElementById('authTitle').innerText = '👑 Speciale Staff / Eigenaar Inlog';
+                document.getElementById('authSubtitle').innerText = 'Voer staff-naam en code van de owner in';
+                document.getElementById('authSubmitBtn').innerText = 'Inloggen als Eigenaar/Staff';
                 document.getElementById('authUsername').value = 'Staff';
             } else {
                 pwdGroup.style.display = 'none';
@@ -358,9 +395,9 @@
 
             if (isStaffLoginMode) {
                 const secretCode = document.getElementById('staffSecretCode').value;
-                // Vaste code van de owner, bijvoorbeeld 'owner123' of pas dit aan naar wens
+                // Vaste code van de owner (aan te passen indien gewenst)
                 if (secretCode !== 'owner123' && secretCode !== 'staff123') {
-                    alert('Onjuiste staffcode van de owner!');
+                    alert('Onjuiste code van de owner!');
                     return;
                 }
                 isStaffUser = true;
@@ -382,5 +419,230 @@
                     ],
                     staff: [
                         { id: 1, naam: 'DitIsToevalligIemand', functie: 'Maker & Eigenaar', status: 'Actief' },
+                        { id: 2, naam: 'Staff', functie: 'Hoofd Moderator', status: 'Actief' }
+                    ],
+                    tickets: []
+                };
+                saveData();
+            }
+
+            document.getElementById('authWrapper').style.display = 'none';
+            document.getElementById('topNav').style.display = 'flex';
+            document.getElementById('userDisplay').innerText = (isStaffUser ? '👑 ' : '👤 ') + currentUser;
+            
+            if (isStaffUser) {
+                document.getElementById('btnStaffControlTab').style.display = 'inline-block';
+                document.querySelectorAll('.staff-action').forEach(el => el.style.display = 'table-cell');
+            } else {
+                document.getElementById('btnStaffControlTab').style.display = 'none';
+                document.querySelectorAll('.staff-action').forEach(el => el.style.display = 'none');
+            }
+
+            switchTab(isStaffUser ? 'staffControlTab' : 'timersTab');
+            startTimers();
+            renderStaff();
+            renderTickets();
+            renderStaffControl();
+        }
+
+        function saveData() {
+            if (currentUser) {
+                localStorage.setItem('portal_user_' + currentUser.toLowerCase(), JSON.stringify(appData));
+            }
+        }
+
+        function logout() {
+            if (timerInterval) clearInterval(timerInterval);
+            currentUser = null;
+            isStaffUser = false;
+            isStaffLoginMode = false;
+            document.getElementById('topNav').style.display = 'none';
+            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+            document.getElementById('authWrapper').style.display = 'flex';
+            document.getElementById('authUsername').value = '';
+            document.getElementById('staffSecretCode').value = '';
+            document.getElementById('passwordGroup').style.display = 'none';
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            const btnId = 'btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1);
+            if (document.getElementById(btnId)) {
+                document.getElementById(btnId).classList.add('active');
+            }
+        }
+
+        /* Timers */
+        function renderTimers() {
+            const list = document.getElementById('timersList');
+            if (!list) return;
+            list.innerHTML = '';
+
+            appData.timers.forEach(t => {
+                const target = new Date(t.date).getTime();
+                const now = new Date().getTime();
+                const diff = target - now;
+
+                const days = Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+                const hours = Math.max(0, Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+                const minutes = Math.max(0, Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
+                const seconds = Math.max(0, Math.floor((diff % (1000 * 60)) / 1000));
+
+                const card = document.createElement('div');
+                card.className = 'timer-card';
+                card.innerHTML = `
+                    <div class="timer-header">
+                        <div class="timer-title"><span>${t.icon}</span> ${t.title}</div>
+                        ${isStaffUser ? `<button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.8rem;" onclick="deleteTimer(${t.id})">Verwijderen</button>` : ''}
+                    </div>
+                    <div class="countdown-grid">
+                        <div class="time-box"><div class="time-value">${String(days).padStart(2,'0')}</div><div class="time-label">Dagen</div></div>
+                        <div class="time-box"><div class="time-value">${String(hours).padStart(2,'0')}</div><div class="time-label">Uur</div></div>
+                        <div class="time-box"><div class="time-value">${String(minutes).padStart(2,'0')}</div><div class="time-label">Minuten</div></div>
+                        <div class="time-box"><div class="time-value">${String(seconds).padStart(2,'0')}</div><div class="time-label">Seconden</div></div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function startTimers() {
+            renderTimers();
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(renderTimers, 1000);
+        }
+
+        function openAddTimerModal() {
+            const title = prompt('Titel van de countdown:');
+            const date = prompt('Datum en tijd (bijv: 2026-12-31T00:00):');
+            const icon = prompt('Emoji icoon (bijv. 🚀 of ⏱️):', '⏱️');
+            if (title && date) {
+                appData.timers.push({ id: Date.now(), title, date, icon: icon || '⏱️' });
+                saveData();
+                renderTimers();
+            }
+        }
+
+        function deleteTimer(id) {
+            if (!isStaffUser) return;
+            appData.timers = appData.timers.filter(t => t.id !== id);
+            saveData();
+            renderTimers();
+        }
+
+        /* Staff */
+        function renderStaff() {
+            const tbody = document.getElementById('staffTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            appData.staff.forEach(m => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 600;">${m.naam}</td>
+                    <td>${m.functie}</td>
+                    <td><span class="status-badge status-actief">${m.status}</span></td>
+                    ${isStaffUser ? `<td><button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="deleteStaff(${m.id})">Verwijderen</button></td>` : ''}
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openAddStaffModal() {
+            if (!isStaffUser) return;
+            const naam = prompt('Gebruikersnaam van stafflid:');
+            const functie = prompt('Functie / Rol:');
+            if (naam && functie) {
+                appData.staff.push({ id: Date.now(), naam, functie, status: 'Actief' });
+                saveData();
+                renderStaff();
+            }
+        }
+
+        function deleteStaff(id) {
+            if (!isStaffUser) return;
+            appData.staff = appData.staff.filter(m => m.id !== id);
+            saveData();
+            renderStaff();
+        }
+
+        /* Tickets (Leden zien alleen eigen tickets, staff ziet alles) */
+        function renderTickets() {
+            const tbody = document.getElementById('ticketsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            // Filter zodat members alleen hun eigen tickets zien
+            const userTickets = appData.tickets.filter(t => t.door === currentUser);
+
+            userTickets.forEach(t => {
+                const tr = document.createElement('tr');
+                const statusClass = t.status === 'Open' ? 'status-open' : 'status-gesloten';
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--accent-color);">${t.id}</td>
+                    <td>${t.onderwerp}</td>
+                    <td><span class="status-badge ${statusClass}">${t.status}</span></td>
+                    <td><span style="color: #94a3b8; font-size: 0.8rem;">In behandeling bij Staff</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openCreateTicketModal() {
+            const onderwerp = prompt('Omschrijf het probleem of je vraag voor de Staff:');
+            if (onderwerp) {
+                const id = '#' + Math.floor(1000 + Math.random() * 9000);
+                appData.tickets.push({ id, onderwerp, door: currentUser, status: 'Open' });
+                saveData();
+                renderTickets();
+                renderStaffControl();
+            }
+        }
+
+        /* Staff Control Panel (Beheert alle tickets van iedereen en kan verwijderen) */
+        function renderStaffControl() {
+            const tbody = document.getElementById('staffTicketsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            appData.tickets.forEach(t => {
+                const tr = document.createElement('tr');
+                const statusClass = t.status === 'Open' ? 'status-open' : 'status-gesloten';
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: #fcd34d;">${t.id}</td>
+                    <td>${t.onderwerp}</td>
+                    <td>${t.door}</td>
+                    <td><span class="status-badge ${statusClass}">${t.status}</span></td>
+                    <td style="display: flex; gap: 6px;">
+                        <button class="btn btn-staff" style="padding: 4px 8px; font-size: 0.75rem;" onclick="toggleTicketStatus('${t.id}')">Status</button>
+                        <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteTicket('${t.id}')">Verwijderen</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleTicketStatus(id) {
+            if (!isStaffUser) return;
+            const ticket = appData.tickets.find(t => t.id === id);
+            if (ticket) {
+                ticket.status = ticket.status === 'Open' ? 'Gesloten' : 'Open';
+                saveData();
+                renderTickets();
+                renderStaffControl();
+            }
+        }
+
+        function deleteTicket(id) {
+            if (!isStaffUser) return;
+            appData.tickets = appData.tickets.filter(t => t.id !== id);
+            saveData();
+            renderTickets();
+            renderStaffControl();
+        }
+    </script>
 </body>
 </html>
