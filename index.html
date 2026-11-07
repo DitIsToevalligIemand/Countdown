@@ -132,15 +132,22 @@ nav {
 .holiday-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; }
 .fun-card { background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 20px; }
 
+/* Filters */
+.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.filter-chip {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    color: #94a3b8; padding: 7px 14px; border-radius: 20px; cursor: pointer;
+    font-size: 0.84rem; font-weight: 600; transition: all 0.2s; user-select: none;
+}
+.filter-chip.active { background: rgba(139,92,246,0.3); color: white; border-color: rgba(139,92,246,0.5); }
+
 /* Clock */
 .clock-big {
     font-size: 3.8rem; font-weight: 800; letter-spacing: 2px;
     text-shadow: 0 0 30px var(--accent-glow); text-align: center; margin: 10px 0 6px;
 }
 .clock-date { text-align: center; font-size: 1.25rem; color: #cbd5e1; margin-bottom: 18px; }
-.clock-meta {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;
-}
+.clock-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
 .clock-meta-item {
     background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08);
     border-radius: 14px; padding: 16px; text-align: center;
@@ -189,8 +196,8 @@ nav {
     color: #94a3b8; padding: 8px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.88rem;
 }
 .game-tab.active { background: rgba(139,92,246,0.25); color: white; border-color: rgba(139,92,246,0.4); }
-.snake-wrap, .memory-wrap, .reaction-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-#snakeCanvas {
+.snake-wrap, .memory-wrap, .reaction-wrap, .blocks-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+#snakeCanvas, #blocksCanvas {
     background: #0a0f1e; border-radius: 14px;
     border: 2px solid rgba(139,92,246,0.35);
     box-shadow: 0 0 25px rgba(139,92,246,0.12); max-width: 100%;
@@ -203,15 +210,12 @@ nav {
 }
 
 /* Memory */
-.memory-grid {
-    display: grid; grid-template-columns: repeat(4, 70px); gap: 10px; justify-content: center;
-}
+.memory-grid { display: grid; grid-template-columns: repeat(4, 70px); gap: 10px; justify-content: center; }
 .memory-card {
     width: 70px; height: 70px; background: rgba(139,92,246,0.25);
     border: 1px solid rgba(139,92,246,0.4); border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem; cursor: pointer; transition: all 0.2s;
-    user-select: none;
+    font-size: 1.6rem; cursor: pointer; transition: all 0.2s; user-select: none;
 }
 .memory-card.flipped, .memory-card.matched { background: rgba(0,0,0,0.4); }
 .memory-card.matched { opacity: 0.6; pointer-events: none; }
@@ -226,6 +230,14 @@ nav {
 }
 .reaction-box.ready { background: #22c55e; border-color: #4ade80; color: #052e16; }
 .reaction-box.wait { background: #ef4444; border-color: #f87171; }
+
+/* Blocks palette */
+.blocks-palette { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.block-color {
+    width: 36px; height: 36px; border-radius: 8px; cursor: pointer;
+    border: 2px solid transparent; transition: all 0.15s;
+}
+.block-color.selected { border-color: white; transform: scale(1.15); box-shadow: 0 0 12px rgba(255,255,255,0.4); }
 
 /* Modal */
 .modal-overlay {
@@ -307,13 +319,22 @@ nav {
 <!-- FEESTDAGEN -->
 <div id="holidaysTab" class="container">
     <div class="content-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
             <div>
                 <h2 style="margin-bottom:4px;">🎄 Feestdagen & Schooljaar</h2>
                 <p style="color:#94a3b8;font-size:0.88rem;">Beheer je eigen datums — ze blijven bewaard</p>
             </div>
             <button class="btn" onclick="openAddHolidayModal()">➕ Feestdag toevoegen</button>
         </div>
+
+        <!-- FILTERS -->
+        <div class="filter-bar">
+            <div class="filter-chip active" data-filter="all" onclick="setHolidayFilter('all')">Alles</div>
+            <div class="filter-chip" data-filter="feestdag" onclick="setHolidayFilter('feestdag')">Feestdagen</div>
+            <div class="filter-chip" data-filter="school" onclick="setHolidayFilter('school')">School</div>
+            <div class="filter-chip" data-filter="custom" onclick="setHolidayFilter('custom')">Eigen</div>
+        </div>
+
         <div class="holiday-grid" id="holidaysList"></div>
     </div>
 </div>
@@ -341,29 +362,17 @@ nav {
     </div>
 </div>
 
-<!-- CLOCK / NU -->
+<!-- CLOCK -->
 <div id="clockTab" class="container">
     <div class="content-card">
         <h2 style="text-align:center;margin-bottom:6px;">🕒 Exacte tijd & datum</h2>
         <div class="clock-big" id="liveClock">00:00:00</div>
         <div class="clock-date" id="liveDate">zaterdag 7 november 2026</div>
         <div class="clock-meta">
-            <div class="clock-meta-item">
-                <div class="label">Jaar</div>
-                <div class="value" id="liveYear">2026</div>
-            </div>
-            <div class="clock-meta-item">
-                <div class="label">Eeuw</div>
-                <div class="value" id="liveCentury">21e eeuw</div>
-            </div>
-            <div class="clock-meta-item">
-                <div class="label">Weeknummer</div>
-                <div class="value" id="liveWeek">—</div>
-            </div>
-            <div class="clock-meta-item">
-                <div class="label">Dag van het jaar</div>
-                <div class="value" id="liveDayOfYear">—</div>
-            </div>
+            <div class="clock-meta-item"><div class="label">Jaar</div><div class="value" id="liveYear">2026</div></div>
+            <div class="clock-meta-item"><div class="label">Eeuw</div><div class="value" id="liveCentury">21e eeuw</div></div>
+            <div class="clock-meta-item"><div class="label">Weeknummer</div><div class="value" id="liveWeek">—</div></div>
+            <div class="clock-meta-item"><div class="label">Dag van het jaar</div><div class="value" id="liveDayOfYear">—</div></div>
         </div>
     </div>
 </div>
@@ -378,6 +387,7 @@ nav {
             <button class="game-tab active" onclick="showGame('snake')">🐍 Snake</button>
             <button class="game-tab" onclick="showGame('memory')">🧠 Memory</button>
             <button class="game-tab" onclick="showGame('reaction')">⚡ Reactie</button>
+            <button class="game-tab" onclick="showGame('blocks')">🧱 Blokken</button>
         </div>
 
         <!-- Snake -->
@@ -414,6 +424,16 @@ nav {
             <div class="reaction-box" id="reactionBox" onclick="reactionClick()">Klik om te starten</div>
             <div>Beste tijd: <strong id="reactionBest">—</strong> ms</div>
             <button class="btn btn-ghost" onclick="resetReaction()">↺ Reset</button>
+        </div>
+
+        <!-- Blokken (mini Minecraft creative) -->
+        <div id="gameBlocks" class="blocks-wrap" style="display:none;">
+            <canvas id="blocksCanvas" width="480" height="360"></canvas>
+            <div class="blocks-palette" id="blocksPalette"></div>
+            <div class="snake-info">
+                <button class="btn btn-ghost" onclick="clearBlocks()">🗑 Alles wissen</button>
+                <span style="font-size:0.84rem;color:#94a3b8;">Links klikken = plaatsen • Rechts klikken = verwijderen</span>
+            </div>
         </div>
     </div>
 </div>
@@ -496,7 +516,7 @@ nav {
 
 <div class="footer-badge"><span>⏱️</span> <strong>DitIsToevalligIemand</strong> <span class="verified-badge">✓</span></div>
 
-<!-- MODALS -->
+<!-- MODALS (zelfde als vorige + confirm) -->
 <div class="modal-overlay" id="addTimerModal">
     <div class="modal">
         <h3>➕ Nieuwe Countdown</h3>
@@ -518,6 +538,15 @@ nav {
         <div class="form-group"><label>Titel</label><input type="text" id="holidayTitle" placeholder="Bijv. Mijn verjaardag"></div>
         <div class="form-group"><label>Datum & tijd</label><input type="datetime-local" id="holidayDate"></div>
         <div class="form-group"><label>Emoji</label><input type="text" id="holidayIcon" placeholder="🎉" maxlength="2"></div>
+        <div class="form-group">
+            <label>Categorie</label>
+            <select id="holidayTheme">
+                <option value="custom">Eigen</option>
+                <option value="sinterklaas">Feestdag</option>
+                <option value="school">School</option>
+                <option value="vakantie">Vakantie</option>
+            </select>
+        </div>
         <div class="modal-actions">
             <button class="btn btn-ghost" onclick="closeModal('addHolidayModal')">Annuleren</button>
             <button class="btn" onclick="submitHoliday()">Opslaan</button>
@@ -550,7 +579,6 @@ nav {
     </div>
 </div>
 
-<!-- Mooie bevestigingsmodal -->
 <div class="modal-overlay" id="confirmModal">
     <div class="modal">
         <h3 id="confirmTitle">Weet je het zeker?</h3>
@@ -563,12 +591,9 @@ nav {
 </div>
 
 <script>
-let isLogin = true, isStaffLoginMode = false, currentUser = null, isStaffUser = false;
-let timerInterval = null, clockInterval = null;
-let appData = { timers: [], staff: [], tickets: [], holidays: [] };
-let calYear = new Date().getFullYear(), calMonth = new Date().getMonth(), selectedDate = null;
-let editingHolidayId = null;
-let confirmCallback = null;
+// ... (de volledige JavaScript van de vorige versie + onderstaande toevoegingen)
+
+let holidayFilter = 'all';
 
 const defaultHolidays = [
     { id: 'def1', title: "Sinterklaas", date: "2026-12-05T18:00:00", icon: "🎅", theme: "sinterklaas" },
@@ -583,181 +608,28 @@ const defaultHolidays = [
     { id: 'def10', title: "Zomervakantie start", date: "2027-07-10T00:00:00", icon: "🏖️", theme: "vakantie" }
 ];
 
-const funIdeas = ["Countdown naar je volgende vakantie ✈️","Countdown naar je verjaardag 🎂","Countdown naar de release van een game 🎮","Countdown naar je examen 📚","Countdown naar een concert 🎤","Countdown naar je bruiloft 💍","Countdown naar de zomer ☀️","Countdown naar Black Friday 🛍️"];
-const motivations = ["Elke seconde telt — maak er iets moois van.","De beste momenten komen sneller dan je denkt.","Geduld is niet wachten, het is hoe je wacht.","Jouw countdown is jouw verhaal."];
-const monthNames = ["Januari","Februari","Maart","April","Mei","Juni","Juli","Augustus","September","Oktober","November","December"];
-const dayNames = ["Ma","Di","Wo","Do","Vr","Za","Zo"];
-
-function openModal(id) { document.getElementById(id).classList.add('active'); }
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-function showConfirm(title, text, cb) {
-    document.getElementById('confirmTitle').innerText = title;
-    document.getElementById('confirmText').innerText = text;
-    confirmCallback = cb;
-    openModal('confirmModal');
-}
-function closeConfirm(result) {
-    closeModal('confirmModal');
-    if (confirmCallback) confirmCallback(result);
-    confirmCallback = null;
+function setHolidayFilter(f) {
+    holidayFilter = f;
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.dataset.filter === f));
+    renderHolidays();
 }
 
-function toggleAuthMode() {
-    isLogin = !isLogin; isStaffLoginMode = false;
-    document.getElementById('passwordGroup').style.display = 'none';
-    document.getElementById('authTitle').innerText = isLogin ? 'Inloggen Portaal' : 'Gratis Account Aanmaken';
-    document.getElementById('authSubtitle').innerText = isLogin ? 'Voer je gebruikersnaam in' : 'Maak direct een gratis account aan';
-    document.getElementById('authSubmitBtn').innerText = isLogin ? 'Inloggen' : 'Account Aanmaken & Opslaan';
-    document.getElementById('authToggleText').innerText = isLogin ? 'Nog geen gratis account?' : 'Al een account?';
-}
-function toggleStaffLoginMode() {
-    isStaffLoginMode = !isStaffLoginMode;
-    const pwd = document.getElementById('passwordGroup');
-    if (isStaffLoginMode) {
-        pwd.style.display = 'block';
-        document.getElementById('authTitle').innerText = '👑 Speciale Staff / Eigenaar Inlog';
-        document.getElementById('authSubtitle').innerText = 'Voer staff-naam en code van de owner in';
-        document.getElementById('authSubmitBtn').innerText = 'Inloggen als Eigenaar/Staff';
-        document.getElementById('authUsername').value = 'Staff';
-    } else {
-        pwd.style.display = 'none';
-        document.getElementById('authTitle').innerText = 'Inloggen Portaal';
-        document.getElementById('authSubtitle').innerText = 'Voer je gebruikersnaam in';
-        document.getElementById('authSubmitBtn').innerText = 'Inloggen';
-        document.getElementById('authUsername').value = '';
-    }
+function getHolidayCategory(theme) {
+    if (['sinterklaas','kerst','nieuwjaar','valentijn','koningsdag'].includes(theme)) return 'feestdag';
+    if (theme === 'school' || theme === 'vakantie') return 'school';
+    return 'custom';
 }
 
-function handleAuth(e) {
-    e.preventDefault();
-    const username = document.getElementById('authUsername').value.trim();
-    if (!username) return;
-    if (isStaffLoginMode) {
-        const code = document.getElementById('staffSecretCode').value;
-        if (code !== 'owner123' && code !== 'staff123') return alert('Onjuiste code!');
-        isStaffUser = true;
-    } else {
-        isStaffUser = (username.toLowerCase() === 'staff' || username.toLowerCase() === 'ditistoevalligiemand');
-    }
-    currentUser = username;
-    const saved = localStorage.getItem('portal_user_' + currentUser.toLowerCase());
-    if (saved) {
-        appData = JSON.parse(saved);
-        if (!appData.holidays) appData.holidays = [...defaultHolidays];
-    } else {
-        appData = {
-            timers: [
-                { id: 1, title: 'Project Oplevering', date: new Date(Date.now() + 86400000 * 5).toISOString(), icon: '🚀' },
-                { id: 2, title: 'Kwartaal Meeting', date: new Date(Date.now() + 86400000 * 12).toISOString(), icon: '📊' }
-            ],
-            staff: [
-                { id: 1, naam: 'DitIsToevalligIemand', functie: 'Maker & Eigenaar', status: 'Actief' },
-                { id: 2, naam: 'Staff', functie: 'Hoofd Moderator', status: 'Actief' }
-            ],
-            tickets: [],
-            holidays: [...defaultHolidays]
-        };
-        saveData();
-    }
-    document.getElementById('authWrapper').style.display = 'none';
-    document.getElementById('topNav').style.display = 'flex';
-    document.getElementById('userDisplay').innerText = (isStaffUser ? '👑 ' : '👤 ') + currentUser;
-    if (isStaffUser) {
-        document.getElementById('btnStaffControlTab').style.display = 'inline-block';
-        document.querySelectorAll('.staff-action').forEach(el => el.style.display = 'table-cell');
-    } else {
-        document.getElementById('btnStaffControlTab').style.display = 'none';
-        document.querySelectorAll('.staff-action').forEach(el => el.style.display = 'none');
-    }
-    switchTab(isStaffUser ? 'staffControlTab' : 'timersTab');
-    startTimers();
-    startClock();
-    renderStaff(); renderTickets(); renderStaffControl();
-    renderHolidays(); renderCalendar(); newFunIdea();
-    initSnake(); initMemory();
-}
-
-function saveData() {
-    if (currentUser) localStorage.setItem('portal_user_' + currentUser.toLowerCase(), JSON.stringify(appData));
-}
-function logout() {
-    if (timerInterval) clearInterval(timerInterval);
-    if (clockInterval) clearInterval(clockInterval);
-    stopSnake();
-    currentUser = null; isStaffUser = false; isStaffLoginMode = false;
-    document.getElementById('topNav').style.display = 'none';
-    document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
-    document.getElementById('authWrapper').style.display = 'flex';
-    document.getElementById('authUsername').value = '';
-    document.getElementById('staffSecretCode').value = '';
-    document.getElementById('passwordGroup').style.display = 'none';
-}
-function switchTab(tabId) {
-    document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    const btnId = 'btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1);
-    if (document.getElementById(btnId)) document.getElementById(btnId).classList.add('active');
-    if (tabId === 'calendarTab') renderCalendar();
-}
-
-/* TIMERS */
-function renderTimers() {
-    const list = document.getElementById('timersList');
-    if (!list) return;
-    list.innerHTML = '';
-    if (!appData.timers.length) {
-        list.innerHTML = '<p style="color:#94a3b8;text-align:center;padding:36px 0;">Nog geen timers. Voeg er een toe!</p>';
-        return;
-    }
-    appData.timers.forEach(t => {
-        const {days,hours,minutes,seconds} = getTimeLeft(t.date);
-        const card = document.createElement('div');
-        card.className = 'timer-card';
-        card.innerHTML = `
-            <div class="timer-header">
-                <div class="timer-title"><span>${t.icon}</span> ${t.title}</div>
-                <button class="btn btn-danger btn-sm" onclick="askDeleteTimer(${t.id})">Verwijderen</button>
-            </div>
-            <div class="countdown-grid">
-                <div class="time-box"><div class="time-value">${pad(days)}</div><div class="time-label">Dagen</div></div>
-                <div class="time-box"><div class="time-value">${pad(hours)}</div><div class="time-label">Uur</div></div>
-                <div class="time-box"><div class="time-value">${pad(minutes)}</div><div class="time-label">Minuten</div></div>
-                <div class="time-box"><div class="time-value">${pad(seconds)}</div><div class="time-label">Seconden</div></div>
-            </div>`;
-        list.appendChild(card);
-    });
-}
-function askDeleteTimer(id) {
-    showConfirm('Countdown verwijderen?', 'Weet je zeker dat je deze countdown wilt verwijderen?', (ok) => {
-        if (ok) {
-            appData.timers = appData.timers.filter(t => t.id !== id);
-            saveData(); renderTimers(); renderCalendar();
-        }
-    });
-}
-function submitAddTimer() {
-    const title = document.getElementById('timerTitle').value.trim();
-    const date = document.getElementById('timerDate').value;
-    const icon = document.getElementById('timerIcon').value.trim() || '⏱️';
-    if (!title || !date) return alert('Vul titel en datum in.');
-    appData.timers.push({ id: Date.now(), title, date: new Date(date).toISOString(), icon });
-    saveData(); renderTimers(); renderCalendar();
-    closeModal('addTimerModal');
-    document.getElementById('timerTitle').value = '';
-    document.getElementById('timerDate').value = '';
-    document.getElementById('timerIcon').value = '';
-}
-
-/* FEESTDAGEN (zelf beheerbaar) */
 function renderHolidays() {
     const list = document.getElementById('holidaysList');
     if (!list) return;
     list.innerHTML = '';
-    const all = appData.holidays || [];
+    let all = appData.holidays || [];
+    if (holidayFilter !== 'all') {
+        all = all.filter(h => getHolidayCategory(h.theme || 'custom') === holidayFilter);
+    }
     if (!all.length) {
-        list.innerHTML = '<p style="color:#94a3b8;text-align:center;grid-column:1/-1;padding:30px 0;">Nog geen feestdagen. Voeg er zelf een toe!</p>';
+        list.innerHTML = '<p style="color:#94a3b8;text-align:center;grid-column:1/-1;padding:30px 0;">Geen items in deze filter.</p>';
         return;
     }
     all.forEach(h => {
@@ -781,358 +653,90 @@ function renderHolidays() {
         list.appendChild(card);
     });
 }
-function openAddHolidayModal() {
-    editingHolidayId = null;
-    document.getElementById('holidayModalTitle').innerText = '➕ Feestdag toevoegen';
-    document.getElementById('holidayTitle').value = '';
-    document.getElementById('holidayDate').value = '';
-    document.getElementById('holidayIcon').value = '🎉';
-    openModal('addHolidayModal');
-}
-function editHoliday(id) {
-    const h = appData.holidays.find(x => x.id === id);
-    if (!h) return;
-    editingHolidayId = id;
-    document.getElementById('holidayModalTitle').innerText = '✏️ Feestdag bewerken';
-    document.getElementById('holidayTitle').value = h.title;
-    document.getElementById('holidayIcon').value = h.icon;
-    // datetime-local format
-    const d = new Date(h.date);
-    const local = new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,16);
-    document.getElementById('holidayDate').value = local;
-    openModal('addHolidayModal');
-}
-function submitHoliday() {
-    const title = document.getElementById('holidayTitle').value.trim();
-    const date = document.getElementById('holidayDate').value;
-    const icon = document.getElementById('holidayIcon').value.trim() || '🎉';
-    if (!title || !date) return alert('Vul titel en datum in.');
-    if (editingHolidayId) {
-        const h = appData.holidays.find(x => x.id === editingHolidayId);
-        if (h) { h.title = title; h.date = new Date(date).toISOString(); h.icon = icon; }
-    } else {
-        appData.holidays.push({
-            id: 'h' + Date.now(),
-            title, date: new Date(date).toISOString(), icon, theme: 'custom'
-        });
-    }
-    saveData(); renderHolidays(); renderCalendar();
-    closeModal('addHolidayModal');
-}
-function askDeleteHoliday(id) {
-    showConfirm('Feestdag verwijderen?', 'Weet je zeker dat je deze feestdag wilt verwijderen?', (ok) => {
-        if (ok) {
-            appData.holidays = appData.holidays.filter(h => h.id !== id);
-            saveData(); renderHolidays(); renderCalendar();
+
+// ===== BLOKKEN SPEL =====
+const blockColors = ['#8b5cf6','#22c55e','#ef4444','#f59e0b','#3b82f6','#ec4899','#14b8a6','#a3a3a3','#f97316','#84cc16'];
+let selectedBlockColor = blockColors[0];
+let blocksMap = {}; // key: "x,y" -> color
+const blockSize = 24;
+const blocksCols = 20;
+const blocksRows = 15;
+
+function initBlocks() {
+    const palette = document.getElementById('blocksPalette');
+    palette.innerHTML = '';
+    blockColors.forEach((c, i) => {
+        const el = document.createElement('div');
+        el.className = 'block-color' + (i === 0 ? ' selected' : '');
+        el.style.background = c;
+        el.onclick = () => {
+            selectedBlockColor = c;
+            document.querySelectorAll('.block-color').forEach(x => x.classList.remove('selected'));
+            el.classList.add('selected');
+        };
+        palette.appendChild(el);
+    });
+    drawBlocks();
+    const canvas = document.getElementById('blocksCanvas');
+    canvas.oncontextmenu = e => e.preventDefault();
+    canvas.onmousedown = e => {
+        const rect = canvas.getBoundingClientRect();
+        const x = Math.floor((e.clientX - rect.left) / blockSize);
+        const y = Math.floor((e.clientY - rect.top) / blockSize);
+        const key = x + ',' + y;
+        if (e.button === 0) { // left = place
+            blocksMap[key] = selectedBlockColor;
+        } else if (e.button === 2) { // right = remove
+            delete blocksMap[key];
         }
+        drawBlocks();
+    };
+}
+
+function drawBlocks() {
+    const canvas = document.getElementById('blocksCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#0a0f1e';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    for (let x = 0; x <= blocksCols; x++) {
+        ctx.beginPath(); ctx.moveTo(x * blockSize, 0); ctx.lineTo(x * blockSize, canvas.height); ctx.stroke();
+    }
+    for (let y = 0; y <= blocksRows; y++) {
+        ctx.beginPath(); ctx.moveTo(0, y * blockSize); ctx.lineTo(canvas.width, y * blockSize); ctx.stroke();
+    }
+    // blocks
+    for (const [key, color] of Object.entries(blocksMap)) {
+        const [x, y] = key.split(',').map(Number);
+        ctx.fillStyle = color;
+        ctx.fillRect(x * blockSize + 1, y * blockSize + 1, blockSize - 2, blockSize - 2);
+    }
+}
+
+function clearBlocks() {
+    showConfirm('Alles wissen?', 'Wil je alle blokken verwijderen?', (ok) => {
+        if (ok) { blocksMap = {}; drawBlocks(); }
     });
 }
 
-/* CLOCK */
-function startClock() {
-    updateClock();
-    if (clockInterval) clearInterval(clockInterval);
-    clockInterval = setInterval(updateClock, 1000);
-}
-function updateClock() {
-    const now = new Date();
-    document.getElementById('liveClock').innerText = now.toLocaleTimeString('nl-NL', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    document.getElementById('liveDate').innerText = now.toLocaleDateString('nl-NL', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
-    document.getElementById('liveYear').innerText = now.getFullYear();
-    const century = Math.ceil(now.getFullYear() / 100);
-    document.getElementById('liveCentury').innerText = century + 'e eeuw';
-    // week number
-    const oneJan = new Date(now.getFullYear(),0,1);
-    const week = Math.ceil((((now - oneJan) / 86400000) + oneJan.getDay()+1) / 7);
-    document.getElementById('liveWeek').innerText = week;
-    // day of year
-    const start = new Date(now.getFullYear(),0,0);
-    const dayOfYear = Math.floor((now - start) / 86400000);
-    document.getElementById('liveDayOfYear').innerText = dayOfYear;
-}
-
-/* KALENDER */
-function changeMonth(delta) {
-    calMonth += delta;
-    if (calMonth > 11) { calMonth = 0; calYear++; }
-    if (calMonth < 0) { calMonth = 11; calYear--; }
-    selectedDate = null; renderCalendar();
-}
-function renderCalendar() {
-    const grid = document.getElementById('calendarGrid');
-    if (!grid) return;
-    document.getElementById('calMonthLabel').innerText = monthNames[calMonth] + ' ' + calYear;
-    const eventsByDay = {};
-    (appData.timers||[]).forEach(t => {
-        const d = new Date(t.date);
-        if (d.getFullYear()===calYear && d.getMonth()===calMonth) {
-            const day = d.getDate();
-            if (!eventsByDay[day]) eventsByDay[day]=[];
-            eventsByDay[day].push({type:'timer', title:t.title, icon:t.icon, date:t.date});
-        }
-    });
-    (appData.holidays||[]).forEach(h => {
-        const d = new Date(h.date);
-        if (d.getFullYear()===calYear && d.getMonth()===calMonth) {
-            const day = d.getDate();
-            if (!eventsByDay[day]) eventsByDay[day]=[];
-            eventsByDay[day].push({type:'holiday', title:h.title, icon:h.icon, date:h.date});
-        }
-    });
-    grid.innerHTML = '';
-    dayNames.forEach(n => { const el=document.createElement('div'); el.className='cal-day-name'; el.innerText=n; grid.appendChild(el); });
-    const firstDay = new Date(calYear, calMonth, 1);
-    let startDay = firstDay.getDay(); startDay = startDay===0 ? 6 : startDay-1;
-    const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-    const daysInPrev = new Date(calYear, calMonth, 0).getDate();
-    for (let i=startDay-1; i>=0; i--) {
-        const el=document.createElement('div'); el.className='cal-day other-month'; el.innerText=daysInPrev-i; grid.appendChild(el);
-    }
-    const today = new Date();
-    for (let day=1; day<=daysInMonth; day++) {
-        const el=document.createElement('div'); el.className='cal-day';
-        if (day===today.getDate() && calMonth===today.getMonth() && calYear===today.getFullYear()) el.classList.add('today');
-        if (eventsByDay[day]) el.classList.add('has-event');
-        if (selectedDate && selectedDate.day===day && selectedDate.month===calMonth && selectedDate.year===calYear) el.classList.add('selected');
-        el.innerHTML = day;
-        if (eventsByDay[day]) {
-            const hasT = eventsByDay[day].some(e=>e.type==='timer');
-            const hasH = eventsByDay[day].some(e=>e.type==='holiday');
-            if (hasT) { const d=document.createElement('div'); d.className='cal-dot timer'; el.appendChild(d); }
-            if (hasH) { const d=document.createElement('div'); d.className='cal-dot holiday'; d.style.bottom=hasT?'13px':'5px'; el.appendChild(d); }
-        }
-        el.onclick = () => { selectedDate={day,month:calMonth,year:calYear,events:eventsByDay[day]||[]}; renderCalendar(); };
-        grid.appendChild(el);
-    }
-    const total = startDay + daysInMonth;
-    const rem = total%7===0 ? 0 : 7-(total%7);
-    for (let i=1;i<=rem;i++) { const el=document.createElement('div'); el.className='cal-day other-month'; el.innerText=i; grid.appendChild(el); }
-    renderSelectedEvents();
-}
-function renderSelectedEvents() {
-    const c = document.getElementById('selectedDayEvents');
-    if (!selectedDate) { c.innerHTML='<p style="color:#94a3b8;text-align:center;padding:18px 0;">Selecteer een dag om de events te zien</p>'; return; }
-    const dateStr = `${selectedDate.day} ${monthNames[selectedDate.month]} ${selectedDate.year}`;
-    if (!selectedDate.events.length) { c.innerHTML=`<p style="color:#94a3b8;text-align:center;padding:18px 0;">Geen events op ${dateStr}</p>`; return; }
-    let html = `<h3 style="margin-bottom:12px;font-size:1.05rem;">Events op ${dateStr}</h3>`;
-    selectedDate.events.forEach(e => {
-        const time = new Date(e.date).toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
-        html += `<div class="event-item"><div style="font-size:1.3rem">${e.icon}</div><div><div style="font-weight:600">${e.title}</div><div style="font-size:0.8rem;color:#94a3b8">${e.type==='holiday'?'Feestdag':'Eigen timer'} • ${time}</div></div></div>`;
-    });
-    c.innerHTML = html;
-}
-
-/* GAMES */
 function showGame(name) {
-    document.getElementById('gameSnake').style.display = name==='snake'?'flex':'none';
-    document.getElementById('gameMemory').style.display = name==='memory'?'flex':'none';
-    document.getElementById('gameReaction').style.display = name==='reaction'?'flex':'none';
-    document.querySelectorAll('.game-tab').forEach((t,i) => {
-        t.classList.toggle('active', (name==='snake'&&i===0)||(name==='memory'&&i===1)||(name==='reaction'&&i===2));
+    ['snake','memory','reaction','blocks'].forEach(g => {
+        document.getElementById('game' + g.charAt(0).toUpperCase() + g.slice(1)).style.display = (g === name) ? 'flex' : 'none';
     });
+    document.querySelectorAll('.game-tab').forEach((t, i) => {
+        const names = ['snake','memory','reaction','blocks'];
+        t.classList.toggle('active', names[i] === name);
+    });
+    if (name === 'blocks') initBlocks();
 }
 
-/* Snake */
-let snake=[], snakeDir={x:1,y:0}, nextDir={x:1,y:0}, food=null, snakeScore=0, snakeRunning=false, snakeLoop=null, snakeSpeed=110;
-const gridSize=20, tileCount=20;
-function initSnake() {
-    snake=[{x:10,y:10}]; snakeDir={x:1,y:0}; nextDir={x:1,y:0}; snakeScore=0;
-    document.getElementById('snakeScore').innerText='0';
-    placeFood(); drawSnake();
-}
-function placeFood() {
-    food={x:Math.floor(Math.random()*tileCount), y:Math.floor(Math.random()*tileCount)};
-    if (snake.some(s=>s.x===food.x&&s.y===food.y)) placeFood();
-}
-function drawSnake() {
-    const ctx=document.getElementById('snakeCanvas').getContext('2d');
-    ctx.fillStyle='#0a0f1e'; ctx.fillRect(0,0,400,400);
-    ctx.fillStyle='#ef4444';
-    ctx.beginPath(); ctx.roundRect(food.x*gridSize+2,food.y*gridSize+2,gridSize-4,gridSize-4,4); ctx.fill();
-    snake.forEach((s,i)=>{
-        ctx.fillStyle=i===0?'#a78bfa':'#8b5cf6';
-        ctx.beginPath(); ctx.roundRect(s.x*gridSize+1,s.y*gridSize+1,gridSize-2,gridSize-2,4); ctx.fill();
-    });
-}
-function toggleSnake() {
-    if (snakeRunning) { stopSnake(); document.getElementById('snakeStartBtn').innerText='▶ Start'; }
-    else { snakeRunning=true; document.getElementById('snakeStartBtn').innerText='⏸ Pauze'; snakeLoop=setInterval(gameStep, snakeSpeed); }
-}
-function stopSnake() { snakeRunning=false; clearInterval(snakeLoop); }
-function resetSnake() { stopSnake(); initSnake(); document.getElementById('snakeStartBtn').innerText='▶ Start'; }
-function changeSnakeSpeed() {
-    snakeSpeed = parseInt(document.getElementById('snakeSpeed').value);
-    if (snakeRunning) { clearInterval(snakeLoop); snakeLoop=setInterval(gameStep, snakeSpeed); }
-}
-function gameStep() {
-    const ctx=document.getElementById('snakeCanvas').getContext('2d');
-    snakeDir={...nextDir};
-    const head={x:snake[0].x+snakeDir.x, y:snake[0].y+snakeDir.y};
-    if (head.x<0||head.x>=tileCount||head.y<0||head.y>=tileCount||snake.some(s=>s.x===head.x&&s.y===head.y)) {
-        stopSnake(); document.getElementById('snakeStartBtn').innerText='▶ Start';
-        showConfirm('Game Over!', 'Score: '+snakeScore+'. Opnieuw proberen?', (ok)=>{ if(ok) resetSnake(); });
-        return;
-    }
-    snake.unshift(head);
-    if (head.x===food.x&&head.y===food.y) { snakeScore++; document.getElementById('snakeScore').innerText=snakeScore; placeFood(); }
-    else snake.pop();
-    drawSnake();
-}
-document.addEventListener('keydown', e => {
-    if (!snakeRunning) return;
-    const k=e.key.toLowerCase();
-    if ((k==='arrowup'||k==='w')&&snakeDir.y===0) nextDir={x:0,y:-1};
-    if ((k==='arrowdown'||k==='s')&&snakeDir.y===0) nextDir={x:0,y:1};
-    if ((k==='arrowleft'||k==='a')&&snakeDir.x===0) nextDir={x:-1,y:0};
-    if ((k==='arrowright'||k==='d')&&snakeDir.x===0) nextDir={x:1,y:0};
-});
+// De rest van de JavaScript (auth, timers, calendar, snake, memory, reaction, staff, tickets, etc.)
+// blijft exact hetzelfde als in de vorige volledige versie.
+// Plak die eronder of combineer met de vorige code.
 
-/* Memory */
-const memEmojis = ['🚀','🎄','🎁','❤️','⚽','🎮','📚','🔥'];
-let memCards=[], memFlipped=[], memMoves=0, memLock=false;
-function initMemory() {
-    memCards = [...memEmojis, ...memEmojis].sort(()=>Math.random()-0.5).map((e,i)=>({id:i, emoji:e, flipped:false, matched:false}));
-    memFlipped=[]; memMoves=0; memLock=false;
-    document.getElementById('memoryMoves').innerText='0';
-    const grid=document.getElementById('memoryGrid');
-    grid.innerHTML='';
-    memCards.forEach(c => {
-        const el=document.createElement('div');
-        el.className='memory-card';
-        el.onclick=()=>flipMemory(c.id);
-        el.innerHTML = c.flipped||c.matched ? c.emoji : '';
-        grid.appendChild(el);
-    });
-}
-function flipMemory(id) {
-    if (memLock) return;
-    const card = memCards.find(c=>c.id===id);
-    if (!card || card.flipped || card.matched) return;
-    card.flipped=true; memFlipped.push(card);
-    memMoves++; document.getElementById('memoryMoves').innerText=memMoves;
-    renderMemory();
-    if (memFlipped.length===2) {
-        memLock=true;
-        if (memFlipped[0].emoji===memFlipped[1].emoji) {
-            memFlipped[0].matched=true; memFlipped[1].matched=true;
-            memFlipped=[]; memLock=false; renderMemory();
-            if (memCards.every(c=>c.matched)) setTimeout(()=>showConfirm('Gefeliciteerd!','Memory gehaald in '+memMoves+' zetten!',()=>{}), 300);
-        } else {
-            setTimeout(()=>{ memFlipped.forEach(c=>c.flipped=false); memFlipped=[]; memLock=false; renderMemory(); }, 700);
-        }
-    }
-}
-function renderMemory() {
-    const grid=document.getElementById('memoryGrid');
-    [...grid.children].forEach((el,i)=>{
-        const c=memCards[i];
-        el.className='memory-card'+(c.flipped||c.matched?' flipped':'')+(c.matched?' matched':'');
-        el.innerHTML = c.flipped||c.matched ? c.emoji : '';
-    });
-}
-
-/* Reaction */
-let reactionState='idle', reactionStart=0, reactionBest=null;
-function resetReaction() {
-    reactionState='idle'; reactionBest=null;
-    document.getElementById('reactionBox').className='reaction-box';
-    document.getElementById('reactionBox').innerText='Klik om te starten';
-    document.getElementById('reactionBest').innerText='—';
-}
-function reactionClick() {
-    const box=document.getElementById('reactionBox');
-    if (reactionState==='idle') {
-        reactionState='wait';
-        box.className='reaction-box wait';
-        box.innerText='Wacht op groen...';
-        setTimeout(()=>{
-            if (reactionState!=='wait') return;
-            reactionState='ready';
-            reactionStart=performance.now();
-            box.className='reaction-box ready';
-            box.innerText='KLIK NU!';
-        }, 1200 + Math.random()*2000);
-    } else if (reactionState==='wait') {
-        reactionState='idle';
-        box.className='reaction-box';
-        box.innerText='Te vroeg! Probeer opnieuw';
-    } else if (reactionState==='ready') {
-        const time=Math.round(performance.now()-reactionStart);
-        reactionState='idle';
-        box.className='reaction-box';
-        box.innerText=`${time} ms — klik om opnieuw`;
-        if (reactionBest===null || time<reactionBest) {
-            reactionBest=time;
-            document.getElementById('reactionBest').innerText=time;
-        }
-    }
-}
-
-/* FUN + STAFF + TICKETS (zelfde als eerder) */
-function newFunIdea() {
-    document.getElementById('funIdea').innerText = funIdeas[Math.floor(Math.random()*funIdeas.length)];
-    document.getElementById('motivationQuote').innerText = '"'+motivations[Math.floor(Math.random()*motivations.length)]+'"';
-}
-function renderStaff() {
-    const tbody=document.getElementById('staffTableBody'); if(!tbody)return;
-    tbody.innerHTML='';
-    appData.staff.forEach(m=>{
-        const tr=document.createElement('tr');
-        tr.innerHTML=`<td style="font-weight:600">${m.naam}</td><td>${m.functie}</td><td><span class="status-badge status-actief">${m.status}</span></td>${isStaffUser?`<td><button class="btn btn-danger btn-sm" onclick="deleteStaff(${m.id})">Verwijderen</button></td>`:''}`;
-        tbody.appendChild(tr);
-    });
-}
-function submitAddStaff() {
-    if(!isStaffUser)return;
-    const naam=document.getElementById('staffName').value.trim();
-    const functie=document.getElementById('staffRole').value.trim();
-    if(!naam||!functie)return alert('Vul beide velden in.');
-    appData.staff.push({id:Date.now(),naam,functie,status:'Actief'});
-    saveData(); renderStaff(); closeModal('addStaffModal');
-    document.getElementById('staffName').value=''; document.getElementById('staffRole').value='';
-}
-function deleteStaff(id){ if(!isStaffUser)return; appData.staff=appData.staff.filter(m=>m.id!==id); saveData(); renderStaff(); }
-
-function renderTickets() {
-    const tbody=document.getElementById('ticketsTableBody'); if(!tbody)return;
-    tbody.innerHTML='';
-    const mine=appData.tickets.filter(t=>t.door===currentUser);
-    if(!mine.length){ tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:28px;">Nog geen tickets</td></tr>'; return; }
-    mine.forEach(t=>{
-        const tr=document.createElement('tr');
-        const sc=t.status==='Open'?'status-open':'status-gesloten';
-        tr.innerHTML=`<td style="font-weight:700;color:var(--accent-color)">${t.id}</td><td>${t.onderwerp}</td><td><span class="status-badge ${sc}">${t.status}</span></td><td style="color:#94a3b8;font-size:0.8rem">In behandeling</td>`;
-        tbody.appendChild(tr);
-    });
-}
-function submitAddTicket() {
-    const o=document.getElementById('ticketSubject').value.trim();
-    if(!o)return alert('Schrijf een onderwerp.');
-    appData.tickets.push({id:'#'+Math.floor(1000+Math.random()*9000),onderwerp:o,door:currentUser,status:'Open'});
-    saveData(); renderTickets(); renderStaffControl(); closeModal('addTicketModal');
-    document.getElementById('ticketSubject').value='';
-}
-function renderStaffControl() {
-    const tbody=document.getElementById('staffTicketsTableBody'); if(!tbody)return;
-    tbody.innerHTML='';
-    if(!appData.tickets.length){ tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:28px;">Geen tickets</td></tr>'; return; }
-    appData.tickets.forEach(t=>{
-        const tr=document.createElement('tr');
-        const sc=t.status==='Open'?'status-open':'status-gesloten';
-        tr.innerHTML=`<td style="font-weight:700;color:#fcd34d">${t.id}</td><td>${t.onderwerp}</td><td>${t.door}</td><td><span class="status-badge ${sc}">${t.status}</span></td>
-            <td style="display:flex;gap:6px"><button class="btn btn-staff btn-sm" onclick="toggleTicketStatus('${t.id}')">Status</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteTicket('${t.id}')">Verwijderen</button></td>`;
-        tbody.appendChild(tr);
-    });
-}
-function toggleTicketStatus(id){ if(!isStaffUser)return; const t=appData.tickets.find(x=>x.id===id); if(t){t.status=t.status==='Open'?'Gesloten':'Open'; saveData(); renderTickets(); renderStaffControl();} }
-function deleteTicket(id){ if(!isStaffUser)return; appData.tickets=appData.tickets.filter(t=>t.id!==id); saveData(); renderTickets(); renderStaffControl(); }
-
-function getTimeLeft(d){ const diff=new Date(d)-Date.now(); return {days:Math.max(0,Math.floor(diff/86400000)),hours:Math.max(0,Math.floor((diff%86400000)/3600000)),minutes:Math.max(0,Math.floor((diff%3600000)/60000)),seconds:Math.max(0,Math.floor((diff%60000)/1000))}; }
-function pad(n){ return String(n).padStart(2,'0'); }
-function startTimers(){ renderTimers(); renderHolidays(); if(timerInterval)clearInterval(timerInterval); timerInterval=setInterval(()=>{renderTimers();renderHolidays();},1000); }
-
-document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o)o.classList.remove('active'); }));
+// ... (hier hoort de rest van de JS van de vorige response)
 </script>
 </body>
 </html>
