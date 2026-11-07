@@ -79,7 +79,7 @@ body {
   max-width: 1100px;
 }
 
-/* ===== GLASSMORPHISM AUTH SYSTEM ===== */
+/* ===== INLOG & REGISTRATIE STYLING ===== */
 .auth-wrapper {
   width: 100%;
   min-height: 85vh;
@@ -95,14 +95,13 @@ body {
   width: 100%;
   max-width: 440px;
   backdrop-filter: blur(25px);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
   animation: authIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: center;
 }
 @keyframes authIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-.auth-logo { font-size: 3rem; margin-bottom: 12px; animation: pulseGlow 2s infinite ease-in-out; }
-@keyframes pulseGlow { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--glow)); } 50% { transform: scale(1.05); filter: drop-shadow(0 0 15px var(--glow)); } }
-.auth-card h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; }
+.auth-logo { font-size: 3rem; margin-bottom: 12px; }
+.auth-card h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 6px; }
 .auth-card .subtitle { color: #94a3b8; font-size: 0.95rem; margin-bottom: 24px; }
 
 .auth-tabs {
@@ -142,7 +141,7 @@ body {
 }
 .secret-btn:hover { color: white; background: rgba(255,255,255,0.15); border-color: var(--accent); }
 
-/* ===== APP DESIGN ===== */
+/* ===== NAVIGATION APPLICATION ===== */
 .app-wrapper { width: 100%; display: none; }
 .app-wrapper.active { display: block; }
 
@@ -176,10 +175,10 @@ nav {
 .time-value { font-size: 2rem; font-weight: 800; text-shadow: 0 0 15px var(--glow); color: #fff; }
 .time-label { font-size: 0.7rem; text-transform: uppercase; color: #94a3b8; margin-top: 4px; font-weight: 600; letter-spacing: 0.5px; }
 
-.clock-big { font-size: 4rem; font-weight: 800; text-align: center; text-shadow: 0 0 35px var(--glow); margin: 10px 0; font-variant-numeric: tabular-nums; }
-.clock-date { text-align: center; color: #cbd5e1; font-size: 1.2rem; font-weight: 500; letter-spacing: 0.5px; }
+.clock-big { font-size: 4rem; font-weight: 800; text-align: center; text-shadow: 0 0 35px var(--glow); margin: 10px 0; }
+.clock-date { text-align: center; color: #cbd5e1; font-size: 1.2rem; font-weight: 500; }
 
-/* ===== THEMA PREVIEW CARDS ===== */
+/* THEMA PREVIEW */
 .theme-showcase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 10px; }
 .theme-preview-card {
   padding: 20px 14px; border-radius: 14px; text-align: center; cursor: pointer;
@@ -187,7 +186,7 @@ nav {
 }
 .theme-preview-card.active { border-color: var(--accent); box-shadow: 0 0 16px var(--glow); transform: scale(1.03); }
 
-/* ===== LEUKE INTERACTIEVE FEATURES ===== */
+/* INTERACTIEVE COMPONENTEN */
 .interactive-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media (max-width: 768px) { .interactive-grid { grid-template-columns: 1fr; } }
 
@@ -197,14 +196,13 @@ nav {
   padding: 14px; border-radius: 12px; font-size: 1.3rem; cursor: pointer; transition: all 0.2s; text-align: center;
 }
 .sound-btn:hover { background: var(--accent); transform: scale(1.08); box-shadow: 0 4px 12px var(--glow); }
-.sound-label { font-size: 0.75rem; color: #cbd5e1; display: block; margin-top: 4px; font-weight: 500; }
+.sound-label { font-size: 0.75rem; color: #cbd5e1; display: block; margin-top: 4px; }
 
 .todo-list { list-style: none; margin-top: 12px; }
 .todo-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
 .todo-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
-.todo-item label { font-size: 0.95rem; cursor: pointer; }
 
-/* ===== OWNER BIO TAB ===== */
+/* OWNER INFRASTRUCTUUR */
 .owner-layout { display: flex; gap: 24px; align-items: center; }
 @media (max-width: 600px) { .owner-layout { flex-direction: column; text-align: center; } }
 .owner-avatar {
@@ -215,4 +213,20 @@ nav {
 .owner-info h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
 .owner-badge { background: var(--accent); color: white; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; margin-bottom: 10px; }
 .owner-links { display: flex; gap: 10px; margin-top: 12px; }
-.owner-link { color: #fff; text-decoration: none; font-size: 0.85rem; background: rgba(255,255,255,0.08); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+.owner-link { color: #fff; text-decoration: none; font-size: 0.85rem; background: rgba(255,255,255,0.08); padding: 6px 12px; border-radius: 8px; }
+.owner-link:hover { background: var(--accent); }
+
+.admin-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 18px; margin-top: 12px; }
+</style>
+</head>
+<body class="theme-cyberpunk">
+
+<canvas id="effectCanvas"></canvas>
+
+<div class="secret-buttons">
+  <button class="secret-btn" onclick="quickDevLogin()">⚡ Dev Login</button>
+</div>
+
+<div class="app-container">
+  
+  <!-- ===== SYSTEM INLOG / REGISTRATIE SCHERM ===== -->
