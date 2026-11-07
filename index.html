@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Premium Countdown Portaal</title>
+<title>Premium Countdown Portaal & Beheer Pro</title>
 <link href="https://googleapis.com" rel="stylesheet">
 <style>
 :root {
-  --bg: linear-gradient(135deg, #0b1329 0%, #172554 45%, #1e1b4b 100%);
-  --card: rgba(15, 23, 42, 0.85);
-  --border: rgba(99, 102, 241, 0.3);
-  --accent: #6366f1;
-  --glow: rgba(99, 102, 241, 0.4);
+  --bg: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+  --card: rgba(15, 23, 42, 0.75);
+  --border: rgba(139, 92, 246, 0.25);
+  --accent: #a855f7;
+  --glow: rgba(168, 85, 247, 0.4);
 }
 
 /* ===== MASTER THEMES ===== */
@@ -80,6 +80,70 @@ body {
   max-width: 1100px;
 }
 
+/* ===== INLOG & REGISTRATIE STYLING ===== */
+.auth-wrapper {
+  width: 100%;
+  min-height: 85vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.auth-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 40px;
+  width: 100%;
+  max-width: 440px;
+  backdrop-filter: blur(25px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  text-align: center;
+}
+.auth-logo { font-size: 3rem; margin-bottom: 12px; }
+.auth-card h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 6px; }
+.auth-card .subtitle { color: #94a3b8; font-size: 0.95rem; margin-bottom: 24px; }
+
+.auth-tabs {
+  display: flex; background: rgba(0,0,0,0.3);
+  border-radius: 12px; padding: 4px; margin-bottom: 24px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.auth-tab {
+  flex: 1; padding: 10px; border-radius: 9px; border: none;
+  background: transparent; color: #94a3b8; font-weight: 600;
+  font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease;
+}
+.auth-tab.active { background: var(--accent); color: white; box-shadow: 0 4px 12px var(--glow); }
+
+.form-group { margin-bottom: 18px; text-align: left; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
+.form-group input, .form-group select {
+  width: 100%; padding: 12px 16px; background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white;
+  font-size: 0.95rem; outline: none; transition: all 0.25s ease;
+}
+.form-group input:focus, .form-group select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+
+.btn {
+  background: var(--accent); color: white; border: none; padding: 13px 24px;
+  font-size: 0.95rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.25s;
+  box-shadow: 0 4px 16px var(--glow); display: inline-flex; justify-content: center; align-items: center; gap: 8px;
+}
+.btn:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: 0 6px 20px var(--glow); }
+.btn-full { width: 100%; }
+
+.secret-buttons { position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 20; }
+.secret-btn {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.6); font-size: 0.75rem; font-weight: 600;
+  padding: 8px 14px; border-radius: 10px; cursor: pointer; transition: all 0.25s; backdrop-filter: blur(5px);
+}
+.secret-btn:hover { color: white; background: rgba(255,255,255,0.15); border-color: var(--accent); }
+
+/* ===== APP DESIGN ===== */
+.app-wrapper { width: 100%; display: none; }
+.app-wrapper.active { display: block; }
+
 nav {
   width: 100%; display: flex; justify-content: space-between; align-items: center;
   background: var(--card); backdrop-filter: blur(20px); border: 1px solid var(--border);
@@ -99,14 +163,16 @@ nav {
 .content-card, .timer-card {
   background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px;
   backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  transition: transform 0.25s, border-color 0.4s ease;
 }
+.timer-card:hover { transform: translateY(-4px); }
 
 .timer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
 .timer-title { font-size: 1.35rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
 .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .time-box { background: rgba(0,0,0,0.4); border-radius: 14px; padding: 16px 6px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
 .time-value { font-size: 2rem; font-weight: 800; text-shadow: 0 0 15px var(--glow); color: #fff; }
-.time-label { font-size: 0.7rem; text-transform: uppercase; color: #94a3b8; margin-top: 4px; font-weight: 600; }
+.time-label { font-size: 0.7rem; text-transform: uppercase; color: #94a3b8; margin-top: 4px; font-weight: 600; letter-spacing: 0.5px; }
 
 .clock-big { font-size: 4rem; font-weight: 800; text-align: center; text-shadow: 0 0 35px var(--glow); margin: 10px 0; }
 .clock-date { text-align: center; color: #cbd5e1; font-size: 1.2rem; font-weight: 500; }
@@ -146,65 +212,20 @@ nav {
 .owner-link { color: #fff; text-decoration: none; font-size: 0.85rem; background: rgba(255,255,255,0.08); padding: 6px 12px; border-radius: 8px; }
 .owner-link:hover { background: var(--accent); }
 
-.form-group { margin-bottom: 18px; text-align: left; }
-.form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
-.form-group input, .form-group select {
-  width: 100%; padding: 12px 16px; background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white;
-  font-size: 0.95rem; outline: none; transition: all 0.25s ease;
-}
-.form-group input:focus, .form-group select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
-
-.btn {
-  background: var(--accent); color: white; border: none; padding: 13px 24px;
-  font-size: 0.95rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.25s;
-  box-shadow: 0 4px 16px var(--glow); display: inline-flex; justify-content: center; align-items: center; gap: 8px;
-}
-.btn:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: 0 6px 20px var(--glow); }
-.btn-full { width: 100%; }
-
 .admin-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 18px; margin-top: 12px; }
 </style>
 </head>
-<body>
+<body class="theme-cyberpunk">
 
 <canvas id="effectCanvas"></canvas>
 
+<div class="secret-buttons">
+  <button class="secret-btn" onclick="quickDevLogin()">⚡ Dev Login</button>
+</div>
+
 <div class="app-container">
   
-  <div class="app-wrapper active" id="appScreen">
-    <nav>
-      <div style="font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
-        🔮 ControlPortaal
-      </div>
-      <div class="nav-links">
-        <button class="nav-btn active" id="btn-dashboard" onclick="switchTab('dashboard')">Dashboard</button>
-        <button class="nav-btn" id="btn-stijlen" onclick="switchTab('stijlen')">Thema Beheer</button>
-        <button class="nav-btn" id="btn-beheer" onclick="switchTab('beheer')">🔧 Live Beheer</button>
-        <button class="nav-btn" id="btn-owner" onclick="switchTab('owner')">👑 Over de Eigenaar</button>
-      </div>
-    </nav>
-
-    <!-- TAB: DASHBOARD -->
-    <div class="container active" id="tab-dashboard">
-      <div class="content-card">
-        <div class="clock-date" id="liveDate">Laden...</div>
-        <div class="clock-big" id="liveClock">00:00:00</div>
-      </div>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-        <div class="timer-card" id="timerContainer-1">
-          <div class="timer-header"><div class="timer-title" id="titleDisplay-1">Timer 1</div></div>
-          <div class="countdown-grid" id="timerBoxes-1">
-            <div class="time-box"><div class="time-value">00</div><div class="time-label">Dagen</div></div>
-            <div class="time-box"><div class="time-value">00</div><div class="time-label">Uren</div></div>
-            <div class="time-box"><div class="time-value">00</div><div class="time-label">Min</div></div>
-            <div class="time-box"><div class="time-value">00</div><div class="time-label">Sec</div></div>
-          </div>
-        </div>
-
-        <div class="timer-card" id="timerContainer-2">
-          <div class="timer-header"><div class="timer-title" id="titleDisplay-2">Timer 2</div></div>
-          <div class="countdown-grid" id="timerBoxes-2">
-            <div class="time-box"><div class="time-value">00</div><div class="time-label">Dagen</div></div>
-            <div class="time-box"><div class="time-value">00</div><div class="time-label">Uren</div></div>
+  <!-- ===== INLOG & REGISTRATIE SCHERM ===== -->
+  <div class="auth-wrapper" id="authScreen">
+    <div class="auth-card">
+      <div class="auth-logo" id="authLogoIcon">⏳</div>
