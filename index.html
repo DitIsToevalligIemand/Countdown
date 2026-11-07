@@ -6,28 +6,46 @@
 <title>Portaal & Countdown Beheer</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg-gradient:linear-gradient(135deg,#0b1329 0%,#172554 50%,#1e1b4b 100%);--card-bg:rgba(15,23,42,.9);--card-border:rgba(59,130,246,.25);--text-color:#f8fafc;--accent-color:#8b5cf6;--accent-glow:rgba(139,92,246,.45)}
+:root{--bg:linear-gradient(135deg,#0b1329 0%,#172554 50%,#1e1b4b 100%);--card:rgba(15,23,42,.92);--border:rgba(59,130,246,.25);--accent:#8b5cf6;--glow:rgba(139,92,246,.45);--text:#f8fafc}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Outfit',sans-serif}
-body{background:var(--bg-gradient);color:var(--text-color);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:18px;padding-bottom:60px}
-nav{width:100%;max-width:1140px;display:flex;justify-content:space-between;align-items:center;background:var(--card-bg);backdrop-filter:blur(14px);border:1px solid var(--card-border);padding:11px 16px;border-radius:16px;margin-bottom:22px;box-shadow:0 10px 25px rgba(0,0,0,.3);flex-wrap:wrap;gap:8px;animation:fadeDown .4s ease}
+body{background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:18px;padding-bottom:60px}
+nav{width:100%;max-width:1140px;display:flex;justify-content:space-between;align-items:center;background:var(--card);backdrop-filter:blur(14px);border:1px solid var(--border);padding:11px 16px;border-radius:16px;margin-bottom:22px;box-shadow:0 10px 25px rgba(0,0,0,.3);flex-wrap:wrap;gap:8px;animation:fadeDown .4s ease}
 .nav-links{display:flex;gap:4px;flex-wrap:wrap}
 .nav-btn{background:none;border:none;color:#94a3b8;font-size:.82rem;font-weight:600;cursor:pointer;padding:7px 11px;border-radius:8px;transition:all .25s}
 .nav-btn.active,.nav-btn:hover{color:#fff;background:rgba(139,92,246,.28)}
-.nav-btn.staff-tab{color:#fcd34d;border:1px dashed rgba(245,158,11,.4)}
+.nav-btn.owner-tab{color:#fcd34d;border:1px dashed rgba(245,158,11,.45)}
 .container{width:100%;max-width:1140px;display:none;flex-direction:column;gap:18px}
 .container.active{display:flex;animation:fadeIn .35s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
-.auth-wrapper{width:100%;min-height:80vh;display:flex;justify-content:center;align-items:center}
-.auth-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:24px;padding:38px;max-width:430px;width:100%;text-align:center;backdrop-filter:blur(16px);box-shadow:0 25px 50px rgba(0,0,0,.5);animation:fadeIn .5s ease}
-.timer-card,.holiday-card{background:var(--card-bg);backdrop-filter:blur(16px);border:1px solid var(--card-border);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:13px;box-shadow:0 10px 28px rgba(0,0,0,.3);transition:transform .25s,box-shadow .25s}
+@keyframes pop{0%{transform:scale(.95);opacity:0}100%{transform:scale(1);opacity:1}}
+.auth-wrapper{width:100%;min-height:85vh;display:flex;justify-content:center;align-items:center}
+.auth-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:40px;max-width:440px;width:100%;text-align:center;backdrop-filter:blur(16px);box-shadow:0 25px 50px rgba(0,0,0,.5);animation:pop .45s ease}
+.auth-card h2{margin-bottom:6px;font-size:1.6rem}
+.auth-card .subtitle{color:#94a3b8;font-size:.9rem;margin-bottom:28px}
+.auth-tabs{display:flex;gap:8px;margin-bottom:24px}
+.auth-tab{flex:1;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#94a3b8;font-weight:600;cursor:pointer;transition:all .25s}
+.auth-tab.active{background:rgba(139,92,246,.3);color:#fff;border-color:rgba(139,92,246,.5)}
+.form-group{margin-bottom:16px;text-align:left}
+.form-group label{display:block;font-size:.84rem;font-weight:600;margin-bottom:6px;color:#cbd5e1}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 14px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;font-size:.95rem;outline:none;transition:border .2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-group textarea{min-height:85px;resize:vertical}
+.btn{background:var(--accent);color:#fff;border:none;padding:12px 18px;font-size:.95rem;font-weight:600;border-radius:12px;cursor:pointer;transition:all .25s;box-shadow:0 4px 14px var(--glow)}
+.btn:hover{filter:brightness(1.12);transform:translateY(-2px)}
+.btn-full{width:100%;margin-top:8px}
+.btn-danger{background:#ef4444;box-shadow:0 4px 14px rgba(239,68,68,.35)}
+.btn-staff{background:#d97706;box-shadow:0 4px 14px rgba(217,119,6,.35)}
+.btn-ghost{background:rgba(255,255,255,.08);box-shadow:none}
+.btn-sm{padding:5px 10px;font-size:.78rem}
+.timer-card,.holiday-card,.content-card{background:var(--card);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:0 10px 28px rgba(0,0,0,.3);transition:transform .25s,box-shadow .25s}
 .timer-card:hover,.holiday-card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(0,0,0,.4)}
 .timer-header{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .timer-title{font-size:1.25rem;font-weight:700;display:flex;align-items:center;gap:9px}
 .countdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
 .time-box{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:12px 4px;text-align:center}
-.time-value{font-size:1.75rem;font-weight:800;color:#fff;line-height:1;text-shadow:0 0 12px var(--accent-glow)}
+.time-value{font-size:1.75rem;font-weight:800;color:#fff;line-height:1;text-shadow:0 0 12px var(--glow)}
 .time-label{font-size:.68rem;text-transform:uppercase;color:#94a3b8;font-weight:600;margin-top:4px}
 .holiday-card.sinterklaas{border-color:rgba(239,68,68,.4);background:linear-gradient(145deg,rgba(30,20,40,.9),rgba(60,20,30,.7))}
 .holiday-card.kerst{border-color:rgba(34,197,94,.45);background:linear-gradient(145deg,rgba(15,40,25,.9),rgba(20,50,30,.7))}
@@ -37,37 +55,11 @@ nav{width:100%;max-width:1140px;display:flex;justify-content:space-between;align
 .holiday-card.school{border-color:rgba(59,130,246,.45);background:linear-gradient(145deg,rgba(15,25,50,.9),rgba(20,35,60,.7))}
 .holiday-card.vakantie{border-color:rgba(34,197,94,.4);background:linear-gradient(145deg,rgba(15,40,30,.9),rgba(20,50,35,.7))}
 .holiday-card.custom{border-color:rgba(168,85,247,.45);background:linear-gradient(145deg,rgba(30,15,50,.9),rgba(40,20,60,.7))}
-.content-card{background:var(--card-bg);backdrop-filter:blur(16px);border:1px solid var(--card-border);border-radius:18px;padding:26px;box-shadow:0 10px 28px rgba(0,0,0,.3)}
-.data-table{width:100%;border-collapse:collapse;background:rgba(0,0,0,.2);border-radius:12px;overflow:hidden;margin-top:14px}
-.data-table th,.data-table td{padding:12px 15px;text-align:left;border-bottom:1px solid rgba(255,255,255,.05)}
-.data-table th{background:rgba(0,0,0,.4);color:#cbd5e1;font-size:.86rem}
-.status-badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:.76rem;font-weight:600}
-.status-actief{background:rgba(34,197,94,.2);color:#4ade80;border:1px solid rgba(34,197,94,.3)}
-.status-open{background:rgba(234,179,8,.2);color:#facc15;border:1px solid rgba(234,179,8,.3)}
-.status-gesloten{background:rgba(239,68,68,.2);color:#f87171;border:1px solid rgba(239,68,68,.3)}
-.btn{background:var(--accent-color);color:#fff;border:none;padding:9px 16px;font-size:.9rem;font-weight:600;border-radius:10px;cursor:pointer;transition:all .25s;box-shadow:0 4px 14px var(--accent-glow)}
-.btn:hover{filter:brightness(1.12);transform:translateY(-2px)}
-.btn-danger{background:#ef4444;box-shadow:0 4px 14px rgba(239,68,68,.35)}
-.btn-staff{background:#d97706;box-shadow:0 4px 14px rgba(217,119,6,.35)}
-.btn-ghost{background:rgba(255,255,255,.08);box-shadow:none}
-.btn-ghost:hover{background:rgba(255,255,255,.14)}
-.btn-sm{padding:5px 10px;font-size:.78rem}
-.form-group{margin-bottom:15px;text-align:left}
-.form-group label{display:block;font-size:.84rem;font-weight:600;margin-bottom:5px;color:#cbd5e1}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 13px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-size:.93rem;outline:none;transition:border .2s}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent-color)}
-.form-group textarea{min-height:85px;resize:vertical}
-.rules-list{list-style-type:decimal;margin-left:20px;line-height:1.75;color:#cbd5e1}
-.rules-list li{margin-bottom:9px}
-.footer-badge{position:fixed;bottom:14px;right:18px;background:rgba(15,23,42,.93);border:1px solid var(--card-border);padding:7px 13px;border-radius:11px;font-size:.78rem;color:#94a3b8;display:flex;align-items:center;gap:6px;backdrop-filter:blur(8px);z-index:1000}
-.verified-badge{background:#3b82f6;color:#fff;border-radius:50%;width:13px;height:13px;display:inline-flex;justify-content:center;align-items:center;font-size:.6rem;font-weight:800}
 .holiday-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
-.fun-card{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px;transition:transform .25s}
-.fun-card:hover{transform:translateY(-3px)}
 .filter-bar,.year-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .filter-chip,.year-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#94a3b8;padding:7px 14px;border-radius:20px;cursor:pointer;font-size:.84rem;font-weight:600;transition:all .25s;user-select:none}
 .filter-chip.active,.year-chip.active{background:rgba(139,92,246,.3);color:#fff;border-color:rgba(139,92,246,.5)}
-.clock-big{font-size:3.8rem;font-weight:800;letter-spacing:2px;text-shadow:0 0 30px var(--accent-glow);text-align:center;margin:10px 0 6px;animation:pulse 3s ease-in-out infinite}
+.clock-big{font-size:3.8rem;font-weight:800;letter-spacing:2px;text-shadow:0 0 30px var(--glow);text-align:center;margin:10px 0 6px;animation:pulse 3s ease-in-out infinite}
 .clock-date{text-align:center;font-size:1.25rem;color:#cbd5e1;margin-bottom:18px}
 .clock-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
 .clock-meta-item{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;text-align:center;transition:transform .25s}
@@ -109,14 +101,26 @@ nav{width:100%;max-width:1140px;display:flex;justify-content:space-between;align
 .station-btn:hover,.station-btn.active{background:rgba(139,92,246,.3);border-color:rgba(139,92,246,.5);color:#fff;transform:translateY(-2px)}
 .radio-controls{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap}
 .volume-slider{width:140px;accent-color:#8b5cf6}
+.data-table{width:100%;border-collapse:collapse;background:rgba(0,0,0,.2);border-radius:12px;overflow:hidden;margin-top:14px}
+.data-table th,.data-table td{padding:12px 15px;text-align:left;border-bottom:1px solid rgba(255,255,255,.05)}
+.data-table th{background:rgba(0,0,0,.4);color:#cbd5e1;font-size:.86rem}
+.status-badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:.76rem;font-weight:600}
+.status-actief{background:rgba(34,197,94,.2);color:#4ade80;border:1px solid rgba(34,197,94,.3)}
+.status-open{background:rgba(234,179,8,.2);color:#facc15;border:1px solid rgba(234,179,8,.3)}
+.status-gesloten{background:rgba(239,68,68,.2);color:#f87171;border:1px solid rgba(239,68,68,.3)}
+.footer-badge{position:fixed;bottom:14px;right:18px;background:rgba(15,23,42,.93);border:1px solid var(--border);padding:7px 13px;border-radius:11px;font-size:.78rem;color:#94a3b8;display:flex;align-items:center;gap:6px;backdrop-filter:blur(8px);z-index:1000}
+.verified-badge{background:#3b82f6;color:#fff;border-radius:50%;width:13px;height:13px;display:inline-flex;justify-content:center;align-items:center;font-size:.6rem;font-weight:800}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(7px);display:none;justify-content:center;align-items:center;z-index:2000;padding:18px}
 .modal-overlay.active{display:flex}
-.modal{background:#0f172a;border:1px solid rgba(139,92,246,.35);border-radius:18px;padding:26px;width:100%;max-width:440px;box-shadow:0 25px 50px rgba(0,0,0,.55);animation:modalIn .22s ease}
-@keyframes modalIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal{background:#0f172a;border:1px solid rgba(139,92,246,.35);border-radius:18px;padding:26px;width:100%;max-width:440px;box-shadow:0 25px 50px rgba(0,0,0,.55);animation:pop .25s ease}
 .modal h3{margin-bottom:5px;font-size:1.3rem}
 .modal p.sub{color:#94a3b8;font-size:.86rem;margin-bottom:18px}
 .modal-actions{display:flex;gap:9px;margin-top:8px}
 .modal-actions .btn{flex:1}
+.fun-card{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px;transition:transform .25s}
+.fun-card:hover{transform:translateY(-3px)}
+.rules-list{list-style-type:decimal;margin-left:20px;line-height:1.75;color:#cbd5e1}
+.rules-list li{margin-bottom:9px}
 </style>
 </head>
 <body>
@@ -128,10 +132,10 @@ nav{width:100%;max-width:1140px;display:flex;justify-content:space-between;align
 <button class="nav-btn" id="btnCalendarTab" onclick="switchTab('calendarTab')">📅 Kalender</button>
 <button class="nav-btn" id="btnMusicTab" onclick="switchTab('musicTab')">🎵 Muziek</button>
 <button class="nav-btn" id="btnFunTab" onclick="switchTab('funTab')">🎉 Fun</button>
-<button class="nav-btn" id="btnStaffTab" onclick="switchTab('staffTab')">👥 Staff</button>
 <button class="nav-btn" id="btnTicketsTab" onclick="switchTab('ticketsTab')">🎫 Support</button>
 <button class="nav-btn" id="btnRulesTab" onclick="switchTab('rulesTab')">📜 Regels</button>
-<button class="nav-btn staff-tab" id="btnStaffControlTab" style="display:none" onclick="switchTab('staffControlTab')">👑 Staff Paneel</button>
+<button class="nav-btn owner-tab" id="btnOwnerTab" style="display:none" onclick="switchTab('ownerTab')">👑 Baas Paneel</button>
+<button class="nav-btn" id="btnStaffTicketsTab" style="display:none" onclick="switchTab('staffTicketsTab')">🎫 Tickets Beheren</button>
 </div>
 <div style="display:flex;align-items:center;gap:9px">
 <span id="userDisplay" style="font-size:.88rem;font-weight:700"></span>
@@ -141,17 +145,18 @@ nav{width:100%;max-width:1140px;display:flex;justify-content:space-between;align
 
 <div id="authWrapper" class="auth-wrapper">
 <div class="auth-card">
-<h2 id="authTitle" style="margin-bottom:7px">Inloggen Portaal</h2>
-<p id="authSubtitle" style="font-size:.84rem;color:#94a3b8;margin-bottom:22px">Voer je gebruikersnaam in</p>
-<form onsubmit="handleAuth(event)">
-<div class="form-group"><label>Gebruikersnaam</label><input type="text" id="authUsername" required placeholder="bijv. David"></div>
-<div class="form-group" id="passwordGroup" style="display:none"><label>Eigenaar / Staff Code</label><input type="password" id="staffSecretCode" placeholder="Code van de owner"></div>
-<button type="submit" class="btn" style="width:100%;margin-top:6px" id="authSubmitBtn">Inloggen</button>
-</form>
-<div style="margin-top:20px;display:flex;flex-direction:column;gap:9px">
-<p style="font-size:.88rem;color:#94a3b8"><span id="authToggleText">Nog geen gratis account?</span> <a href="#" onclick="toggleAuthMode()" style="color:var(--accent-color);text-decoration:none;font-weight:600"> Registreren</a></p>
-<button class="btn btn-staff" style="width:100%;font-size:.84rem;padding:8px" onclick="toggleStaffLoginMode()">👑 Speciale Staff / Eigenaar Inlog</button>
+<h2 id="authTitle">Welkom terug</h2>
+<p class="subtitle" id="authSubtitle">Log in of maak een gratis account</p>
+<div class="auth-tabs">
+<div class="auth-tab active" id="tabLogin" onclick="setAuthMode('login')">Inloggen</div>
+<div class="auth-tab" id="tabRegister" onclick="setAuthMode('register')">Registreren</div>
 </div>
+<form onsubmit="handleAuth(event)">
+<div class="form-group"><label>Gebruikersnaam</label><input type="text" id="authUsername" required placeholder="Jouw naam"></div>
+<div class="form-group" id="passwordGroup" style="display:none"><label>Code (alleen voor Baas / Staff)</label><input type="password" id="staffSecretCode" placeholder="Voer code in"></div>
+<button type="submit" class="btn btn-full" id="authSubmitBtn">Inloggen</button>
+</form>
+<div style="margin-top:20px"><button class="btn btn-staff" style="width:100%;font-size:.85rem" onclick="toggleSpecialLogin()">👑 Baas / Staff Inloggen</button></div>
 </div>
 </div>
 
@@ -257,19 +262,6 @@ nav{width:100%;max-width:1140px;display:flex;justify-content:space-between;align
 </div>
 </div>
 
-<div id="staffTab" class="container">
-<div class="content-card">
-<h2 style="margin-bottom:9px">👑 Maker & Ontwikkeling</h2>
-<p style="color:#cbd5e1;margin-bottom:18px">Deze applicatie is ontworpen en ontwikkeld door <strong>DitIsToevalligIemand</strong> <span class="verified-badge">✓</span>.</p>
-<hr style="border:0;border-top:1px solid rgba(255,255,255,.1);margin:18px 0">
-<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:9px">
-<h2>👥 Staffleden & Team</h2>
-<button class="btn staff-action" onclick="openModal('addStaffModal')" style="display:none">➕ Stafflid Toevoegen</button>
-</div>
-<table class="data-table"><thead><tr><th>Gebruikersnaam</th><th>Functie / Rol</th><th>Status</th><th class="staff-action" style="display:none">Actie</th></tr></thead><tbody id="staffTableBody"></tbody></table>
-</div>
-</div>
-
 <div id="ticketsTab" class="container">
 <div class="content-card">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
@@ -291,10 +283,22 @@ nav{width:100%;max-width:1140px;display:flex;justify-content:space-between;align
 </div>
 </div>
 
-<div id="staffControlTab" class="container">
-<div class="content-card" style="border-color:rgba(245,158,11,.45)">
-<h2 style="color:#fcd34d;margin-bottom:9px">👑 Staff Beheeromgeving</h2>
-<p style="color:#cbd5e1;margin-bottom:18px">Alle tickets van alle gebruikers beheren.</p>
+<div id="ownerTab" class="container">
+<div class="content-card" style="border-color:rgba(245,158,11,.5)">
+<h2 style="color:#fcd34d;margin-bottom:8px">👑 Baas Paneel</h2>
+<p style="color:#cbd5e1;margin-bottom:20px">Hier zie je alles. Alleen de baas heeft toegang.</p>
+<div style="display:grid;gap:16px">
+<div class="fun-card"><h3>Alle Timers</h3><div id="ownerTimers"></div></div>
+<div class="fun-card"><h3>Alle Tickets</h3><div id="ownerTickets"></div></div>
+<div class="fun-card"><h3>Staffleden</h3><div id="ownerStaff"></div></div>
+</div>
+</div>
+</div>
+
+<div id="staffTicketsTab" class="container">
+<div class="content-card">
+<h2 style="margin-bottom:8px">🎫 Tickets Beheren</h2>
+<p style="color:#94a3b8;margin-bottom:18px">Als staff kun je hier tickets openen/sluiten en verwijderen.</p>
 <table class="data-table"><thead><tr><th>Ticket ID</th><th>Onderwerp</th><th>Gebruiker</th><th>Status</th><th>Acties</th></tr></thead><tbody id="staffTicketsTableBody"></tbody></table>
 </div>
 </div>
@@ -304,51 +308,41 @@ nav{width:100%;max-width:1140px;display:flex;justify-content:space-between;align
 <div class="modal-overlay" id="addTimerModal"><div class="modal"><h3>➕ Nieuwe Countdown</h3><p class="sub">Vul de gegevens in</p><div class="form-group"><label>Titel</label><input type="text" id="timerTitle" placeholder="Bijv. Project oplevering"></div><div class="form-group"><label>Datum & tijd</label><input type="datetime-local" id="timerDate"></div><div class="form-group"><label>Emoji (optioneel)</label><input type="text" id="timerIcon" placeholder="🚀" maxlength="2"></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('addTimerModal')">Annuleren</button><button class="btn" onclick="submitAddTimer()">Toevoegen</button></div></div></div>
 <div class="modal-overlay" id="addHolidayModal"><div class="modal"><h3 id="holidayModalTitle">➕ Feestdag toevoegen</h3><p class="sub">Kies zelf de datum</p><div class="form-group"><label>Titel</label><input type="text" id="holidayTitle" placeholder="Bijv. Mijn verjaardag"></div><div class="form-group"><label>Datum & tijd</label><input type="datetime-local" id="holidayDate"></div><div class="form-group"><label>Emoji</label><input type="text" id="holidayIcon" placeholder="🎉" maxlength="2"></div><div class="form-group"><label>Categorie</label><select id="holidayTheme"><option value="custom">Eigen</option><option value="sinterklaas">Feestdag</option><option value="school">School</option><option value="vakantie">Vakantie</option></select></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('addHolidayModal')">Annuleren</button><button class="btn" onclick="submitHoliday()">Opslaan</button></div></div></div>
 <div class="modal-overlay" id="addTicketModal"><div class="modal"><h3>🎫 Nieuw Support Ticket</h3><p class="sub">Beschrijf je vraag of probleem</p><div class="form-group"><label>Onderwerp</label><textarea id="ticketSubject" placeholder="Waar heb je hulp bij nodig?"></textarea></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('addTicketModal')">Annuleren</button><button class="btn" onclick="submitAddTicket()">Versturen</button></div></div></div>
-<div class="modal-overlay" id="addStaffModal"><div class="modal"><h3>➕ Stafflid Toevoegen</h3><p class="sub">Alleen zichtbaar voor staff</p><div class="form-group"><label>Gebruikersnaam</label><input type="text" id="staffName"></div><div class="form-group"><label>Functie / Rol</label><input type="text" id="staffRole"></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('addStaffModal')">Annuleren</button><button class="btn" onclick="submitAddStaff()">Toevoegen</button></div></div></div>
 <div class="modal-overlay" id="confirmModal"><div class="modal"><h3 id="confirmTitle">Weet je het zeker?</h3><p class="sub" id="confirmText">Deze actie kan niet ongedaan worden gemaakt.</p><div class="modal-actions"><button class="btn btn-ghost" onclick="closeConfirm(false)">Annuleren</button><button class="btn btn-danger" onclick="closeConfirm(true)">Verwijderen</button></div></div></div>
 
 <audio id="radioAudio" preload="none"></audio>
 
 <script>
-let isLogin=true,isStaffLoginMode=false,currentUser=null,isStaffUser=false,timerInterval=null,clockInterval=null;
+let isLogin=true,isSpecialLogin=false,currentUser=null,userRole='user',timerInterval=null,clockInterval=null;
 let appData={timers:[],staff:[],tickets:[],holidays:[]};
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth(),selectedDate=null,calView='month';
-let editingHolidayId=null,confirmCallback=null,holidayFilter='all',holidayYearFilter=null;
-let radioPlaying=false;
-const defaultHolidays=[
-{id:'def1',title:"Sinterklaas",date:"2026-12-05T18:00:00",icon:"🎅",theme:"sinterklaas"},
-{id:'def2',title:"Kerstavond",date:"2026-12-24T18:00:00",icon:"🎄",theme:"kerst"},
-{id:'def3',title:"Eerste Kerstdag",date:"2026-12-25T00:00:00",icon:"🎁",theme:"kerst"},
-{id:'def4',title:"Oud & Nieuw",date:"2026-12-31T23:59:00",icon:"🎆",theme:"nieuwjaar"},
-{id:'def5',title:"Valentijnsdag",date:"2027-02-14T00:00:00",icon:"❤️",theme:"valentijn"},
-{id:'def6',title:"Koningsdag",date:"2027-04-27T00:00:00",icon:"🧡",theme:"koningsdag"},
-{id:'def7',title:"Examenweek (start)",date:"2027-05-10T09:00:00",icon:"📝",theme:"school"},
-{id:'def8',title:"Uitslagtelefoontje",date:"2027-06-12T10:00:00",icon:"📞",theme:"school"},
-{id:'def9',title:"Herkansingen",date:"2027-06-22T09:00:00",icon:"✏️",theme:"school"},
-{id:'def10',title:"Zomervakantie start",date:"2027-07-10T00:00:00",icon:"🏖️",theme:"vakantie"}
-];
+let editingHolidayId=null,confirmCallback=null,holidayFilter='all',holidayYearFilter=null,radioPlaying=false;
+const defaultHolidays=[{id:'def1',title:"Sinterklaas",date:"2026-12-05T18:00:00",icon:"🎅",theme:"sinterklaas"},{id:'def2',title:"Kerstavond",date:"2026-12-24T18:00:00",icon:"🎄",theme:"kerst"},{id:'def3',title:"Eerste Kerstdag",date:"2026-12-25T00:00:00",icon:"🎁",theme:"kerst"},{id:'def4',title:"Oud & Nieuw",date:"2026-12-31T23:59:00",icon:"🎆",theme:"nieuwjaar"},{id:'def5',title:"Valentijnsdag",date:"2027-02-14T00:00:00",icon:"❤️",theme:"valentijn"},{id:'def6',title:"Koningsdag",date:"2027-04-27T00:00:00",icon:"🧡",theme:"koningsdag"},{id:'def7',title:"Examenweek (start)",date:"2027-05-10T09:00:00",icon:"📝",theme:"school"},{id:'def8',title:"Uitslagtelefoontje",date:"2027-06-12T10:00:00",icon:"📞",theme:"school"},{id:'def9',title:"Herkansingen",date:"2027-06-22T09:00:00",icon:"✏️",theme:"school"},{id:'def10',title:"Zomervakantie start",date:"2027-07-10T00:00:00",icon:"🏖️",theme:"vakantie"}];
 const funIdeas=["Countdown naar je volgende vakantie ✈️","Countdown naar je verjaardag 🎂","Countdown naar de release van een game 🎮","Countdown naar je examen 📚","Countdown naar een concert 🎤","Countdown naar je bruiloft 💍","Countdown naar de zomer ☀️","Countdown naar Black Friday 🛍️"];
 const motivations=["Elke seconde telt — maak er iets moois van.","De beste momenten komen sneller dan je denkt.","Geduld is niet wachten, het is hoe je wacht.","Jouw countdown is jouw verhaal."];
 const monthNames=["Januari","Februari","Maart","April","Mei","Juni","Juli","Augustus","September","Oktober","November","December"];
 const dayNames=["Ma","Di","Wo","Do","Vr","Za","Zo"];
 const audio=document.getElementById('radioAudio');
 
+function playClick(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.value=600;gain.gain.setValueAtTime(.08,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.1);osc.start();osc.stop(ctx.currentTime+.1)}catch(e){}}
+function playSuccess(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.setValueAtTime(520,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(780,ctx.currentTime+.15);gain.gain.setValueAtTime(.1,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.3);osc.start();osc.stop(ctx.currentTime+.3)}catch(e){}}
+
 function openModal(id){document.getElementById(id).classList.add('active')}
 function closeModal(id){document.getElementById(id).classList.remove('active')}
 function showConfirm(title,text,cb){document.getElementById('confirmTitle').innerText=title;document.getElementById('confirmText').innerText=text;confirmCallback=cb;openModal('confirmModal')}
 function closeConfirm(result){closeModal('confirmModal');if(confirmCallback)confirmCallback(result);confirmCallback=null}
 
-function toggleAuthMode(){isLogin=!isLogin;isStaffLoginMode=false;document.getElementById('passwordGroup').style.display='none';document.getElementById('authTitle').innerText=isLogin?'Inloggen Portaal':'Gratis Account Aanmaken';document.getElementById('authSubtitle').innerText=isLogin?'Voer je gebruikersnaam in':'Maak direct een gratis account aan';document.getElementById('authSubmitBtn').innerText=isLogin?'Inloggen':'Account Aanmaken & Opslaan';document.getElementById('authToggleText').innerText=isLogin?'Nog geen gratis account?':'Al een account?'}
-function toggleStaffLoginMode(){isStaffLoginMode=!isStaffLoginMode;const pwd=document.getElementById('passwordGroup');if(isStaffLoginMode){pwd.style.display='block';document.getElementById('authTitle').innerText='👑 Speciale Staff / Eigenaar Inlog';document.getElementById('authSubtitle').innerText='Voer staff-naam en code van de owner in';document.getElementById('authSubmitBtn').innerText='Inloggen als Eigenaar/Staff';document.getElementById('authUsername').value='Staff'}else{pwd.style.display='none';document.getElementById('authTitle').innerText='Inloggen Portaal';document.getElementById('authSubtitle').innerText='Voer je gebruikersnaam in';document.getElementById('authSubmitBtn').innerText='Inloggen';document.getElementById('authUsername').value=''}}
+function setAuthMode(mode){isLogin=mode==='login';document.getElementById('tabLogin').classList.toggle('active',isLogin);document.getElementById('tabRegister').classList.toggle('active',!isLogin);document.getElementById('authTitle').innerText=isLogin?'Welkom terug':'Account aanmaken';document.getElementById('authSubtitle').innerText=isLogin?'Log in of maak een gratis account':'Maak een gratis account aan';document.getElementById('authSubmitBtn').innerText=isLogin?'Inloggen':'Account aanmaken';document.getElementById('passwordGroup').style.display='none';isSpecialLogin=false}
+function toggleSpecialLogin(){isSpecialLogin=!isSpecialLogin;document.getElementById('passwordGroup').style.display=isSpecialLogin?'block':'none';document.getElementById('authTitle').innerText=isSpecialLogin?'👑 Baas / Staff Inloggen':'Welkom terug';document.getElementById('authSubtitle').innerText=isSpecialLogin?'Voer gebruikersnaam + code in':'Log in of maak een gratis account';document.getElementById('authSubmitBtn').innerText=isSpecialLogin?'Inloggen als Baas/Staff':'Inloggen'}
 
-function handleAuth(e){e.preventDefault();const username=document.getElementById('authUsername').value.trim();if(!username)return;if(isStaffLoginMode){const code=document.getElementById('staffSecretCode').value;if(code!=='owner123'&&code!=='staff123')return alert('Onjuiste code!');isStaffUser=true}else{isStaffUser=(username.toLowerCase()==='staff'||username.toLowerCase()==='ditistoevalligiemand')}currentUser=username;const saved=localStorage.getItem('portal_user_'+currentUser.toLowerCase());if(saved){appData=JSON.parse(saved);if(!appData.holidays)appData.holidays=JSON.parse(JSON.stringify(defaultHolidays))}else{appData={timers:[{id:1,title:'Project Oplevering',date:new Date(Date.now()+86400000*5).toISOString(),icon:'🚀'},{id:2,title:'Kwartaal Meeting',date:new Date(Date.now()+86400000*12).toISOString(),icon:'📊'}],staff:[{id:1,naam:'DitIsToevalligIemand',functie:'Maker & Eigenaar',status:'Actief'},{id:2,naam:'Staff',functie:'Hoofd Moderator',status:'Actief'}],tickets:[],holidays:JSON.parse(JSON.stringify(defaultHolidays))};saveData()}document.getElementById('authWrapper').style.display='none';document.getElementById('topNav').style.display='flex';document.getElementById('userDisplay').innerText=(isStaffUser?'👑 ':'👤 ')+currentUser;if(isStaffUser){document.getElementById('btnStaffControlTab').style.display='inline-block';document.querySelectorAll('.staff-action').forEach(el=>el.style.display='table-cell')}else{document.getElementById('btnStaffControlTab').style.display='none';document.querySelectorAll('.staff-action').forEach(el=>el.style.display='none')}switchTab(isStaffUser?'staffControlTab':'clockTab');startTimers();startClock();renderStaff();renderTickets();renderStaffControl();renderHolidays();renderCalendar();newFunIdea()}
+function handleAuth(e){e.preventDefault();playClick();const username=document.getElementById('authUsername').value.trim();if(!username)return;if(isSpecialLogin){const code=document.getElementById('staffSecretCode').value;if(code==='owner123')userRole='owner';else if(code==='staff123')userRole='staff';else{alert('Onjuiste code');return}}else{userRole='user'}currentUser=username;const saved=localStorage.getItem('portal_user_'+currentUser.toLowerCase());if(saved){appData=JSON.parse(saved);if(!appData.holidays)appData.holidays=JSON.parse(JSON.stringify(defaultHolidays))}else{appData={timers:[{id:1,title:'Project Oplevering',date:new Date(Date.now()+86400000*5).toISOString(),icon:'🚀'},{id:2,title:'Kwartaal Meeting',date:new Date(Date.now()+86400000*12).toISOString(),icon:'📊'}],staff:[{id:1,naam:'DitIsToevalligIemand',functie:'Maker & Eigenaar',status:'Actief'},{id:2,naam:'Staff',functie:'Moderator',status:'Actief'}],tickets:[],holidays:JSON.parse(JSON.stringify(defaultHolidays))};saveData()}document.getElementById('authWrapper').style.display='none';document.getElementById('topNav').style.display='flex';document.getElementById('userDisplay').innerText=(userRole==='owner'?'👑 ':userRole==='staff'?'🛡️ ':'👤 ')+currentUser;document.getElementById('btnOwnerTab').style.display=userRole==='owner'?'inline-block':'none';document.getElementById('btnStaffTicketsTab').style.display=(userRole==='staff'||userRole==='owner')?'inline-block':'none';playSuccess();switchTab(userRole==='owner'?'ownerTab':'clockTab');startTimers();startClock();renderTickets();renderStaffTickets();renderOwnerPanel();renderHolidays();renderCalendar();newFunIdea()}
 
 function saveData(){if(currentUser)localStorage.setItem('portal_user_'+currentUser.toLowerCase(),JSON.stringify(appData))}
-function logout(){if(timerInterval)clearInterval(timerInterval);if(clockInterval)clearInterval(clockInterval);stopRadio();currentUser=null;isStaffUser=false;isStaffLoginMode=false;document.getElementById('topNav').style.display='none';document.querySelectorAll('.container').forEach(c=>c.classList.remove('active'));document.getElementById('authWrapper').style.display='flex';document.getElementById('authUsername').value='';document.getElementById('staffSecretCode').value='';document.getElementById('passwordGroup').style.display='none'}
-function switchTab(tabId){document.querySelectorAll('.container').forEach(c=>c.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById(tabId).classList.add('active');const btnId='btn'+tabId.charAt(0).toUpperCase()+tabId.slice(1);if(document.getElementById(btnId))document.getElementById(btnId).classList.add('active');if(tabId==='calendarTab')renderCalendar();if(tabId==='holidaysTab')renderHolidays()}
+function logout(){if(timerInterval)clearInterval(timerInterval);if(clockInterval)clearInterval(clockInterval);stopRadio();currentUser=null;userRole='user';isSpecialLogin=false;document.getElementById('topNav').style.display='none';document.querySelectorAll('.container').forEach(c=>c.classList.remove('active'));document.getElementById('authWrapper').style.display='flex';document.getElementById('authUsername').value='';document.getElementById('staffSecretCode').value='';document.getElementById('passwordGroup').style.display='none'}
+function switchTab(tabId){document.querySelectorAll('.container').forEach(c=>c.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById(tabId).classList.add('active');const btnId='btn'+tabId.charAt(0).toUpperCase()+tabId.slice(1);if(document.getElementById(btnId))document.getElementById(btnId).classList.add('active');if(tabId==='calendarTab')renderCalendar();if(tabId==='holidaysTab')renderHolidays();if(tabId==='ownerTab')renderOwnerPanel()}
 
 function renderTimers(){const list=document.getElementById('timersList');if(!list)return;list.innerHTML='';if(!appData.timers.length){list.innerHTML='<p style="color:#94a3b8;text-align:center;padding:36px 0">Nog geen timers. Voeg er een toe!</p>';return}appData.timers.forEach(t=>{const{days,hours,minutes,seconds}=getTimeLeft(t.date);const card=document.createElement('div');card.className='timer-card';card.innerHTML=`<div class="timer-header"><div class="timer-title"><span>${t.icon}</span> ${t.title}</div><button class="btn btn-danger btn-sm" onclick="askDeleteTimer(${t.id})">Verwijderen</button></div><div class="countdown-grid"><div class="time-box"><div class="time-value">${pad(days)}</div><div class="time-label">Dagen</div></div><div class="time-box"><div class="time-value">${pad(hours)}</div><div class="time-label">Uur</div></div><div class="time-box"><div class="time-value">${pad(minutes)}</div><div class="time-label">Minuten</div></div><div class="time-box"><div class="time-value">${pad(seconds)}</div><div class="time-label">Seconden</div></div></div>`;list.appendChild(card)})}
-function askDeleteTimer(id){showConfirm('Countdown verwijderen?','Weet je zeker dat je deze countdown wilt verwijderen?',ok=>{if(ok){appData.timers=appData.timers.filter(t=>t.id!==id);saveData();renderTimers();renderCalendar()}})}
+function askDeleteTimer(id){showConfirm('Countdown verwijderen?','Weet je zeker dat je deze countdown wilt verwijderen?',ok=>{if(ok){appData.timers=appData.timers.filter(t=>t.id!==id);saveData();renderTimers();renderCalendar();renderOwnerPanel()}})}
 function submitAddTimer(){const title=document.getElementById('timerTitle').value.trim();const date=document.getElementById('timerDate').value;const icon=document.getElementById('timerIcon').value.trim()||'⏱️';if(!title||!date)return alert('Vul titel en datum in.');appData.timers.push({id:Date.now(),title,date:new Date(date).toISOString(),icon});saveData();renderTimers();renderCalendar();closeModal('addTimerModal');document.getElementById('timerTitle').value='';document.getElementById('timerDate').value='';document.getElementById('timerIcon').value=''}
 
 function setHolidayFilter(f){holidayFilter=f;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.toggle('active',c.dataset.filter===f));renderHolidays()}
@@ -370,20 +364,18 @@ function changeCal(delta){if(calView==='year')return;calMonth+=delta;if(calMonth
 function renderCalendar(){const grid=document.getElementById('calendarGrid');if(!grid)return;document.getElementById('calMonthLabel').innerText=monthNames[calMonth]+' '+calYear;const eventsByDay={};(appData.timers||[]).forEach(t=>{const d=new Date(t.date);if(d.getFullYear()===calYear&&d.getMonth()===calMonth){const day=d.getDate();if(!eventsByDay[day])eventsByDay[day]=[];eventsByDay[day].push({type:'timer',title:t.title,icon:t.icon,date:t.date})}});(appData.holidays||[]).forEach(h=>{const d=new Date(h.date);if(d.getFullYear()===calYear&&d.getMonth()===calMonth){const day=d.getDate();if(!eventsByDay[day])eventsByDay[day]=[];eventsByDay[day].push({type:'holiday',title:h.title,icon:h.icon,date:h.date})}});grid.innerHTML='';dayNames.forEach(n=>{const el=document.createElement('div');el.className='cal-day-name';el.innerText=n;grid.appendChild(el)});const firstDay=new Date(calYear,calMonth,1);let startDay=firstDay.getDay();startDay=startDay===0?6:startDay-1;const daysInMonth=new Date(calYear,calMonth+1,0).getDate();const daysInPrev=new Date(calYear,calMonth,0).getDate();for(let i=startDay-1;i>=0;i--){const el=document.createElement('div');el.className='cal-day other-month';el.innerText=daysInPrev-i;grid.appendChild(el)}const today=new Date();for(let day=1;day<=daysInMonth;day++){const el=document.createElement('div');el.className='cal-day';if(day===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear())el.classList.add('today');if(eventsByDay[day])el.classList.add('has-event');if(selectedDate&&selectedDate.day===day&&selectedDate.month===calMonth&&selectedDate.year===calYear)el.classList.add('selected');el.innerHTML=day;if(eventsByDay[day]){const hasT=eventsByDay[day].some(e=>e.type==='timer');const hasH=eventsByDay[day].some(e=>e.type==='holiday');if(hasT){const d=document.createElement('div');d.className='cal-dot timer';el.appendChild(d)}if(hasH){const d=document.createElement('div');d.className='cal-dot holiday';d.style.bottom=hasT?'13px':'5px';el.appendChild(d)}}el.onclick=()=>{selectedDate={day,month:calMonth,year:calYear,events:eventsByDay[day]||[]};renderCalendar()};grid.appendChild(el)}const total=startDay+daysInMonth;const rem=total%7===0?0:7-(total%7);for(let i=1;i<=rem;i++){const el=document.createElement('div');el.className='cal-day other-month';el.innerText=i;grid.appendChild(el)}renderSelectedEvents()}
 function renderSelectedEvents(){const c=document.getElementById('selectedDayEvents');if(!selectedDate){c.innerHTML='<p style="color:#94a3b8;text-align:center;padding:18px 0">Selecteer een dag om de events te zien</p>';return}const dateStr=`${selectedDate.day} ${monthNames[selectedDate.month]} ${selectedDate.year}`;if(!selectedDate.events.length){c.innerHTML=`<p style="color:#94a3b8;text-align:center;padding:18px 0">Geen events op ${dateStr}</p>`;return}let html=`<h3 style="margin-bottom:12px;font-size:1.05rem">Events op ${dateStr}</h3>`;selectedDate.events.forEach(e=>{const time=new Date(e.date).toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});html+=`<div class="event-item"><div style="font-size:1.3rem">${e.icon}</div><div><div style="font-weight:600">${e.title}</div><div style="font-size:.8rem;color:#94a3b8">${e.type==='holiday'?'Feestdag':'Eigen timer'} • ${time}</div></div></div>`});c.innerHTML=html}
 
-function playStation(name,url){document.querySelectorAll('.station-btn').forEach(b=>b.classList.remove('active'));event.currentTarget.classList.add('active');document.getElementById('radioNow').innerText=name;document.getElementById('radioStatus').innerText='Bezig met laden...';audio.src=url;audio.volume=document.getElementById('volumeSlider').value;audio.play().then(()=>{radioPlaying=true;document.getElementById('radioPlayBtn').innerText='⏸ Pauzeren';document.getElementById('radioStatus').innerText='Nu aan het spelen'}).catch(()=>{document.getElementById('radioStatus').innerText='Kon stream niet laden (probeer een andere zender)'})}
+function playStation(name,url){document.querySelectorAll('.station-btn').forEach(b=>b.classList.remove('active'));event.currentTarget.classList.add('active');document.getElementById('radioNow').innerText=name;document.getElementById('radioStatus').innerText='Bezig met laden...';audio.src=url;audio.volume=document.getElementById('volumeSlider').value;audio.play().then(()=>{radioPlaying=true;document.getElementById('radioPlayBtn').innerText='⏸ Pauzeren';document.getElementById('radioStatus').innerText='Nu aan het spelen'}).catch(()=>{document.getElementById('radioStatus').innerText='Kon stream niet laden'})}
 function toggleRadio(){if(!audio.src){document.getElementById('radioStatus').innerText='Kies eerst een zender';return}if(radioPlaying){audio.pause();radioPlaying=false;document.getElementById('radioPlayBtn').innerText='▶ Afspelen';document.getElementById('radioStatus').innerText='Gepauzeerd'}else{audio.play();radioPlaying=true;document.getElementById('radioPlayBtn').innerText='⏸ Pauzeren';document.getElementById('radioStatus').innerText='Nu aan het spelen'}}
 function stopRadio(){audio.pause();audio.currentTime=0;radioPlaying=false;document.getElementById('radioPlayBtn').innerText='▶ Afspelen';document.getElementById('radioStatus').innerText='Gestopt';document.getElementById('radioNow').innerText='Geen station geselecteerd';document.querySelectorAll('.station-btn').forEach(b=>b.classList.remove('active'))}
 function setVolume(val){audio.volume=val}
 
 function newFunIdea(){document.getElementById('funIdea').innerText=funIdeas[Math.floor(Math.random()*funIdeas.length)];document.getElementById('motivationQuote').innerText='"'+motivations[Math.floor(Math.random()*motivations.length)]+'"'}
-function renderStaff(){const tbody=document.getElementById('staffTableBody');if(!tbody)return;tbody.innerHTML='';appData.staff.forEach(m=>{const tr=document.createElement('tr');tr.innerHTML=`<td style="font-weight:600">${m.naam}</td><td>${m.functie}</td><td><span class="status-badge status-actief">${m.status}</span></td>${isStaffUser?`<td><button class="btn btn-danger btn-sm" onclick="deleteStaff(${m.id})">Verwijderen</button></td>`:''}`;tbody.appendChild(tr)})}
-function submitAddStaff(){if(!isStaffUser)return;const naam=document.getElementById('staffName').value.trim();const functie=document.getElementById('staffRole').value.trim();if(!naam||!functie)return alert('Vul beide velden in.');appData.staff.push({id:Date.now(),naam,functie,status:'Actief'});saveData();renderStaff();closeModal('addStaffModal');document.getElementById('staffName').value='';document.getElementById('staffRole').value=''}
-function deleteStaff(id){if(!isStaffUser)return;appData.staff=appData.staff.filter(m=>m.id!==id);saveData();renderStaff()}
-function renderTickets(){const tbody=document.getElementById('ticketsTableBody');if(!tbody)return;tbody.innerHTML='';const mine=appData.tickets.filter(t=>t.door===currentUser);if(!mine.length){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:28px">Nog geen tickets</td></tr>';return}mine.forEach(t=>{const tr=document.createElement('tr');const sc=t.status==='Open'?'status-open':'status-gesloten';tr.innerHTML=`<td style="font-weight:700;color:var(--accent-color)">${t.id}</td><td>${t.onderwerp}</td><td><span class="status-badge ${sc}">${t.status}</span></td><td style="color:#94a3b8;font-size:.8rem">In behandeling</td>`;tbody.appendChild(tr)})}
-function submitAddTicket(){const o=document.getElementById('ticketSubject').value.trim();if(!o)return alert('Schrijf een onderwerp.');appData.tickets.push({id:'#'+Math.floor(1000+Math.random()*9000),onderwerp:o,door:currentUser,status:'Open'});saveData();renderTickets();renderStaffControl();closeModal('addTicketModal');document.getElementById('ticketSubject').value=''}
-function renderStaffControl(){const tbody=document.getElementById('staffTicketsTableBody');if(!tbody)return;tbody.innerHTML='';if(!appData.tickets.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:28px">Geen tickets</td></tr>';return}appData.tickets.forEach(t=>{const tr=document.createElement('tr');const sc=t.status==='Open'?'status-open':'status-gesloten';tr.innerHTML=`<td style="font-weight:700;color:#fcd34d">${t.id}</td><td>${t.onderwerp}</td><td>${t.door}</td><td><span class="status-badge ${sc}">${t.status}</span></td><td style="display:flex;gap:6px"><button class="btn btn-staff btn-sm" onclick="toggleTicketStatus('${t.id}')">Status</button><button class="btn btn-danger btn-sm" onclick="deleteTicket('${t.id}')">Verwijderen</button></td>`;tbody.appendChild(tr)})}
-function toggleTicketStatus(id){if(!isStaffUser)return;const t=appData.tickets.find(x=>x.id===id);if(t){t.status=t.status==='Open'?'Gesloten':'Open';saveData();renderTickets();renderStaffControl()}}
-function deleteTicket(id){if(!isStaffUser)return;appData.tickets=appData.tickets.filter(t=>t.id!==id);saveData();renderTickets();renderStaffControl()}
+function renderTickets(){const tbody=document.getElementById('ticketsTableBody');if(!tbody)return;tbody.innerHTML='';const mine=appData.tickets.filter(t=>t.door===currentUser);if(!mine.length){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:28px">Nog geen tickets</td></tr>';return}mine.forEach(t=>{const tr=document.createElement('tr');const sc=t.status==='Open'?'status-open':'status-gesloten';tr.innerHTML=`<td style="font-weight:700;color:var(--accent)">${t.id}</td><td>${t.onderwerp}</td><td><span class="status-badge ${sc}">${t.status}</span></td><td style="color:#94a3b8;font-size:.8rem">In behandeling</td>`;tbody.appendChild(tr)})}
+function submitAddTicket(){const o=document.getElementById('ticketSubject').value.trim();if(!o)return alert('Schrijf een onderwerp.');appData.tickets.push({id:'#'+Math.floor(1000+Math.random()*9000),onderwerp:o,door:currentUser,status:'Open'});saveData();renderTickets();renderStaffTickets();renderOwnerPanel();closeModal('addTicketModal');document.getElementById('ticketSubject').value=''}
+function renderStaffTickets(){const tbody=document.getElementById('staffTicketsTableBody');if(!tbody)return;tbody.innerHTML='';if(!appData.tickets.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:28px">Geen tickets</td></tr>';return}appData.tickets.forEach(t=>{const tr=document.createElement('tr');const sc=t.status==='Open'?'status-open':'status-gesloten';tr.innerHTML=`<td style="font-weight:700;color:#fcd34d">${t.id}</td><td>${t.onderwerp}</td><td>${t.door}</td><td><span class="status-badge ${sc}">${t.status}</span></td><td style="display:flex;gap:6px"><button class="btn btn-staff btn-sm" onclick="toggleTicketStatus('${t.id}')">Status</button><button class="btn btn-danger btn-sm" onclick="deleteTicket('${t.id}')">Verwijderen</button></td>`;tbody.appendChild(tr)})}
+function toggleTicketStatus(id){if(userRole!=='staff'&&userRole!=='owner')return;const t=appData.tickets.find(x=>x.id===id);if(t){t.status=t.status==='Open'?'Gesloten':'Open';saveData();renderTickets();renderStaffTickets();renderOwnerPanel()}}
+function deleteTicket(id){if(userRole!=='staff'&&userRole!=='owner')return;appData.tickets=appData.tickets.filter(t=>t.id!==id);saveData();renderTickets();renderStaffTickets();renderOwnerPanel()}
+function renderOwnerPanel(){if(userRole!=='owner')return;document.getElementById('ownerTimers').innerHTML=appData.timers.map(t=>`<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)">${t.icon} ${t.title}</div>`).join('')||'<p style="color:#94a3b8">Geen timers</p>';document.getElementById('ownerTickets').innerHTML=appData.tickets.map(t=>`<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)">${t.id} – ${t.onderwerp} (${t.door}) – ${t.status}</div>`).join('')||'<p style="color:#94a3b8">Geen tickets</p>';document.getElementById('ownerStaff').innerHTML=appData.staff.map(s=>`<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)">${s.naam} – ${s.functie}</div>`).join('')||'<p style="color:#94a3b8">Geen staff</p>'}
 
 function getTimeLeft(d){const diff=new Date(d)-Date.now();return{days:Math.max(0,Math.floor(diff/86400000)),hours:Math.max(0,Math.floor((diff%86400000)/3600000)),minutes:Math.max(0,Math.floor((diff%3600000)/60000)),seconds:Math.max(0,Math.floor((diff%60000)/1000))}}
 function pad(n){return String(n).padStart(2,'0')}
