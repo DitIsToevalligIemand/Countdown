@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portaal & Countdown Beheer</title>
+<link href="https://googleapis.com" rel="stylesheet">
 <style>
 :root {
   --bg: linear-gradient(135deg, #0b1329 0%, #172554 45%, #1e1b4b 100%);
@@ -13,7 +14,6 @@
   --glow: rgba(139, 92, 246, 0.4);
 }
 
-/* ===== MASTER THEMES ===== */
 body.theme-cyberpunk {
   --bg: linear-gradient(135deg, #0b1329 0%, #172554 45%, #1e1b4b 100%);
   --card: rgba(15, 23, 42, 0.92);
@@ -50,7 +50,7 @@ body.theme-valentijn {
   --glow: rgba(244, 114, 182, 0.4);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
 body {
   background: var(--bg);
   color: #f8fafc;
@@ -80,7 +80,7 @@ body {
   max-width: 1100px;
 }
 
-/* ===== AUTH SCHERM ===== */
+/* ===== INLOG & REGISTRATIE STYLING ===== */
 .auth-wrapper {
   width: 100%; min-height: 85vh;
   display: flex; justify-content: center; align-items: center;
@@ -116,6 +116,7 @@ body {
   width: 100%; padding: 13px 15px; background: rgba(0,0,0,0.4);
   border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; font-size: 0.95rem; outline: none;
 }
+.form-group input:focus, .form-group select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139,92,246,0.2); }
 
 .btn {
   background: var(--accent); color: white; border: none; padding: 13px 20px; font-size: 0.95rem; font-weight: 600;
@@ -233,6 +234,3 @@ nav {
         <div class="form-group">
           <label>Direct Opstartthema</label>
           <select id="initialThemeSelect" onchange="changeTheme(this.value)">
-            <option value="cyberpunk">🌌 Cyberpunk (Standaard)</option>
-            <option value="sinterklaas">🎁 Sinterklaas (Pepernoten)</option>
-            <option value="kerst">🎄 Kerstmis (Sneeuwbui)</option>
