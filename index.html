@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minestad — Portaal</title>
+    <title>Portaal & Countdown Beheer</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #0b1329 0%, #172554 50%, #1e1b4b 100%);
-            --card-bg: rgba(15, 23, 42, 0.75);
+            --card-bg: rgba(15, 23, 42, 0.85);
             --card-border: rgba(59, 130, 246, 0.2);
             --text-color: #f8fafc;
             --accent-color: #8b5cf6;
             --accent-glow: rgba(139, 92, 246, 0.4);
+            --staff-color: #f59e0b;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
         body {
@@ -55,6 +56,8 @@
             transition: all 0.2s;
         }
         .nav-btn.active, .nav-btn:hover { color: #fff; background: rgba(139, 92, 246, 0.2); }
+        .nav-btn.staff-tab { color: #fcd34d; border: 1px dashed rgba(245, 158, 11, 0.4); }
+        .nav-btn.staff-tab:hover { background: rgba(245, 158, 11, 0.2); }
 
         /* General Layout */
         .container {
@@ -66,7 +69,14 @@
         }
         .container.active { display: flex; }
 
-        /* Auth Card */
+        /* Complete Login Pagina / Card */
+        .auth-wrapper {
+            width: 100%;
+            min-height: 85vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
         .auth-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -74,10 +84,9 @@
             padding: 40px;
             max-width: 450px;
             width: 100%;
-            margin: 60px auto;
             text-align: center;
             backdrop-filter: blur(16px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
 
         /* Countdown Cards */
@@ -137,6 +146,7 @@
         }
         .status-actief { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
         .status-open { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .status-gesloten { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
 
         /* Buttons & Forms */
         .btn {
@@ -153,9 +163,10 @@
         }
         .btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
         .btn-danger { background: #ef4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
+        .btn-staff { background: #d97706; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.4); }
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: #cbd5e1; }
-        .form-group input, .form-group textarea, .form-group select {
+        .form-group input {
             width: 100%; padding: 12px; background: rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 0.95rem;
         }
@@ -165,39 +176,47 @@
 </head>
 <body>
 
-    <!-- Navigatiebalk -->
+    <!-- Navigatiebalk (Zichtbaar na inloggen) -->
     <nav id="topNav" style="display: none;">
         <div class="nav-links">
             <button class="nav-btn active" id="btnTimersTab" onclick="switchTab('timersTab')">⏳ Timers</button>
             <button class="nav-btn" id="btnStaffTab" onclick="switchTab('staffTab')">👥 Staff & Maker</button>
             <button class="nav-btn" id="btnTicketsTab" onclick="switchTab('ticketsTab')">🎫 Support Tickets</button>
             <button class="nav-btn" id="btnRulesTab" onclick="switchTab('rulesTab')">📜 Voorwaarden & Regels</button>
+            <button class="nav-btn staff-tab" id="btnStaffControlTab" style="display: none;" onclick="switchTab('staffControlTab')">👑 Staff Paneel</button>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="userEmailDisplay" style="font-size: 0.85rem; color: #94a3b8;"></span>
+            <span id="userDisplay" style="font-size: 0.9rem; font-weight: 700; color: #f8fafc;"></span>
             <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="logout()">Uitloggen</button>
         </div>
     </nav>
 
-    <!-- Inlog / Registratie Scherm -->
-    <div id="authScreen" class="auth-card">
-        <h2 id="authTitle" style="margin-bottom: 10px;">Inloggen Portaal</h2>
-        <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 25px;">Gratis account met automatische opslag</p>
-        <form onsubmit="handleAuth(event)">
-            <div class="form-group">
-                <label>E-mailadres</label>
-                <input type="email" id="authEmail" required placeholder="naam@voorbeeld.nl">
+    <!-- HELE INLOG & REGISTRATIE PAGINA -->
+    <div id="authWrapper" class="auth-wrapper">
+        <div class="auth-card">
+            <h2 id="authTitle" style="margin-bottom: 8px;">Inloggen Portaal</h2>
+            <p id="authSubtitle" style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 25px;">Gratis account — alleen gebruikersnaam vereist</p>
+            
+            <form onsubmit="handleAuth(event)">
+                <div class="form-group">
+                    <label>Gebruikersnaam</label>
+                    <input type="text" id="authUsername" required placeholder="Bijv. JouwNaam of Staff">
+                </div>
+                <div class="form-group">
+                    <label>Wachtwoord</label>
+                    <input type="password" id="authPassword" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;" id="authSubmitBtn">Inloggen</button>
+            </form>
+
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                <p style="font-size: 0.9rem; color: #94a3b8;">
+                    <span id="authToggleText">Nog geen gratis account?</span>
+                    <a href="#" onclick="toggleAuthMode()" style="color: var(--accent-color); text-decoration: none; font-weight: 600;"> Registreren</a>
+                </p>
+                <button class="btn btn-staff" style="width: 100%; font-size: 0.85rem; padding: 8px;" onclick="quickStaffLogin()">👑 Snel Inloggen als Staff</button>
             </div>
-            <div class="form-group">
-                <label>Wachtwoord</label>
-                <input type="password" id="authPassword" required placeholder="••••••••">
-            </div>
-            <button type="submit" class="btn" style="width: 100%; margin-top: 10px;" id="authSubmitBtn">Inloggen</button>
-        </form>
-        <p style="margin-top: 20px; font-size: 0.9rem; color: #94a3b8;">
-            <span id="authToggleText">Nog geen account?</span>
-            <a href="#" onclick="toggleAuthMode()" style="color: var(--accent-color); text-decoration: none; font-weight: 600;"> Registreren</a>
-        </p>
+        </div>
     </div>
 
     <!-- TAB 1: Timers -->
@@ -212,23 +231,22 @@
     <!-- TAB 2: Staff & Maker -->
     <div id="staffTab" class="container">
         <div class="content-card">
-            <h2 style="margin-bottom: 10px;">👑 Maker & Ontwikkelaar</h2>
-            <p style="color: #cbd5e1; margin-bottom: 20px;">Deze applicatie is ontworpen en ontwikkeld door <strong>David Kwek</strong>.</p>
+            <h2 style="margin-bottom: 10px;">👑 Maker & Ontwikkeling</h2>
+            <p style="color: #cbd5e1; margin-bottom: 20px;">Deze applicatie is ontworpen en ontwikkeld door <strong>DitIsToevalligIemand</strong>.</p>
             
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
 
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2>👥 Staffleden & Team</h2>
-                <button class="btn" onclick="openAddStaffModal()">➕ Stafflid Toevoegen</button>
+                <h2>👥 Staffleden & Team Overzicht</h2>
+                <button class="btn staff-action" onclick="openAddStaffModal()" style="display: none;">➕ Stafflid Toevoegen</button>
             </div>
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Naam</th>
+                        <th>Gebruikersnaam</th>
                         <th>Functie / Rol</th>
-                        <th>E-mail</th>
                         <th>Status</th>
-                        <th>Actie</th>
+                        <th class="staff-action" style="display: none;">Actie</th>
                     </tr>
                 </thead>
                 <tbody id="staffTableBody"></tbody>
@@ -242,7 +260,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <div>
                     <h2>🎫 Support Tickets Systeem</h2>
-                    <p style="font-size: 0.85rem; color: #94a3b8;">Meld hier een probleem. Alle meldingen worden door het Staff-team in behandeling genomen.</p>
+                    <p style="font-size: 0.85rem; color: #94a3b8;">Meld hier een probleem. Gekoppeld aan het Staff-team.</p>
                 </div>
                 <button class="btn" onclick="openCreateTicketModal()">➕ Nieuw Ticket Inschieten</button>
             </div>
@@ -262,39 +280,72 @@
         </div>
     </div>
 
-    <!-- TAB 4: Algemene Voorwaarden & Regels -->
+    <!-- TAB 4: Voorwaarden & Regels -->
     <div id="rulesTab" class="container">
         <div class="content-card">
-            <h2 style="margin-bottom: 15px;">📜 Algemene Voorwaarden & Regels (Terms of Service)</h2>
+            <h2 style="margin-bottom: 15px;">📜 Algemene Voorwaarden & Regels</h2>
             <ol class="rules-list">
-                <li><strong>Respectvol Gebruik:</strong> Het is niet toegestaan om ongewenste, kwetsende of misleidende content in timers of tickets in te voeren.</li>
-                <li><strong>Account Beveiliging:</strong> Elk account heeft toegang tot zijn eigen opgeslagen gegevens. Houd je inloggegevens geheim.</li>
-                <li><strong>Gebruik van Support:</strong> Het Support Ticket Systeem is uitsluitend bedoeld voor het melden van technische problemen en vragen aan de Staff. Misbruik wordt niet getolereerd.</li>
-                <li><strong>Data & Opslag:</strong> Gegevens worden veilig bewaard per gebruiker in de lokale opslag van je browser.</li>
-                <li><strong>Eigendomsrecht:</strong> Dit portaal en het bijbehorende ontwerp zijn het officiële eigendom van <strong>David Kwek</strong>.</li>
+                <li><strong>Respectvol Gebruik:</strong> Het is niet toegestaan om ongewenste of kwetsende content in timers of tickets te plaatsen.</li>
+                <li><strong>Account & Opslag:</strong> Elk gratis account bewaart al je timers en data automatisch in de browser.</li>
+                <li><strong>Support Systeem:</strong> Meldingen via tickets zijn uitsluitend voor vragen en technische ondersteuning aan de Staff.</li>
+                <li><strong>Eigendom:</strong> Dit portaal is eigendom van <strong>DitIsToevalligIemand</strong>.</li>
             </ol>
+        </div>
+    </div>
+
+    <!-- TAB 5: Staff Control Panel (Aparte Staff Inlog) -->
+    <div id="staffControlTab" class="container">
+        <div class="content-card" style="border-color: rgba(245, 158, 11, 0.4);">
+            <h2 style="color: #fcd34d; margin-bottom: 10px;">👑 Aparte Staff Beheeromgeving</h2>
+            <p style="color: #cbd5e1; margin-bottom: 20px;">Hier kun je als Staff alle inkomende support tickets inzien en de statussen aanpassen.</p>
+
+            <h3 style="margin-bottom: 10px;">Inkomende Support Tickets</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Onderwerp</th>
+                        <th>Gebruiker</th>
+                        <th>Status</th>
+                        <th>Actie Wijzigen</th>
+                    </tr>
+                </thead>
+                <tbody id="staffTicketsTableBody"></tbody>
+            </table>
         </div>
     </div>
 
     <script>
         let isLogin = true;
         let currentUser = null;
+        let isStaffUser = false;
         let timerInterval = null;
         let appData = { timers: [], staff: [], tickets: [] };
 
         function toggleAuthMode() {
             isLogin = !isLogin;
             document.getElementById('authTitle').innerText = isLogin ? 'Inloggen Portaal' : 'Gratis Account Aanmaken';
-            document.getElementById('authSubmitBtn').innerText = isLogin ? 'Inloggen' : 'Registreren & Opslaan';
-            document.getElementById('authToggleText').innerText = isLogin ? 'Nog geen account?' : 'Al een account?';
+            document.getElementById('authSubtitle').innerText = isLogin ? 'Gratis account — alleen gebruikersnaam vereist' : 'Maak direct een gratis account aan';
+            document.getElementById('authSubmitBtn').innerText = isLogin ? 'Inloggen' : 'Account Aanmaken & Opslaan';
+            document.getElementById('authToggleText').innerText = isLogin ? 'Nog geen gratis account?' : 'Al een account?';
+        }
+
+        function quickStaffLogin() {
+            document.getElementById('authUsername').value = 'Staff';
+            document.getElementById('authPassword').value = 'staff123';
+            document.querySelector('form').dispatchEvent(new Event('submit', { cancelable: true }));
         }
 
         function handleAuth(e) {
             e.preventDefault();
-            const email = document.getElementById('authEmail').value.trim().toLowerCase();
-            currentUser = email;
+            const username = document.getElementById('authUsername').value.trim();
+            if (!username) return;
             
-            const savedData = localStorage.getItem('minestad_app_' + currentUser);
+            currentUser = username;
+            isStaffUser = (currentUser.toLowerCase() === 'staff' || currentUser.toLowerCase() === 'ditistoevalligiemand');
+
+            // Opslag ophalen of aanmaken per gebruikersnaam
+            const savedData = localStorage.getItem('portal_user_' + currentUser.toLowerCase());
             if (savedData) {
                 appData = JSON.parse(savedData);
             } else {
@@ -304,38 +355,50 @@
                         { id: 2, title: 'Kwartaal Meeting', date: new Date(Date.now() + 86400000 * 12).toISOString(), icon: '📊' }
                     ],
                     staff: [
-                        { id: 1, naam: 'David Kwek', functie: 'Maker & Hoofd Beheerder', email: 'david@minestad.nl', status: 'Actief' },
-                        { id: 2, naam: 'Support Team', functie: 'Moderator', email: 'support@minestad.nl', status: 'Actief' }
+                        { id: 1, naam: 'DitIsToevalligIemand', functie: 'Maker & Eigenaar', status: 'Actief' },
+                        { id: 2, naam: 'Staff', functie: 'Hoofd Moderator', status: 'Actief' }
                     ],
                     tickets: [
-                        { id: '#1001', onderwerp: 'Vraag over afteller instellen', door: email, status: 'Open' }
+                        { id: '#1001', onderwerp: 'Vraag over afteller instellen', door: currentUser, status: 'Open' }
                     ]
                 };
                 saveData();
             }
 
-            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('authWrapper').style.display = 'none';
             document.getElementById('topNav').style.display = 'flex';
-            document.getElementById('userEmailDisplay').innerText = currentUser;
+            document.getElementById('userDisplay').innerText = (isStaffUser ? '👑 ' : '👤 ') + currentUser;
             
-            switchTab('timersTab');
+            if (isStaffUser) {
+                document.getElementById('btnStaffControlTab').style.display = 'inline-block';
+                document.querySelectorAll('.staff-action').forEach(el => el.style.display = 'table-cell');
+            } else {
+                document.getElementById('btnStaffControlTab').style.display = 'none';
+                document.querySelectorAll('.staff-action').forEach(el => el.style.display = 'none');
+            }
+
+            switchTab(isStaffUser ? 'staffControlTab' : 'timersTab');
             startTimers();
             renderStaff();
             renderTickets();
+            renderStaffControl();
         }
 
         function saveData() {
             if (currentUser) {
-                localStorage.setItem('minestad_app_' + currentUser, JSON.stringify(appData));
+                localStorage.setItem('portal_user_' + currentUser.toLowerCase(), JSON.stringify(appData));
             }
         }
 
         function logout() {
             if (timerInterval) clearInterval(timerInterval);
             currentUser = null;
+            isStaffUser = false;
             document.getElementById('topNav').style.display = 'none';
             document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
-            document.getElementById('authScreen').style.display = 'block';
+            document.getElementById('authWrapper').style.display = 'flex';
+            document.getElementById('authUsername').value = '';
+            document.getElementById('authPassword').value = '';
         }
 
         function switchTab(tabId) {
@@ -417,20 +480,18 @@
                 tr.innerHTML = `
                     <td style="font-weight: 600;">${m.naam}</td>
                     <td>${m.functie}</td>
-                    <td style="color: #94a3b8;">${m.email}</td>
                     <td><span class="status-badge status-actief">${m.status}</span></td>
-                    <td><button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="deleteStaff(${m.id})">Verwijderen</button></td>
+                    ${isStaffUser ? `<td><button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="deleteStaff(${m.id})">Verwijderen</button></td>` : ''}
                 `;
                 tbody.appendChild(tr);
             });
         }
 
         function openAddStaffModal() {
-            const naam = prompt('Naam stafflid:');
+            const naam = prompt('Gebruikersnaam van stafflid:');
             const functie = prompt('Functie / Rol:');
-            const email = prompt('E-mailadres:');
-            if (naam && functie && email) {
-                appData.staff.push({ id: Date.now(), naam, functie, email, status: 'Actief' });
+            if (naam && functie) {
+                appData.staff.push({ id: Date.now(), naam, functie, status: 'Actief' });
                 saveData();
                 renderStaff();
             }
@@ -450,12 +511,13 @@
 
             appData.tickets.forEach(t => {
                 const tr = document.createElement('tr');
+                const statusClass = t.status === 'Open' ? 'status-open' : 'status-gesloten';
                 tr.innerHTML = `
                     <td style="font-weight: 700; color: var(--accent-color);">${t.id}</td>
                     <td>${t.onderwerp}</td>
                     <td style="color: #94a3b8;">${t.door}</td>
-                    <td><span class="status-badge status-open">${t.status}</span></td>
-                    <td><button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="deleteTicket('${t.id}')">Sluiten</button></td>
+                    <td><span class="status-badge ${statusClass}">${t.status}</span></td>
+                    <td><button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="deleteTicket('${t.id}')">Verwijderen</button></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -468,6 +530,7 @@
                 appData.tickets.push({ id, onderwerp, door: currentUser, status: 'Open' });
                 saveData();
                 renderTickets();
+                renderStaffControl();
             }
         }
 
@@ -475,7 +538,42 @@
             appData.tickets = appData.tickets.filter(t => t.id !== id);
             saveData();
             renderTickets();
+            renderStaffControl();
+        }
+
+        /* Staff Control Panel */
+        function renderStaffControl() {
+            const tbody = document.getElementById('staffTicketsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            appData.tickets.forEach(t => {
+                const tr = document.createElement('tr');
+                const statusClass = t.status === 'Open' ? 'status-open' : 'status-gesloten';
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: #fcd34d;">${t.id}</td>
+                    <td>${t.onderwerp}</td>
+                    <td>${t.door}</td>
+                    <td><span class="status-badge ${statusClass}">${t.status}</span></td>
+                    <td>
+                        <button class="btn btn-staff" style="padding: 4px 8px; font-size: 0.75rem;" onclick="toggleTicketStatus('${t.id}')">Status Wijzigen</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleTicketStatus(id) {
+            const ticket = appData.tickets.find(t => t.id === id);
+            if (ticket) {
+                ticket.status = ticket.status === 'Open' ? 'Gesloten' : 'Open';
+                saveData();
+                renderTickets();
+                renderStaffControl();
+            }
         }
     </script>
+</body>
+</html>
 </body>
 </html>
