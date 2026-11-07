@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portaal & Countdown Beheer Pro</title>
-<link href="https://googleapis.com" rel="stylesheet">
 <style>
 /* ===== BASE VARIABELEN & KERN STYLING ===== */
 :root {
@@ -50,7 +49,7 @@ body.theme-valentijn {
   --glow: rgba(244, 114, 182, 0.4);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
 body {
   background: var(--bg); color: #f8fafc; min-height: 100vh;
   display: flex; flex-direction: column; align-items: center;
@@ -100,7 +99,7 @@ body {
 }
 .secret-btn:hover { color: white; background: rgba(255,255,255,0.12); border-color: rgba(14,165,233,0.5); }
 
-/* ===== MAIN APPLICATIE LAYOUT ===== */
+/* ===== MAIN INTERFACE LAYOUT ===== */
 .app-wrapper { width: 100%; display: none; }
 .app-wrapper.active { display: block; }
 nav {
@@ -189,3 +188,6 @@ nav {
             <option value="koningsdag">👑 Koningsdag</option>
             <option value="valentijn">💖 Valentijn</option>
           </select>
+        </div>
+        <button type="submit" class="btn btn-full" id="authSubmitBtn" style="margin-top: 15px;">Inloggen</button>
+      </form>
