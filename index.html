@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mijn Portaal — Feestdagen & Concerten</title>
+    <title>Mijn Portaal — Feestdagen, Concerten & Schooldata</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -43,10 +43,9 @@
             transition: all 0.5s ease-in-out;
         }
 
-        /* Compact Oude Stijl Navigatie */
         nav {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1050px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -60,15 +59,15 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+        .nav-links { display: flex; gap: 6px; flex-wrap: wrap; }
         .nav-btn {
             background: none;
             border: none;
             color: #d1d5db;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-radius: 10px;
             transition: all 0.2s;
         }
@@ -78,7 +77,7 @@
 
         .container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1050px;
             display: none;
             flex-direction: column;
             gap: 20px;
@@ -216,10 +215,10 @@
 </head>
 <body>
 
-    <!-- Oude Stijl Compacte Navigatiebalk -->
     <nav id="topNav" style="display: none;">
         <div class="nav-links">
             <button class="nav-btn active" id="btnTimersTab" onclick="switchTab('timersTab')"><span class="theme-icon-el">🎁</span> Countdowns</button>
+            <button class="nav-btn" id="btnSchoolTab" onclick="switchTab('schoolTab')">🎓 Schooldata & Examens</button>
             <button class="nav-btn" id="btnConcertsTab" onclick="switchTab('concertsTab')">🎤 Concerten</button>
             <button class="nav-btn" id="btnRadioTab" onclick="switchTab('radioTab')">📻 Radio</button>
             <button class="nav-btn" id="btnCalendarTab" onclick="switchTab('calendarTab')">📅 Kalender</button>
@@ -233,7 +232,6 @@
         </div>
     </nav>
 
-    <!-- Inlogpagina -->
     <div id="authWrapper" class="auth-wrapper">
         <div style="width: 100%; max-width: 460px; display: flex; justify-content: flex-end; margin-bottom: 12px;">
             <button class="nav-btn owner-btn" style="padding: 8px 16px; font-size: 0.9rem;" onclick="openOwnerModalPrompt()">🔧 Beheer Inlog</button>
@@ -264,7 +262,6 @@
         </div>
     </div>
 
-    <!-- Beheer Inlog Modal -->
     <div id="ownerModal" class="modal-overlay">
         <div class="modal-card">
             <h3 style="color: var(--glimmer-gold); margin-bottom: 10px;">🔧 Beheerder Inloggen</h3>
@@ -279,19 +276,27 @@
         </div>
     </div>
 
-    <!-- Concert Zoeken & Inladen Modal -->
+    <!-- Concert Zoeken & Inladen Modal (NL & BE) -->
     <div id="concertModal" class="modal-overlay">
         <div class="modal-card" style="text-align: left; max-width: 520px;">
-            <h3 id="concertModalTitle" style="color: var(--glimmer-gold); margin-bottom: 15px; text-align: center;">🎤 Concert Zoeken & Inladen</h3>
+            <h3 id="concertModalTitle" style="color: var(--glimmer-gold); margin-bottom: 15px; text-align: center;">🎤 Concert Zoeken & Inladen (NL / BE)</h3>
             
             <div class="form-group" style="background: rgba(0,0,0,0.25); padding: 12px; border-radius: 10px; margin-bottom: 15px;">
-                <label>🔍 Zoek / Kies Voorbeeld Artiest</label>
+                <label>🔍 Kies uit Concerten in Nederland & België</label>
                 <select id="presetConcertSelect" onchange="loadConcertPreset(this.value)" style="margin-top: 5px;">
-                    <option value="">-- Kies een concert uit de lijst --</option>
-                    <option value="Suzan & Freek|Ziggo Dome, Amsterdam|2027-04-08T20:00:00|Mijn Concert! 🎉">Suzan & Freek (Ziggo Dome)</option>
-                    <option value="Acda en De Munnik|Ziggo Dome, Amsterdam|2027-05-15T20:00:00|Live in Amsterdam">Acda en De Munnik (Ziggo Dome)</option>
-                    <option value="Goldband|AFAS Live, Amsterdam|2026-12-20T20:00:00|Feestende Show">Goldband (AFAS Live)</option>
-                    <option value="Snollebollekes|GelreDome, Arnhem|2027-06-05T20:00:00|Total Loss!">Snollebollekes (GelreDome)</option>
+                    <option value="">-- Kies een concert uit NL of België --</option>
+                    <optgroup label="🇳🇱 Nederland">
+                        <option value="Suzan & Freek|Ziggo Dome, Amsterdam|2027-04-08T20:00:00|Mijn Concert! 🎉">Suzan & Freek (Ziggo Dome, Amsterdam)</option>
+                        <option value="Acda en De Munnik|Ziggo Dome, Amsterdam|2027-05-15T20:00:00|Live in Amsterdam">Acda en De Munnik (Ziggo Dome, Amsterdam)</option>
+                        <option value="Goldband|AFAS Live, Amsterdam|2026-12-20T20:00:00|Feestende Show">Goldband (AFAS Live, Amsterdam)</option>
+                        <option value="Snollebollekes|GelreDome, Arnhem|2027-06-05T20:00:00|Total Loss!">Snollebollekes (GelreDome, Arnhem)</option>
+                        <option value="Anouk|Rotterdam Ahoy, Rotterdam|2027-03-12T20:00:00|Arena Concert">Anouk (Rotterdam Ahoy, Rotterdam)</option>
+                    </optgroup>
+                    <optgroup label="🇧🇪 België">
+                        <option value="Stromae|Sportpaleis, Antwerpen|2027-05-10T20:00:00|Groots in Antwerpen">Stromae (Sportpaleis, Antwerpen)</option>
+                        <option value="Angèle|Vorst Nationaal, Brussel|2027-04-18T20:00:00|Live in Brussel">Angèle (Vorst Nationaal, Brussel)</option>
+                        <option value="K3|Sportpaleis, Antwerpen|2027-03-20T14:00:00|Familieconcert">K3 (Sportpaleis, Antwerpen)</option>
+                    </optgroup>
                 </select>
             </div>
 
@@ -301,7 +306,7 @@
                 <input type="text" id="concertArtist" placeholder="Bijv. Suzan & Freek">
             </div>
             <div class="form-group">
-                <label>Locatie / Zaal</label>
+                <label>Locatie / Zaal & Stad</label>
                 <input type="text" id="concertVenue" placeholder="Bijv. Ziggo Dome, Amsterdam">
             </div>
             <div class="form-group">
@@ -328,7 +333,6 @@
         </div>
     </div>
 
-    <!-- Timer Toevoegen Modal -->
     <div id="addTimerModal" class="modal-overlay">
         <div class="modal-card" style="text-align: left;">
             <h3 style="color: var(--glimmer-gold); margin-bottom: 15px; text-align: center;">⏱️ Nieuwe Countdown Toevoegen</h3>
@@ -351,7 +355,6 @@
         </div>
     </div>
 
-    <!-- Live Timer Popup Modal -->
     <div id="timerModal" class="modal-overlay">
         <div class="modal-card">
             <h3 id="modalEventTitle" style="margin-bottom: 15px; color: var(--glimmer-gold);">Live Timer</h3>
@@ -374,13 +377,94 @@
         <div id="timersList" style="display: flex; flex-direction: column; gap: 20px;"></div>
     </div>
 
-    <!-- TAB 2: Concerten -->
+    <!-- TAB 2: Schooldata & Examens -->
+    <div id="schoolTab" class="container">
+        <div class="content-card">
+            <h2 style="color: var(--glimmer-gold); margin-bottom: 10px;">🎓 Schooldata, Mei Examens & Vakanties (Heel NL)</h2>
+            <p style="color: #d1d5db; margin-bottom: 20px;">Overzicht van de Centrale Eindexamens in mei (Tijdvak 1), de herkansingen (Tijdvak 2), de uitslagen en alle landelijke vakanties.</p>
+
+            <div class="accordion-section open" id="acc_examens">
+                <div class="accordion-header" onclick="document.getElementById('acc_examens').classList.toggle('open')">
+                    <span>📝 Centrale Eindexamens 2027 (Mei & Juni)</span>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="accordion-content">
+                    <table class="data-table" style="margin-top:0;">
+                        <thead><tr><th>Gebeurtenis / Periode</th><th>Data / Tijd</th><th>Resterend</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-weight: 700;">Eerste Tijdvak (Centrale Examens)</td>
+                                <td>Vrijdag 14 mei t/m Dinsdag 1 juni 2027</td>
+                                <td><span class="clickable-time" onclick="openTimerModal('Eerste Tijdvak Examens', '2027-05-14T08:00:00')">Bekijk timer</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 700;">Uitslag Eerste Tijdvak (Normering)</td>
+                                <td>Woensdag 16 juni 2027 (08:00 uur)</td>
+                                <td><span class="clickable-time" onclick="openTimerModal('Uitslag Eindexamen', '2027-06-16T08:00:00')">Bekijk timer</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 700;">Tweede Tijdvak (Herkansingen & Inhaal)</td>
+                                <td>Dinsdag 22 juni t/m Dinsdag 29 juni 2027</td>
+                                <td><span class="clickable-time" onclick="openTimerModal('Tweede Tijdvak Herkansingen', '2027-06-22T08:00:00')">Bekijk timer</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 700;">Uitslag Tweede Tijdvak</td>
+                                <td>Dinsdag 6 juli 2027 (08:00 uur)</td>
+                                <td><span class="clickable-time" onclick="openTimerModal('Uitslag Tweede Tijdvak', '2027-07-06T08:00:00')">Bekijk timer</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="accordion-section" id="acc_landelijke_vakanties">
+                <div class="accordion-header" onclick="document.getElementById('acc_landelijke_vakanties').classList.toggle('open')">
+                    <span>🏖️ Schoolvakanties Heel Nederland (2026 - 2027)</span>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="accordion-content">
+                    <table class="data-table" style="margin-top:0;">
+                        <thead><tr><th>Vakantie</th><th>Periode (Adviesdata Rijksoverheid)</th><th>Resterend</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-weight: 700;">Herfstvakantie 2026</td>
+                                <td>10 okt t/m 25 okt 2026 (verschilt per regio)</td>
+                                <td><span style="color:#d1d5db;">Al geweest</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 700;">Kerstvakantie 2026-2027</td>
+                                <td>19 dec 2026 t/m 3 jan 2027</td>
+                                <td><span class="clickable-time" onclick="openTimerModal('Kerstvakantie', '2026-12-19T16:00:00')">Bekijk timer</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 700;">Voorjaarsvakantie 2027</td>
+                                <td>20 feb t/m 28 feb 2027 (Regio No/Zuid) / 13-21 feb</td>
+                                <td><span class="clickable-time" onclick="openTimerModal('Voorjaarsvakantie', '2027-02-20T16:00:00')">Bekijk timer</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 700;">Meivakantie 2027</td>
+                                <td>24 apr t/m 2 mei 2027 (Sommige scholen 2 weken)</td>
+                                <td><span class="clickable-time" onclick="openTimerModal('Meivakantie', '2027-04-24T16:00:00')">Bekijk timer</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 700;">Zomervakantie 2027</td>
+                                <td>3 jul t/m 29 aug 2027 (verschilt per regio)</td>
+                                <td><span class="clickable-time" onclick="openTimerModal('Zomervakantie', '2027-07-03T16:00:00')">Bekijk timer</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Concerten -->
     <div id="concertsTab" class="container">
         <div class="content-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <div>
-                    <h2 style="color: var(--glimmer-gold);">🎤 Concerten & Shows Beheren</h2>
-                    <p style="font-size: 0.85rem; color: #d1d5db;">Zoek, laad in of voeg je eigen concerten toe met glinstering!</p>
+                    <h2 style="color: var(--glimmer-gold);">🎤 Concerten & Shows Beheren (NL & BE)</h2>
+                    <p style="font-size: 0.85rem; color: #d1d5db;">Selecteer makkelijk concerten uit Nederland en België met glinstering!</p>
                 </div>
                 <button class="btn" onclick="openAddConcertModal()">➕ Concert Inladen</button>
             </div>
@@ -388,7 +472,7 @@
         </div>
     </div>
 
-    <!-- TAB 3: Radio Speler -->
+    <!-- TAB 4: Radio Speler -->
     <div id="radioTab" class="container">
         <div class="content-card">
             <h2>📻 Gezellige Radio Speler</h2>
@@ -409,10 +493,10 @@
         </div>
     </div>
 
-    <!-- TAB 4: Kalender -->
+    <!-- TAB 5: Kalender -->
     <div id="calendarTab" class="container">
         <div class="content-card">
-            <h2>📅 Kalender, Feestdagen & Vakanties</h2>
+            <h2>📅 Kalender & Feestdagen</h2>
             <p style="color: #d1d5db; margin-bottom: 20px;">Standaard geopend op 2026. Klik op een datum voor een live timer.</p>
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                 <button class="btn" id="btnYear2026" onclick="selectYear(2026)">2026</button>
@@ -422,7 +506,7 @@
         </div>
     </div>
 
-    <!-- TAB 5: Over de Beheerder -->
+    <!-- TAB 6: Over de Beheerder -->
     <div id="aboutTab" class="container">
         <div class="content-card">
             <h2>🙋 Over de Beheerder</h2>
@@ -430,7 +514,7 @@
         </div>
     </div>
 
-    <!-- TAB 6: Support Tickets -->
+    <!-- TAB 7: Support Tickets -->
     <div id="ticketsTab" class="container">
         <div class="content-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -444,7 +528,7 @@
         </div>
     </div>
 
-    <!-- TAB 7: Beheer Paneel -->
+    <!-- TAB 8: Beheer Paneel -->
     <div id="ownerControlTab" class="container">
         <div class="content-card" style="border-color: rgba(234, 179, 8, 0.5);">
             <h2 style="color: var(--glimmer-gold); margin-bottom: 10px;">👑 Beheer Paneel</h2>
@@ -487,7 +571,7 @@
         let modalInterval = null;
         let appData = { timers: [], tickets: [], concerts: [] };
 
-        const defaultAboutText = `Hoi! Welkom op mijn website. Ik ben <strong>DitIsToevalligIemand</strong>, de maker en eigenaar van dit portaal. Gemaakt in 2026 voor al je timers, radio, vakanties en concerten!`;
+        const defaultAboutText = `Hoi! Welkom op mijn website. Ik ben <strong>DitIsToevalligIemand</strong>, de maker en eigenaar van dit portaal. Gemaakt in 2026 voor al je timers, radio, vakanties, eindexamens en concerten in Nederland en België!`;
 
         function getAboutText() { return safeGetStorage('sinterklaas_about_text') || defaultAboutText; }
         function renderAboutTab() { document.getElementById('aboutContentBox').innerHTML = getAboutText(); }
@@ -511,8 +595,7 @@
                     { datum: '2026-12-05', naam: 'Sinterklaasavond' },
                     { datum: '2026-12-25', naam: 'Eerste Kerstdag' },
                     { datum: '2026-12-31', naam: 'Einde 2026' }
-                ],
-                zomervakantieStart: '2026-07-04'
+                ]
             },
             2027: {
                 feestdagen: [
@@ -522,8 +605,7 @@
                     { datum: '2027-12-05', naam: 'Sinterklaasavond' },
                     { datum: '2027-12-25', naam: 'Eerste Kerstdag' },
                     { datum: '2027-12-31', naam: 'Einde 2027' }
-                ],
-                zomervakantieStart: '2027-07-03'
+                ]
             }
         };
 
@@ -713,7 +795,7 @@
                 appData = {
                     timers: [{ id: 1, title: 'Einde 2026', date: '2026-12-31T23:59:59', icon: '⏳' }],
                     tickets: [],
-                    concerts: [{ id: 101, artist: 'Suzan & Freek', venue: 'Ziggo Dome', datetime: '2027-04-08T20:00:00', note: 'Mijn Concert! 🎉', colorTheme: 'glimmer' }]
+                    concerts: [{ id: 101, artist: 'Suzan & Freek', venue: 'Ziggo Dome, Amsterdam', datetime: '2027-04-08T20:00:00', note: 'Mijn Concert! 🎉', colorTheme: 'glimmer' }]
                 };
                 saveData();
             }
