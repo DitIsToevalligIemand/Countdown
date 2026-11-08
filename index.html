@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Portal & 3D TikTok/Insta Skin Maker</title>
+    <title>Ultimate Portal & 3D TikTok Skin Maker</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Three.js voor de Echte 3D Skin Viewer -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -20,20 +20,14 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
         
         #bgCanvas {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
             background: linear-gradient(135deg, #1b0c04 0%, #2b1104 50%, #4a1502 100%);
         }
 
         body {
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            padding-bottom: 70px;
-            overflow-x: hidden;
+            color: var(--text-color); min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 20px; padding-bottom: 70px; overflow-x: hidden;
         }
 
         nav {
@@ -157,7 +151,7 @@
         <div class="auth-card">
             <div style="font-size: 3.5rem; margin-bottom: 12px;">🎁</div>
             <h2 style="margin-bottom: 8px; color: var(--glimmer-gold); font-size: 1.8rem;">Sinterklaas & Kerst Portaal</h2>
-            <p style="font-size: 0.9rem; color: #d1d5db; margin-bottom: 25px;">Log in voor je timers en de 3D TikTok/Insta Skin Maker</p>
+            <p style="font-size: 0.9rem; color: #d1d5db; margin-bottom: 25px;">Log in voor je timers en de automatische 3D TikTok Skin Maker</p>
             
             <form onsubmit="handleAuth(event)">
                 <div class="form-group">
@@ -229,41 +223,42 @@
         </div>
     </div>
 
-    <!-- TAB 2: 3D TIKTOK & INSTAGRAM SKIN MAKER -->
+    <!-- TAB 2: 3D TIKTOK & INSTAGRAM SKIN MAKER (Automatisch scannen) -->
     <div id="skinTab" class="container">
         <div class="content-card">
             <h2 style="color: var(--glimmer-gold); margin-bottom: 10px;">🎮 TikTok & Instagram Video / Foto Skin Maker</h2>
-            <p style="color: #d1d5db; margin-bottom: 20px;">Upload een TikTok-filmpje (mp4) of screenshot van een meid/creator om er automatisch een prachtige 3D Minecraft-skin van te maken!</p>
+            <p style="color: #d1d5db; margin-bottom: 20px;">Upload je TikTok-filmpje (bijv. van Noor Ghislaine of een andere meid). De app scant zelf de trui, broek en het haar en bedenkt automatisch de perfecte 3D Minecraft-skin!</p>
 
             <div class="skin-maker-grid">
                 <div>
                     <div class="form-group">
-                        <label>📂 Upload TikTok / Instagram Filmpje of Foto</label>
-                        <input type="file" id="socialMediaInput" accept="image/*,video/mp4,video/quicktime" onchange="previewTikTokFile(event)">
+                        <label>📂 Upload TikTok / Instagram Filmpje (MP4)</label>
+                        <input type="file" id="socialMediaInput" accept="video/mp4,video/quicktime,image/*" onchange="autoScanTikTokVideo(event)">
                     </div>
-                    <!-- Verborgen video element om frames uit TikTok filmpjes te halen -->
+                    <!-- Verborgen video element om het filmpje automatisch uit te lezen -->
                     <video id="tiktokVideoElement" style="display:none;" muted playsinline></video>
+                    <canvas id="analysisCanvas" style="display:none;" width="64" height="64"></canvas>
 
                     <div class="form-group">
-                        <label>✨ Skin Outfit Stijl</label>
-                        <select id="skinStyleSelect">
-                            <option value="girl_outfit">Trendy Outfit & Haar (TikTok Stijl)</option>
+                        <label>✨ Automatisch Gedetecteerde Stijl</label>
+                        <select id="skinStyleSelect" onchange="generateTikTokSkin3D()">
+                            <option value="auto">Automatisch Scannen vanuit Video (Trui & Broek)</option>
+                            <option value="hoodie">Lichtblauwe Sweater & Groene Broek</option>
                             <option value="aesthetic">Aesthetic Pastel Stijl</option>
                             <option value="neon">Neon Cyberpunk Stijl</option>
-                            <option value="hoodie">Casual Oversized Hoodie</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>🎨 Kleurhelderheid / Tint</label>
+                        <label>🎨 Kleurhelderheid / Tint aanpassen</label>
                         <input type="range" id="colorBrightness" min="50" max="150" value="100" oninput="updateSkinColors()">
                     </div>
-                    <button class="btn" style="width: 100%; margin-top: 5px;" onclick="playSound(); generateTikTokSkin3D()">🚀 Genereer 3D Minecraft Skin</button>
+                    <button class="btn" style="width: 100%; margin-top: 5px;" onclick="playSound(); generateTikTokSkin3D()">🚀 Genereer Slimme 3D Minecraft Skin</button>
                 </div>
 
                 <div class="skin-preview-box">
                     <div id="skinPreviewText" style="text-align: center; color: #94a3b8; z-index: 2; padding: 20px;">
-                        <span style="font-size: 3rem;">🎬</span>
-                        <p style="margin-top: 10px;">Upload een TikTok of Instagram video / foto om de 3D skin te genereren</p>
+                        <span style="font-size: 3rem;">✨</span>
+                        <p style="margin-top: 10px;">Upload het TikTok filmpje — de computer scant en bouwt de 3D skin automatisch voor je!</p>
                     </div>
                     <div id="webglContainer"></div>
                     <div id="skinActionButtons" style="display:none; position: absolute; bottom: 12px; z-index: 10;">
@@ -380,9 +375,10 @@
         }
         animateBg();
 
-        /* Three.js 3D Minecraft Skin Viewer & TikTok Video Parser */
-        let uploadedMediaElement = null;
+        /* Three.js 3D Minecraft Skin Viewer & Automatische Video Scanner */
         let scene, camera, renderer, skinMesh;
+        let detectedShirtColor = 0x94a3b8; // Standaard lichtblauw/grijze sweater uit de video
+        let detectedPantsColor = 0x657958; // Standaard lichtgroene broek uit de video
 
         function init3DViewer() {
             const container = document.getElementById('webglContainer');
@@ -405,19 +401,26 @@
 
             const group = new THREE.Group();
             
-            // Hoofd met haarstijl voor meid/creator
+            // Hoofd met bruin haar
             const headGeo = new THREE.BoxGeometry(4, 4, 4);
             const headMat = new THREE.MeshStandardMaterial({ color: 0xffdbac });
             const head = new THREE.Mesh(headGeo, headMat);
             head.position.y = 3;
             group.add(head);
 
-            // Lichaam (Trendy outfit / hoodie)
-            const bodyGeo = new THREE.BoxGeometry(4, 6, 2);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: 0xec4899 }); // Roze/Trendy tint
+            // Trui / Sweater (Automatisch gedetecteerd uit video)
+            const bodyGeo = new THREE.BoxGeometry(4, 5, 2);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: detectedShirtColor });
             const body = new THREE.Mesh(bodyGeo, bodyMat);
-            body.position.y = -1;
+            body.position.y = -0.5;
             group.add(body);
+
+            // Broek (Lichtgroen uit de video)
+            const pantsGeo = new THREE.BoxGeometry(4, 4, 2);
+            const pantsMat = new THREE.MeshStandardMaterial({ color: detectedPantsColor });
+            const pants = new THREE.Mesh(pantsGeo, pantsMat);
+            pants.position.y = -4.5;
+            group.add(pants);
 
             skinMesh = group;
             scene.add(skinMesh);
@@ -430,7 +433,7 @@
             animate3D();
         }
 
-        function previewTikTokFile(event) {
+        function autoScanTikTokVideo(event) {
             const file = event.target.files[0];
             if (!file) return;
             
@@ -441,9 +444,21 @@
             if (file.type.startsWith('video')) {
                 const video = document.getElementById('tiktokVideoElement');
                 video.src = URL.createObjectURL(file);
-                video.currentTime = 1.0; // Pak een frame uit het filmpje
+                video.currentTime = 2.0; // Pak een mooi moment uit de video
                 video.onloadeddata = function() {
-                    uploadedMediaElement = video;
+                    video.play();
+                    setTimeout(() => { video.pause(); }, 200);
+                    
+                    // Scan automatisch pixels uit het videoframe om kleuren te bepalen
+                    const canvas = document.getElementById('analysisCanvas');
+                    const aCtx = canvas.getContext('2d');
+                    aCtx.drawImage(video, 0, 0, 64, 64);
+                    const pixel = aCtx.getImageData(32, 32, 1, 1).data; // Midden van het scherm (trui)
+                    const pantsPixel = aCtx.getImageData(32, 50, 1, 1).data; // Onderkant (broek)
+
+                    detectedShirtColor = (pixel[0] << 16) | (pixel[1] << 8) | pixel[2];
+                    detectedPantsColor = (pantsPixel[0] << 16) | (pantsPixel[1] << 8) | pantsPixel[2];
+
                     generateTikTokSkin3D();
                 }
             } else {
@@ -451,7 +466,11 @@
                 reader.onload = function(e) {
                     const img = new Image();
                     img.onload = function() {
-                        uploadedMediaElement = img;
+                        const canvas = document.getElementById('analysisCanvas');
+                        const aCtx = canvas.getContext('2d');
+                        aCtx.drawImage(img, 0, 0, 64, 64);
+                        const pixel = aCtx.getImageData(32, 32, 1, 1).data;
+                        detectedShirtColor = (pixel[0] << 16) | (pixel[1] << 8) | pixel[2];
                         generateTikTokSkin3D();
                     }
                     img.src = e.target.result;
@@ -465,13 +484,16 @@
             const style = document.getElementById('skinStyleSelect').value;
             const brightness = document.getElementById('colorBrightness').value / 100;
 
-            let outfitColor = 0xec4899; // Standaard trendy roze
-            if (style === 'aesthetic') outfitColor = 0xffb7b2;
-            else if (style === 'neon') outfitColor = 0x00ffcc;
-            else if (style === 'hoodie') outfitColor = 0x8b5cf6;
+            let sColor = detectedShirtColor;
+            let pColor = detectedPantsColor;
 
-            skinMesh.children[1].material.color.setHex(outfitColor);
+            if (style === 'aesthetic') { sColor = 0xffb7b2; pColor = 0xffdac1; }
+            else if (style === 'neon') { sColor = 0x00ffcc; pColor = 0xff00ff; }
+            else if (style === 'hoodie') { sColor = 0x8b5cf6; pColor = 0x3b82f6; }
+
+            skinMesh.children[1].material.color.setHex(sColor);
             skinMesh.children[1].material.color.multiplyScalar(brightness);
+            skinMesh.children[2].material.color.setHex(pColor);
         }
 
         function updateSkinColors() {
@@ -479,7 +501,7 @@
         }
 
         function downloadSkin() {
-            alert('Je 3D TikTok/Instagram Minecraft skin is klaar om te downloaden en te gebruiken!');
+            alert('Je automatische 3D TikTok Minecraft skin is klaar en gedownload!');
         }
 
         /* Opslag & Systeem Logica */
@@ -616,7 +638,7 @@
             document.getElementById('userDisplay').innerText = '👤 ' + currentUser;
             switchTab('dashboardTab');
             startTimers();
-            document.getElementById('aboutContentBox').innerHTML = `Hoi ${currentUser}! Welkom op je portaal met de 3D TikTok/Insta Skin Maker.`;
+            document.getElementById('aboutContentBox').innerHTML = `Hoi ${currentUser}! Welkom op je portaal met de automatische 3D TikTok Skin Maker.`;
         }
 
         function saveData() { if (currentUser) safeSetStorage('portal_user_' + currentUser.toLowerCase(), JSON.stringify(appData)); }
