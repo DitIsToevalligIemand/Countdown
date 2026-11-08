@@ -13,6 +13,9 @@
             --accent-color: #d97706;
             --accent-glow: rgba(217, 119, 6, 0.5);
             --glimmer-gold: #fde047;
+            --dev-color: #3b82f6;
+            --dev-glow: rgba(59, 130, 246, 0.5);
+            --success-color: #22c55e;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
@@ -30,7 +33,7 @@
 
         nav {
             width: 100%; max-width: 1100px;
-            display: flex; justify-content: space-between; align-items: center;
+            display: none; justify-content: space-between; align-items: center;
             background: var(--card-bg); backdrop-filter: blur(20px);
             border: 1px solid var(--card-border); padding: 12px 22px;
             border-radius: 20px; margin-bottom: 25px;
@@ -45,13 +48,11 @@
         .nav-btn.active, .nav-btn:hover { color: #fff; background: rgba(217, 119, 6, 0.4); transform: translateY(-2px); box-shadow: 0 4px 12px var(--accent-glow); }
 
         .container { width: 100%; max-width: 1100px; display: none; flex-direction: column; gap: 20px; }
-        .container.active { display: flex; }
+        .container.active { display: flex; animation: fadeIn 0.4s ease forwards; }
 
-        .auth-wrapper { width: 100%; min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .auth-card {
-            background: var(--card-bg); border: 2px solid var(--card-border);
-            border-radius: 30px; padding: 45px; max-width: 480px; width: 100%;
-            text-align: center; backdrop-filter: blur(25px); box-shadow: 0 35px 70px rgba(0,0,0,0.8);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .content-card {
@@ -84,6 +85,7 @@
             background: rgba(0,0,0,0.6); border: 2px dashed var(--card-border);
             border-radius: 16px; min-height: 380px; display: flex; flex-direction: column;
             align-items: center; justify-content: center; position: relative; padding: 20px; gap: 15px;
+            text-align: center;
         }
 
         .btn {
@@ -101,9 +103,11 @@
             border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 12px; color: white; font-size: 0.95rem; outline: none;
         }
 
-        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; }
         .status-actief { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
         .status-open { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .status-user { background: rgba(217, 119, 6, 0.15); color: #fbbf24; border: 1px solid rgba(217, 119, 6, 0.3); }
+        .status-dev { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); box-shadow: 0 0 10px var(--dev-glow); }
 
         .footer-badge {
             position: fixed; bottom: 12px; right: 20px; background: var(--card-bg);
@@ -112,14 +116,24 @@
         }
         .verified-badge { background: #3b82f6; color: white; border-radius: 50%; width: 14px; height: 14px; display: inline-flex; justify-content: center; align-items: center; font-size: 0.65rem; font-weight: 800; }
 
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none;
-            justify-content: center; align-items: center; z-index: 2000;
+        /* Dev Mode Switch */
+        .dev-switch-wrapper {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px; margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05); width: 100%;
         }
-        .modal-card {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            padding: 30px; border-radius: 24px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #3f3f46; transition: .3s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--dev-color); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .auth-wrapper { width: 100%; min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .auth-card {
+            background: var(--card-bg); border: 2px solid var(--card-border);
+            border-radius: 30px; padding: 45px; max-width: 480px; width: 100%;
+            text-align: center; backdrop-filter: blur(25px); box-shadow: 0 35px 70px rgba(0,0,0,0.8);
         }
     </style>
 </head>
@@ -127,562 +141,35 @@
 
     <canvas id="bgCanvas"></canvas>
 
+    <!-- INLOGSCHERM -->
+    <div id="authScreen" class="auth-wrapper">
+        <div class="auth-card">
+            <h2 style="color: #fff; margin-bottom: 10px;">Welkom bij Ultimate Portal</h2>
+            <p style="color: #a1a1aa; margin-bottom: 25px;">Log in om toegang te krijgen tot het dashboard en tools.</p>
+            
+            <div class="form-group">
+                <label for="usernameInput">Gebruikersnaam</label>
+                <input type="text" id="usernameInput" placeholder="Bijv. Gamer123...">
+            </div>
+
+            <div class="dev-switch-wrapper">
+                <span style="font-size: 0.9rem; font-weight: 600;">Inloggen als Developer</span>
+                <label class="switch">
+                    <input type="checkbox" id="devModeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <button class="btn" style="width: 100%;" onclick="playSound(); handleLogin()">Inloggen en Verifiëren</button>
+        </div>
+    </div>
+
     <!-- Navigatiemenu -->
-    <nav id="topNav" style="display: none;">
+    <nav id="topNav">
         <div class="nav-links">
             <button class="nav-btn active" id="btnDashboardTab" onclick="playSound(); switchTab('dashboardTab')">🎁 Dashboard</button>
-            <button class="nav-btn" id="btnSkinTab" onclick="playSound(); switchTab('skinTab')">🎮 TikTok Skin Maker (Zichtbare Analyse)</button>
+            <button class="nav-btn" id="btnSkinTab" onclick="playSound(); switchTab('skinTab')">🎮 TikTok Skin Maker</button>
             <button class="nav-btn" id="btnTimersTab" onclick="playSound(); switchTab('timersTab')">⏱️ Countdowns</button>
             <button class="nav-btn" id="btnSchoolTab" onclick="playSound(); switchTab('schoolTab')">🎓 Examen & Vakanties</button>
             <button class="nav-btn" id="btnRadioTab" onclick="playSound(); switchTab('radioTab')">📻 Radio</button>
             <button class="nav-btn" id="btnAboutTab" onclick="playSound(); switchTab('aboutTab')">🙋 Over</button>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="userDisplay" style="font-size: 0.88rem; font-weight: 700; color: var(--text-color);"></span>
-            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.8rem;" onclick="playSound(); logout()">Uitloggen</button>
-        </div>
-    </nav>
-
-    <!-- Inlogscherm -->
-    <div id="authWrapper" class="auth-wrapper">
-        <div class="auth-card">
-            <div style="font-size: 3.5rem; margin-bottom: 12px;">🎁</div>
-            <h2 style="margin-bottom: 8px; color: var(--glimmer-gold); font-size: 1.8rem;">Sinterklaas & Kerst Portaal</h2>
-            <p style="font-size: 0.9rem; color: #d1d5db; margin-bottom: 25px;">Log in om direct je timers en de TikTok Skin Maker te openen</p>
-            
-            <form onsubmit="handleAuth(event)">
-                <div class="form-group">
-                    <label>Gebruikersnaam</label>
-                    <input type="text" id="authUsername" required placeholder="Bijv. David">
-                </div>
-                <div class="form-group">
-                    <label>Wachtwoord</label>
-                    <input type="password" id="authPassword" required placeholder="••••••••">
-                </div>
-                <button type="submit" class="btn" style="width: 100%; margin-top: 10px; padding: 12px; font-size: 1rem;">Inloggen</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Timer Toevoegen Modal -->
-    <div id="addTimerModal" class="modal-overlay">
-        <div class="modal-card" style="text-align: left;">
-            <h3 style="color: var(--glimmer-gold); margin-bottom: 15px; text-align: center;">⏱️ Nieuwe Countdown</h3>
-            <div class="form-group">
-                <label>Titel</label>
-                <input type="text" id="newTimerTitle" placeholder="Bijv. Vakantie / Concert">
-            </div>
-            <div class="form-group">
-                <label>Datum & Tijd</label>
-                <input type="datetime-local" id="newTimerDate">
-            </div>
-            <div class="form-group">
-                <label>Emoji Icoon</label>
-                <input type="text" id="newTimerIcon" value="🎯" maxlength="2">
-            </div>
-            <div class="form-group">
-                <label>Notitie</label>
-                <textarea id="newTimerNote" rows="2" placeholder="Persoonlijke notitie..."></textarea>
-            </div>
-            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                <button class="btn" onclick="playSound(); saveNewTimer()">Opslaan</button>
-                <button class="btn btn-danger" onclick="playSound(); closeAddTimerModal()">Annuleren</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Details Modal -->
-    <div id="noteDetailModal" class="modal-overlay">
-        <div class="modal-card">
-            <h3 id="detailModalTitle" style="margin-bottom: 10px; color: var(--glimmer-gold);">Details</h3>
-            <p id="detailModalNoteText" style="font-size: 0.95rem; color: #fef3c7; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px;"></p>
-            <div class="countdown-grid" style="margin-bottom: 20px;">
-                <div class="time-box"><div class="time-value" id="mDays">00</div><div class="time-label">Dagen</div></div>
-                <div class="time-box"><div class="time-value" id="mHours">00</div><div class="time-label">Uur</div></div>
-                <div class="time-box"><div class="time-value" id="mMins">00</div><div class="time-label">Minuten</div></div>
-                <div class="time-box"><div class="time-value" id="mSecs">00</div><div class="time-label">Sec</div></div>
-            </div>
-            <button class="btn" onclick="playSound(); closeDetailModal()">Sluiten</button>
-        </div>
-    </div>
-
-    <!-- TAB 1: DASHBOARD -->
-    <div id="dashboardTab" class="container active">
-        <div class="content-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <div>
-                    <h2 style="color: var(--glimmer-gold);">📊 Dashboard & Overzicht</h2>
-                    <p style="color: #d1d5db; font-size: 0.9rem;">Al je timers en persoonlijke items.</p>
-                </div>
-                <button class="btn" onclick="playSound(); openAddTimerModal()">➕ Item Toevoegen</button>
-            </div>
-            <div id="dashboardCustomList" style="display: flex; flex-direction: column; gap: 12px;"></div>
-        </div>
-    </div>
-
-    <!-- TAB 2: TIKTOK SKIN MAKER (Met live visuele analyse) -->
-    <div id="skinTab" class="container">
-        <div class="content-card">
-            <h2 style="color: var(--glimmer-gold); margin-bottom: 10px;">🎮 TikTok Video Analysator & 64x64 Skin Maker</h2>
-            <p style="color: #d1d5db; margin-bottom: 20px;">Upload je TikTok-filmpje (of foto). De app toont direct de foto en het gedecteerde kleurenpalet op je scherm, en maakt automatisch een echte 64x64 Minecraft skin!</p>
-
-            <div class="skin-maker-grid">
-                <div>
-                    <div class="form-group">
-                        <label>📂 Stap 1: Upload TikTok Filmpje (MP4) of Foto</label>
-                        <input type="file" id="socialMediaInput" accept="video/mp4,video/quicktime,image/*" onchange="uploadAndAnalyzeFile(event)">
-                    </div>
-                    <video id="tiktokVideoElement" style="display:none;" muted playsinline></video>
-                    <canvas id="analysisCanvas" style="display:none;" width="64" height="64"></canvas>
-                    <canvas id="skinTextureCanvas" style="display:none;" width="64" height="64"></canvas>
-
-                    <div class="form-group">
-                        <label>✨ Stap 2: Gescande Kleuren (Je ziet wat de app ziet)</label>
-                        <div style="display: flex; gap: 10px; align-items: center; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px;">
-                            <div style="text-align: center;"><div id="colorBoxShirt" style="width: 35px; height: 35px; background: #94a3b8; border-radius: 6px; border: 1px solid #fff;"></div><span style="font-size:0.75rem;">Trui</span></div>
-                            <div style="text-align: center;"><div id="colorBoxPants" style="width: 35px; height: 35px; background: #657958; border-radius: 6px; border: 1px solid #fff;"></div><span style="font-size:0.75rem;">Broek</span></div>
-                            <div style="text-align: center;"><div id="colorBoxHair" style="width: 35px; height: 35px; background: #8b5a2b; border-radius: 6px; border: 1px solid #fff;"></div><span style="font-size:0.75rem;">Haar</span></div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>🎨 Handmatige Stijl Kiezen (Optioneel)</label>
-                        <select id="skinStyleSelect" onchange="redrawSkin()">
-                            <option value="analyzed">Gebruik Gescande TikTok Kleuren (Noor Stijl)</option>
-                            <option value="sweater">Lichtblauwe Sweater & Groene Broek</option>
-                            <option value="aesthetic">Aesthetic Pastel Stijl</option>
-                            <option value="neon">Neon Cyberpunk Stijl</option>
-                        </select>
-                    </div>
-                    <button class="btn" style="width: 100%; margin-top: 5px;" onclick="playSound(); redrawSkin()">🚀 Ververs 64x64 Minecraft Skin</button>
-                </div>
-
-                <div class="skin-preview-box">
-                    <div id="skinPreviewText" style="text-align: center; color: #94a3b8; padding: 20px;">
-                        <span style="font-size: 3rem;">📸</span>
-                        <p style="margin-top: 10px;">Upload hierboven je TikTok-filmpje om de foto én de skin te bekijken!</p>
-                    </div>
-                    <!-- Zichtbare foto van het geüploade moment -->
-                    <img id="uploadedPhotoPreview" style="display:none; max-width: 120px; max-height: 120px; border-radius: 8px; border: 2px solid var(--glimmer-gold);" alt="Geüploade TikTok frame">
-                    
-                    <!-- Zichtbare 64x64 skin preview -->
-                    <canvas id="previewCanvas" width="128" height="128" style="display:none; image-rendering: pixelated; width: 130px; height: 130px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);"></canvas>
-                    
-                    <div id="skinActionButtons" style="display:none; width: 100%; text-align: center;">
-                        <button class="btn" onclick="playSound(); downloadSkinFile()">📥 Download 64x64 Minecraft Skin (.png)</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 3: Countdowns -->
-    <div id="timersTab" class="container">
-        <div class="content-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h2 style="color: var(--glimmer-gold);">⏱️ Countdowns</h2>
-                <button class="btn" onclick="playSound(); openAddTimerModal()">➕ Timer Toevoegen</button>
-            </div>
-            <div id="timersList" style="display: flex; flex-direction: column; gap: 15px;"></div>
-        </div>
-    </div>
-
-    <!-- TAB 4: Examen & Vakanties -->
-    <div id="schoolTab" class="container">
-        <div class="content-card">
-            <h2 style="color: var(--glimmer-gold); margin-bottom: 10px;">🎓 Examen & Vakanties</h2>
-            <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
-                <div class="timer-card" onclick="playSound(); openDetailModalFromData('Laatste 2 Weken Examen', '2027-05-03T08:00:00', 'Eindsprint voor de centrale examens!')">
-                    <div class="timer-header">
-                        <div class="timer-title">📚 Laatste 2 Weken Examenvoorbereiding</div>
-                        <span class="status-badge status-open">Fase 1</span>
-                    </div>
-                    <div style="font-size: 0.88rem; color: #d1d5db;">Start: 3 mei 2027</div>
-                </div>
-                <div class="timer-card" onclick="playSound(); openDetailModalFromData('Centrale Examens', '2027-05-14T08:00:00', 'Veel succes!')">
-                    <div class="timer-header">
-                        <div class="timer-title">📝 Centrale Eindexamens</div>
-                        <span class="status-badge status-actief">Start</span>
-                    </div>
-                    <div style="font-size: 0.88rem; color: #d1d5db;">14 mei t/m 1 juni 2027</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 5: Radio -->
-    <div id="radioTab" class="container">
-        <div class="content-card">
-            <h2>📻 Radio Speler</h2>
-            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
-                <button class="btn" onclick="playSound(); playRadio('Sky Radio', 'https://icecast.skyradio.nl/skyradio/mp3')">▶️ Sky Radio</button>
-                <button class="btn" onclick="playSound(); playRadio('Radio 538', 'https://stream.radio538.nl/web538/mp3')">▶️ Radio 538</button>
-                <button class="btn btn-danger" onclick="playSound(); stopRadio()">⏹️ Stop</button>
-            </div>
-            <audio id="audioStream" preload="none"></audio>
-        </div>
-    </div>
-
-    <!-- TAB 6: Over -->
-    <div id="aboutTab" class="container">
-        <div class="content-card">
-            <h2>🙋 Over de Beheerder</h2>
-            <p id="aboutContentBox" style="line-height: 1.8; color: var(--text-color); margin-top: 15px;"></p>
-        </div>
-    </div>
-
-    <div class="footer-badge">
-        <span>🎁</span> <strong>DitIsToevalligIemand</strong> <span class="verified-badge">✓</span>
-    </div>
-
-    <script>
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSound() {
-            try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.08);
-                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.08);
-            } catch(e) {}
-        }
-
-        const canvas = document.getElementById('bgCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        for (let i = 0; i < 50; i++) {
-            particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: Math.random() * 2.5 + 0.5, speedY: Math.random() * 0.4 + 0.1, alpha: Math.random() * 0.7 + 0.2 });
-        }
-        function animateBg() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#3d1502';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(253, 224, 71, ${p.alpha})`;
-                ctx.fill();
-                p.y -= p.speedY;
-                if (p.y < 0) p.y = canvas.height;
-            });
-            requestAnimationFrame(animateBg);
-        }
-        animateBg();
-
-        let scannedShirtHex = "#94a3b8"; 
-        let scannedPantsHex = "#657958"; 
-        let scannedHairHex = "#8b5a2b";  
-
-        function uploadAndAnalyzeFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if (file.type.startsWith('video')) {
-                const video = document.getElementById('tiktokVideoElement');
-                video.src = URL.createObjectURL(file);
-                video.currentTime = 2.0; 
-                video.onloadeddata = function() {
-                    video.play();
-                    setTimeout(() => { video.pause(); }, 200);
-                    
-                    const analysisCanvas = document.getElementById('analysisCanvas');
-                    const aCtx = analysisCanvas.getContext('2d');
-                    aCtx.drawImage(video, 0, 0, 64, 64);
-                    
-                    const p1 = aCtx.getImageData(32, 32, 1, 1).data; // Trui
-                    const p2 = aCtx.getImageData(32, 50, 1, 1).data; // Broek
-                    const p3 = aCtx.getImageData(32, 10, 1, 1).data; // Haar
-
-                    scannedShirtHex = rgbToHex(p1[0], p1[1], p1[2]);
-                    scannedPantsHex = rgbToHex(p2[0], p2[1], p2[2]);
-                    scannedHairHex = rgbToHex(p3[0], p3[1], p3[2]);
-
-                    // Toon een frame als zichtbare foto
-                    const photoImg = document.getElementById('uploadedPhotoPreview');
-                    photoImg.src = analysisCanvas.toDataURL('image/png');
-                    photoImg.style.display = 'block';
-
-                    updateColorBoxes();
-                    redrawSkin();
-                }
-            } else {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const analysisCanvas = document.getElementById('analysisCanvas');
-                        const aCtx = analysisCanvas.getContext('2d');
-                        aCtx.drawImage(img, 0, 0, 64, 64);
-                        
-                        const p1 = aCtx.getImageData(32, 32, 1, 1).data;
-                        const p2 = aCtx.getImageData(32, 50, 1, 1).data;
-                        const p3 = aCtx.getImageData(32, 10, 1, 1).data;
-
-                        scannedShirtHex = rgbToHex(p1[0], p1[1], p1[2]);
-                        scannedPantsHex = rgbToHex(p2[0], p2[1], p2[2]);
-                        scannedHairHex = rgbToHex(p3[0], p3[1], p3[2]);
-
-                        const photoImg = document.getElementById('uploadedPhotoPreview');
-                        photoImg.src = e.target.result;
-                        photoImg.style.display = 'block';
-
-                        updateColorBoxes();
-                        redrawSkin();
-                    }
-                    img.src = e.target.result;
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function rgbToHex(r, g, b) {
-            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-        }
-
-        function updateColorBoxes() {
-            document.getElementById('colorBoxShirt').style.background = scannedShirtHex;
-            document.getElementById('colorBoxPants').style.background = scannedPantsHex;
-            document.getElementById('colorBoxHair').style.background = scannedHairHex;
-        }
-
-        function redrawSkin() {
-            document.getElementById('skinPreviewText').style.display = 'none';
-            const previewCanvas = document.getElementById('previewCanvas');
-            previewCanvas.style.display = 'block';
-            document.getElementById('skinActionButtons').style.display = 'block';
-
-            const style = document.getElementById('skinStyleSelect').value;
-            let sColor = scannedShirtHex;
-            let pColor = scannedPantsHex;
-            let hColor = scannedHairHex;
-
-            if (style === 'sweater') { sColor = "#94a3b8"; pColor = "#657958"; }
-            else if (style === 'aesthetic') { sColor = "#ffb7b2"; pColor = "#ffdac1"; hColor = "#5c4033"; }
-            else if (style === 'neon') { sColor = "#00ffcc"; pColor = "#ff00ff"; hColor = "#00ffff"; }
-
-            const skinCanvas = document.getElementById('skinTextureCanvas');
-            const tCtx = skinCanvas.getContext('2d');
-            tCtx.clearRect(0, 0, 64, 64);
-
-            tCtx.fillStyle = "rgba(0,0,0,0)";
-            tCtx.fillRect(0, 0, 64, 64);
-
-            // Gezicht & Huid
-            tCtx.fillStyle = "#ffdbac";
-            tCtx.fillRect(8, 8, 8, 8);  
-            tCtx.fillRect(40, 8, 8, 8); 
-            tCtx.fillRect(44, 20, 4, 12); 
-            tCtx.fillRect(36, 52, 4, 12); 
-
-            // Haar
-            tCtx.fillStyle = hColor;
-            tCtx.fillRect(8, 0, 8, 4);  
-            tCtx.fillRect(8, 4, 8, 4);  
-
-            // Sweater
-            tCtx.fillStyle = sColor;
-            tCtx.fillRect(20, 20, 8, 12); 
-            tCtx.fillRect(32, 20, 8, 12); 
-            tCtx.fillRect(44, 20, 4, 12); 
-
-            // Broek & Schoenen
-            tCtx.fillStyle = pColor;
-            tCtx.fillRect(4, 20, 4, 12);  
-            tCtx.fillRect(20, 52, 4, 12); 
-
-            const pCtx = previewCanvas.getContext('2d');
-            pCtx.imageSmoothingEnabled = false;
-            pCtx.clearRect(0, 0, 128, 128);
-            pCtx.drawImage(skinCanvas, 8, 4, 48, 48);
-        }
-
-        function downloadSkinFile() {
-            const canvas = document.getElementById('skinTextureCanvas');
-            const link = document.createElement('a');
-            link.download = 'noor-minecraft-skin-64x64.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-            alert('Je echte 64x64 Minecraft skin-bestand is succesvol gedownload!');
-        }
-
-        const memoryStorage = {};
-        function safeGetStorage(key) { try { return localStorage.getItem(key); } catch(e) { return memoryStorage[key] || null; } }
-        function safeSetStorage(key, value) { try { localStorage.setItem(key, value); } catch(e) { memoryStorage[key] = value; } }
-
-        let currentUser = null;
-        let timerInterval = null;
-        let modalInterval = null;
-        let appData = { timers: [] };
-
-        function openDetailModalFromData(title, dateStr, noteText) {
-            document.getElementById('detailModalTitle').innerText = title;
-            document.getElementById('detailModalNoteText').innerText = noteText || 'Geen extra notitie.';
-            document.getElementById('noteDetailModal').style.display = 'flex';
-            if (modalInterval) clearInterval(modalInterval);
-            function updateModal() {
-                const diff = new Date(dateStr).getTime() - new Date().getTime();
-                document.getElementById('mDays').innerText = Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
-                document.getElementById('mHours').innerText = Math.max(0, Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-                document.getElementById('mMins').innerText = Math.max(0, Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)));
-                document.getElementById('mSecs').innerText = Math.max(0, Math.floor((diff % (1000 * 60)) / 1000));
-            }
-            updateModal();
-            modalInterval = setInterval(updateModal, 1000);
-        }
-        function closeDetailModal() { document.getElementById('noteDetailModal').style.display = 'none'; if (modalInterval) clearInterval(modalInterval); }
-
-        function renderDashboard() {
-            const container = document.getElementById('dashboardCustomList');
-            if (!container) return;
-            container.innerHTML = '';
-            if (!appData.timers || appData.timers.length === 0) {
-                container.innerHTML = '<p style="color:#d1d5db; font-style:italic;">Nog geen eigen items ingesteld. Klik op "+ Item Toevoegen"!</p>';
-                return;
-            }
-            appData.timers.forEach(t => {
-                const diff = new Date(t.date).getTime() - new Date().getTime();
-                const card = document.createElement('div');
-                card.className = 'timer-card';
-                card.onclick = () => { playSound(); openDetailModalFromData(t.title, t.date, t.note); };
-                card.innerHTML = `
-                    <div class="timer-header">
-                        <div class="timer-title"><span>${t.icon}</span> ${t.title}</div>
-                        <button class="btn btn-danger" style="padding: 3px 8px; font-size: 0.72rem;" onclick="event.stopPropagation(); playSound(); deleteTimer(${t.id})">Verwijderen</button>
-                    </div>
-                    <div style="font-size: 0.85rem; color: #d1d5db;">${t.note ? '📝 ' + t.note : 'Klik voor live timer'}</div>
-                    <div class="countdown-grid" style="margin-top: 5px;">
-                        <div class="time-box"><div class="time-value">${Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)))}</div><div class="time-label">Dagen</div></div>
-                        <div class="time-box"><div class="time-value">${Math.max(0, Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)))}</div><div class="time-label">Uur</div></div>
-                        <div class="time-box"><div class="time-value">${Math.max(0, Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)))}</div><div class="time-label">Min</div></div>
-                        <div class="time-box"><div class="time-value">${Math.max(0, Math.floor((diff % (1000 * 60)) / 1000))}</div><div class="time-label">Sec</div></div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function renderTimers() {
-            const list = document.getElementById('timersList');
-            if (!list) return;
-            list.innerHTML = '';
-            appData.timers.forEach(t => {
-                const diff = new Date(t.date).getTime() - new Date().getTime();
-                const card = document.createElement('div');
-                card.className = 'timer-card';
-                card.onclick = () => { playSound(); openDetailModalFromData(t.title, t.date, t.note); };
-                card.innerHTML = `
-                    <div class="timer-header">
-                        <div class="timer-title"><span>${t.icon}</span> ${t.title}</div>
-                        <button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.78rem;" onclick="event.stopPropagation(); playSound(); deleteTimer(${t.id})">Verwijderen</button>
-                    </div>
-                    <div class="countdown-grid">
-                        <div class="time-box"><div class="time-value">${Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)))}</div><div class="time-label">Dagen</div></div>
-                        <div class="time-box"><div class="time-value">${Math.max(0, Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)))}</div><div class="time-label">Uur</div></div>
-                        <div class="time-box"><div class="time-value">${Math.max(0, Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)))}</div><div class="time-label">Min</div></div>
-                        <div class="time-box"><div class="time-value">${Math.max(0, Math.floor((diff % (1000 * 60)) / 1000))}</div><div class="time-label">Sec</div></div>
-                    </div>
-                `;
-                list.appendChild(card);
-            });
-        }
-
-        function startTimers() { 
-            renderDashboard(); renderTimers(); 
-            if (timerInterval) clearInterval(timerInterval); 
-            timerInterval = setInterval(() => { renderDashboard(); renderTimers(); }, 1000); 
-        }
-
-        function openAddTimerModal() { 
-            document.getElementById('newTimerTitle').value = ''; 
-            document.getElementById('newTimerDate').value = ''; 
-            document.getElementById('newTimerNote').value = '';
-            document.getElementById('addTimerModal').style.display = 'flex'; 
-        }
-        function closeAddTimerModal() { document.getElementById('addTimerModal').style.display = 'none'; }
-        
-        function saveNewTimer() {
-            const title = document.getElementById('newTimerTitle').value.trim();
-            const date = document.getElementById('newTimerDate').value;
-            const icon = document.getElementById('newTimerIcon').value.trim() || '🎯';
-            const note = document.getElementById('newTimerNote').value.trim();
-            if (!title || !date) { alert('Vul titel en datum in!'); return; }
-            appData.timers.push({ id: Date.now(), title, date, icon, note });
-            saveData(); renderDashboard(); renderTimers(); closeAddTimerModal();
-        }
-
-        function deleteTimer(id) { 
-            appData.timers = appData.timers.filter(t => t.id !== id); 
-            saveData(); renderDashboard(); renderTimers(); 
-        }
-
-        function handleAuth(e) {
-            e.preventDefault();
-            const username = document.getElementById('authUsername').value.trim();
-            if (!username) return;
-            currentUser = username;
-            const saved = safeGetStorage('portal_user_' + currentUser.toLowerCase());
-            if (saved) {
-                appData = JSON.parse(saved);
-                if (!appData.timers) appData.timers = [];
-            } else {
-                appData = {
-                    timers: [
-                        { id: 1, title: 'Centrale Examens', date: '2027-05-14T08:00:00', icon: '📝', note: 'Veel succes!' }
-                    ]
-                };
-                saveData();
-            }
-
-            document.getElementById('authWrapper').style.display = 'none';
-            document.getElementById('topNav').style.display = 'flex';
-            document.getElementById('userDisplay').innerText = '👤 ' + currentUser;
-            switchTab('dashboardTab');
-            startTimers();
-            document.getElementById('aboutContentBox').innerHTML = `Hoi ${currentUser}! Welkom op je portaal met de TikTok Skin Maker.`;
-        }
-
-        function saveData() { if (currentUser) safeSetStorage('portal_user_' + currentUser.toLowerCase(), JSON.stringify(appData)); }
-
-        function logout() {
-            if (timerInterval) clearInterval(timerInterval);
-            currentUser = null;
-            document.getElementById('topNav').style.display = 'none';
-            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
-            document.getElementById('authWrapper').style.display = 'flex';
-            document.getElementById('authUsername').value = '';
-            document.getElementById('authPassword').value = '';
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            const btn = document.getElementById('btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
-            if (btn) btn.classList.add('active');
-            if (tabId === 'dashboardTab') renderDashboard();
-            if (tabId === 'timersTab') renderTimers();
-        }
-
-        function playRadio(name, url) {
-            const audio = document.getElementById('audioStream');
-            audio.src = url;
-            audio.play().then(() => {}).catch(() => alert('Kon stream niet openen.'));
-        }
-        function stopRadio() {
-            const audio = document.getElementById('audioStream');
-            audio.pause(); audio.src = '';
-        }
-    </script>
-</body>
-</html>
