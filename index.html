@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Portal & TikTok Skin Maker</title>
-    <link href="https://googleapis.com" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --card-bg: rgba(24, 12, 6, 0.85);
@@ -32,20 +32,21 @@
             padding: 20px; padding-bottom: 70px; overflow-x: hidden;
         }
 
-        /* Navigatie */
         nav {
             width: 100%; max-width: 1100px;
             display: none; justify-content: space-between; align-items: center;
             background: var(--card-bg); backdrop-filter: blur(25px);
             border: 1px solid var(--card-border); padding: 14px 24px;
             border-radius: 20px; margin-bottom: 25px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.05);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
         }
+        nav.active { display: flex; }
+
         .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
         .nav-btn {
             background: none; border: none; color: #d1d5db;
             font-size: 0.9rem; font-weight: 600; cursor: pointer;
-            padding: 10px 16px; border-radius: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 10px 16px; border-radius: 12px; transition: all 0.3s ease;
         }
         .nav-btn.active, .nav-btn:hover { 
             color: #fff; 
@@ -54,9 +55,8 @@
             box-shadow: 0 6px 15px var(--accent-glow); 
         }
 
-        /* Containers & Cards */
         .container { width: 100%; max-width: 1100px; display: none; flex-direction: column; gap: 25px; }
-        .container.active { display: flex; animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .container.active { display: flex; animation: slideUp 0.4s ease forwards; }
 
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
@@ -66,12 +66,11 @@
         .content-card {
             background: var(--card-bg); backdrop-filter: blur(25px);
             border: 1px solid var(--card-border); border-radius: 24px;
-            padding: 35px; box-shadow: 0 20px 45px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+            padding: 35px; box-shadow: 0 20px 45px rgba(0,0,0,0.6);
         }
 
-        /* Form & Inputs */
         .form-group { margin-bottom: 20px; text-align: left; width: 100%; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; color: var(--glimmer-gold); text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; color: var(--glimmer-gold); text-transform: uppercase; }
         .form-group input, .form-group select, .form-group textarea {
             width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; color: white; font-size: 0.95rem; outline: none;
@@ -82,92 +81,98 @@
             box-shadow: 0 0 12px rgba(253, 224, 71, 0.25); 
         }
 
-        /* Knoppen */
         .btn {
             background: linear-gradient(135deg, var(--accent-color) 0%, #b45309 100%); color: white; border: none;
             padding: 14px 24px; font-size: 0.95rem; font-weight: 700; border-radius: 14px;
-            cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 15px var(--accent-glow);
-            width: 100%; text-transform: uppercase; letter-spacing: 0.5px;
+            cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px var(--accent-glow);
+            width: 100%; text-transform: uppercase;
         }
         .btn:hover { filter: brightness(1.2); transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
-        .btn-danger { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4); }
-        .btn-danger:hover { box-shadow: 0 8px 25px rgba(220, 38, 38, 0.6); }
+        .btn-secondary { background: #374151; box-shadow: none; margin-top: 10px; }
 
-        /* Skin Maker Layout */
         .skin-maker-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 25px; }
         @media(max-width: 850px) { .skin-maker-grid { grid-template-columns: 1fr; } }
         
         .skin-preview-box {
             background: rgba(0,0,0,0.6); border: 2px dashed var(--card-border);
-            border-radius: 20px; min-height: 420px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; position: relative; padding: 30px; gap: 15px;
-            text-align: center; backdrop-filter: blur(10px);
+            border-radius: 20px; min-height: 380px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; position: relative; padding: 20px; gap: 15px;
         }
 
-        /* Countdown Klokken */
         .timer-card {
             background: rgba(0, 0, 0, 0.4); border: 1px solid var(--card-border); border-radius: 20px;
             padding: 25px; display: flex; flex-direction: column; gap: 15px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
         }
-        .timer-header { display: flex; justify-content: space-between; align-items: center; }
-        .timer-title { font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 10px; color: #fff; }
         .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .time-box {
             background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(245, 158, 11, 0.25);
             border-radius: 14px; padding: 16px 8px; text-align: center;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
-        .time-value { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1; text-shadow: 0 0 15px var(--accent-glow); }
-        .time-label { font-size: 0.65rem; text-transform: uppercase; color: #a1a1aa; font-weight: 700; margin-top: 6px; letter-spacing: 0.5px; }
+        .time-value { font-size: 1.8rem; font-weight: 800; color: #fff; }
+        .time-label { font-size: 0.65rem; text-transform: uppercase; color: #a1a1aa; font-weight: 700; margin-top: 4px; }
 
-        /* Badges & Rollen */
-        .status-badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
         .status-user { background: rgba(217, 119, 6, 0.2); color: #facc15; border: 1px solid rgba(217, 119, 6, 0.3); }
-        .status-dev { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); box-shadow: 0 0 15px var(--dev-glow); }
+        .status-dev { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
 
-        /* Auth / Login Structuur */
-        .auth-wrapper { width: 100%; min-height: 85vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .auth-wrapper { width: 100%; min-height: 80vh; display: flex; justify-content: center; align-items: center; }
         .auth-card {
             background: var(--card-bg); border: 2px solid var(--card-border);
-            border-radius: 30px; padding: 50px 45px; max-width: 480px; width: 100%;
-            text-align: center; backdrop-filter: blur(25px); box-shadow: 0 35px 70px rgba(0,0,0,0.8);
+            border-radius: 30px; padding: 40px; max-width: 480px; width: 100%;
+            text-align: center; backdrop-filter: blur(25px);
         }
 
-        /* Dev Mode Switch */
         .dev-switch-wrapper {
             display: flex; align-items: center; justify-content: space-between;
             background: rgba(0,0,0,0.5); padding: 14px; border-radius: 14px; margin-bottom: 25px;
-            border: 1px solid rgba(255,255,255,0.05); width: 100%;
+            border: 1px solid rgba(255,255,255,0.05);
         }
         .switch { position: relative; display: inline-block; width: 48px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #3f3f46; transition: .3s; border-radius: 24px; }
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--dev-color); box-shadow: 0 0 10px var(--dev-glow); }
+        input:checked + .slider { background-color: var(--dev-color); }
         input:checked + .slider:before { transform: translateX(22px); }
+
+        .verification-toast {
+            position: fixed; top: 20px; right: 20px; background: #18181b; border: 2px solid var(--glimmer-gold);
+            padding: 20px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 9999;
+            display: none; max-width: 320px;
+        }
 
         .footer-badge {
             position: fixed; bottom: 12px; right: 20px; background: var(--card-bg);
             border: 1px solid var(--card-border); padding: 8px 16px; border-radius: 12px;
             font-size: 0.8rem; color: #d1d5db; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(10px); z-index: 1000;
         }
-        .verified-badge { background: #3b82f6; color: white; border-radius: 50%; width: 16px; height: 16px; display: inline-flex; justify-content: center; align-items: center; font-size: 0.7rem; font-weight: 800; }
     </style>
 </head>
 <body>
 
     <canvas id="bgCanvas"></canvas>
 
-    <!-- INLOGSCHERM -->
+    <!-- Simulatiedienst voor ontvangen e-mailbeveiligingscode -->
+    <div id="toastNotification" class="verification-toast">
+        <h4 style="color: var(--glimmer-gold); font-size: 0.9rem; margin-bottom: 5px;">📩 Beveiligingscode Ontvangen</h4>
+        <p style="font-size: 0.8rem; color: #ccc;">Code verzonden naar je e-mailadres:</p>
+        <div id="toastCode" style="font-size: 1.5rem; font-weight: 800; color: #fff; letter-spacing: 4px; margin: 10px 0; text-align: center;">------</div>
+        <p style="font-size: 0.7rem; color: #888;">(Gebruik deze 6-cijferige code om in te loggen)</p>
+    </div>
+
+    <!-- Authentificatie Scherm -->
     <div id="authScreen" class="auth-wrapper">
-        <div class="auth-card">
-            <h2 style="color: #fff; font-size: 2rem; margin-bottom: 10px; font-weight: 800;">Welkom bij Ultimate Portal</h2>
-            <p style="color: #a1a1aa; margin-bottom: 30px; font-size: 1rem;">Log in om toegang te krijgen tot het dashboard en tools.</p>
+        <div class="auth-card" id="loginCard">
+            <h2 style="color: #fff; font-size: 2rem; margin-bottom: 10px; font-weight: 800;">Portal Inloggen</h2>
+            <p style="color: #a1a1aa; margin-bottom: 25px; font-size: 0.95rem;">Voer je gegevens in om toegang te krijgen.</p>
             
             <div class="form-group">
+                <label for="emailInput">E-mailadres</label>
+                <input type="email" id="emailInput" placeholder="jouw@email.nl" required>
+            </div>
+
+            <div class="form-group">
                 <label for="usernameInput">Gebruikersnaam</label>
-                <input type="text" id="usernameInput" placeholder="Bijv. David...">
+                <input type="text" id="usernameInput" placeholder="Bijv. David..." required>
             </div>
 
             <div class="dev-switch-wrapper">
@@ -178,9 +183,234 @@
                 </label>
             </div>
 
-            <button class="btn" onclick="handleLogin()">Inloggen en Verifiëren</button>
+            <button class="btn" onclick="requestVerificationCode()">Verificatiecode Aanvragen</button>
+
+            <!-- Verificatie Stap -->
+            <div id="verificationStep" style="display: none; margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                <div class="form-group">
+                    <label for="codeInput">6-Cijferige Beveiligingscode</label>
+                    <input type="text" id="codeInput" maxlength="6" placeholder="123456" style="text-align: center; letter-spacing: 5px; font-size: 1.2rem;">
+                </div>
+                <button class="btn" style="background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);" onclick="completeLogin()">Bevestig & Inloggen</button>
+            </div>
         </div>
     </div>
 
-    <!-- HOOFDNAVIGATIE -->
-    <nav id="topNav">
+    <!-- Main Applicatie Navigatie -->
+    <nav id="mainNav">
+        <div style="font-weight: 800; font-size: 1.1rem; color: #fff;">PORTAL STUDIO</div>
+        <div class="nav-links">
+            <button class="nav-btn active" onclick="switchTab('dashboardTab', this)">Dashboard</button>
+            <button class="nav-btn" onclick="switchTab('skinMakerTab', this)">TikTok Skin Maker</button>
+            <button class="nav-btn" onclick="switchTab('timerTab', this)">Countdowns</button>
+            <button class="nav-btn btn-secondary" style="padding: 8px 14px;" onclick="logout()">Uitloggen</button>
+        </div>
+    </nav>
+
+    <!-- TAB 1: DASHBOARD -->
+    <div id="dashboardTab" class="container">
+        <div class="content-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <h1 style="font-size: 1.8rem;">Welkom, <span id="displayUsername" style="color: var(--glimmer-gold);">Gebruiker</span></h1>
+                    <p style="color: #a1a1aa; font-size: 0.9rem;" id="displayEmail">gekoppeld: email@domein.nl</p>
+                </div>
+                <span id="userRoleBadge" class="status-badge status-user">USER</span>
+            </div>
+            <p>Je bent succesvol ingelogd met 2-Factor e-mailbeveiliging. Gebruik de bovenstaande menu's om TikTok skins te genereren of klokken in te stellen.</p>
+        </div>
+    </div>
+
+    <!-- TAB 2: TIKTOK SKIN MAKER -->
+    <div id="skinMakerTab" class="container">
+        <div class="content-card">
+            <h2 style="margin-bottom: 20px;">TikTok Live Overlay & Skin Studio</h2>
+            <div class="skin-maker-grid">
+                <div class="skin-preview-box">
+                    <canvas id="skinCanvas" width="400" height="400" style="max-width: 100%; border-radius: 12px;"></canvas>
+                    <button class="btn" onclick="downloadSkin()">Download Overlay (PNG)</button>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label for="skinText">Skin Tekst / Tik Tok Handle</label>
+                        <input type="text" id="skinText" value="@JouwNaam" oninput="drawSkin()">
+                    </div>
+                    <div class="form-group">
+                        <label for="skinTheme">Stijl & Glow</label>
+                        <select id="skinTheme" onchange="drawSkin()">
+                            <option value="#d97706">Gold Glow</option>
+                            <option value="#3b82f6">Cyber Blue</option>
+                            <option value="#ec4899">Neon Pink</option>
+                            <option value="#22c55e">Emerald Green</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="skinSubtext">Subtekst Badge</label>
+                        <input type="text" id="skinSubtext" value="LIVE STREAMER" oninput="drawSkin()">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: COUNTDOWN TIMERS -->
+    <div id="timerTab" class="container">
+        <div class="content-card">
+            <h2 style="margin-bottom: 20px;">Event Countdown Timers</h2>
+            <div class="timer-card">
+                <div class="timer-header">
+                    <div class="timer-title" id="eventTitle">TikTok Live Stream Event</div>
+                    <span class="status-badge status-user">ACTIEF</span>
+                </div>
+                <div class="countdown-grid">
+                    <div class="time-box"><div class="time-value" id="days">00</div><div class="time-label">Dagen</div></div>
+                    <div class="time-box"><div class="time-value" id="hours">00</div><div class="time-label">Uren</div></div>
+                    <div class="time-box"><div class="time-value" id="minutes">00</div><div class="time-label">Minuten</div></div>
+                    <div class="time-box"><div class="time-value" id="seconds">00</div><div class="time-label">Seconden</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-badge">
+        <span>Beveiligde Sessie</span>
+        <span class="verified-badge">✓</span>
+    </div>
+
+    <script>
+        let generatedCode = "";
+        let currentUser = { email: "", username: "", role: "USER" };
+        let countdownDate = new Date().getTime() + (2 * 24 * 60 * 60 * 1000);
+
+        // Verificatiecode aanvragen
+        function requestVerificationCode() {
+            const email = document.getElementById('emailInput').value;
+            const username = document.getElementById('usernameInput').value;
+            const isDev = document.getElementById('devModeToggle').checked;
+
+            if (!email || !username) {
+                alert("Vul een geldig e-mailadres en gebruikersnaam in.");
+                return;
+            }
+
+            // Genereren van 6-cijferige code
+            generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+            currentUser.email = email;
+            currentUser.username = username;
+            currentUser.role = isDev ? "DEVELOPER" : "USER";
+
+            // Simuleer verzending naar e-mailadres
+            document.getElementById('toastCode').innerText = generatedCode;
+            document.getElementById('toastNotification').style.display = 'block';
+            document.getElementById('verificationStep').style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('toastNotification').style.display = 'none';
+            }, 10000);
+        }
+
+        // Inloggen afronden
+        function completeLogin() {
+            const inputCode = document.getElementById('codeInput').value;
+
+            if (inputCode === generatedCode && generatedCode !== "") {
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('mainNav').classList.add('active');
+                
+                // Dashboard vullen
+                document.getElementById('displayUsername').innerText = currentUser.username;
+                document.getElementById('displayEmail').innerText = `Gekoppeld met beveiligd e-mailadres: ${currentUser.email}`;
+                
+                const badge = document.getElementById('userRoleBadge');
+                badge.innerText = currentUser.role;
+                badge.className = currentUser.role === "DEVELOPER" ? "status-badge status-dev" : "status-badge status-user";
+
+                switchTab('dashboardTab');
+                drawSkin();
+                startTimer();
+            } else {
+                alert("Ongeldige beveiligingscode. Controleer de ontvangen code.");
+            }
+        }
+
+        // Tab navigatie
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            if(btnElement) btnElement.classList.add('active');
+        }
+
+        // TikTok Skin Generator (Canvas)
+        function drawSkin() {
+            const canvas = document.getElementById('skinCanvas');
+            const ctx = canvas.getContext('2d');
+            const text = document.getElementById('skinText').value || "@Naam";
+            const subtext = document.getElementById('skinSubtext').value || "LIVE";
+            const color = document.getElementById('skinTheme').value;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Achtergrond Kaart
+            ctx.fillStyle = "rgba(18, 9, 4, 0.95)";
+            ctx.roundRect(20, 20, 360, 360, 25);
+            ctx.fill();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Glow Cirkel
+            ctx.beginPath();
+            ctx.arc(200, 160, 60, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 20;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // Tekst rendering
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 22px Outfit";
+            ctx.textAlign = "center";
+            ctx.fillText(text, 200, 260);
+
+            // Subtekst badge
+            ctx.fillStyle = color;
+            ctx.roundRect(120, 280, 160, 30, 10);
+            ctx.fill();
+
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 12px Outfit";
+            ctx.fillText(subtext.toUpperCase(), 200, 300);
+        }
+
+        function downloadSkin() {
+            const canvas = document.getElementById('skinCanvas');
+            const link = document.createElement('a');
+            link.download = 'tiktok-overlay-skin.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // Countdown Klok Logic
+        function startTimer() {
+            setInterval(() => {
+                const now = new Date().getTime();
+                const diff = countdownDate - now;
+
+                if (diff > 0) {
+                    document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                    document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                    document.getElementById('minutes').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                    document.getElementById('seconds').innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+                }
+            }, 1000);
+        }
+
+        function logout() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>
