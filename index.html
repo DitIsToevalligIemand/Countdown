@@ -16,7 +16,6 @@
             --dev-color: #3b82f6;
             --dev-glow: rgba(59, 130, 246, 0.6);
             --success-color: #22c55e;
-            --success-glow: rgba(34, 197, 94, 0.4);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
@@ -32,17 +31,17 @@
             padding: 20px; padding-bottom: 70px; overflow-x: hidden;
         }
 
+        /* Top Navigatie */
         nav {
             width: 100%; max-width: 1100px;
-            display: none; justify-content: space-between; align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
             background: var(--card-bg); backdrop-filter: blur(25px);
             border: 1px solid var(--card-border); padding: 14px 24px;
             border-radius: 20px; margin-bottom: 25px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.7);
         }
-        nav.active { display: flex; }
 
-        .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+        .nav-links { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
         .nav-btn {
             background: none; border: none; color: #d1d5db;
             font-size: 0.9rem; font-weight: 600; cursor: pointer;
@@ -54,6 +53,14 @@
             transform: translateY(-2px); 
             box-shadow: 0 6px 15px var(--accent-glow); 
         }
+
+        .btn-auth-top {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #b45309 100%);
+            color: white; border: none; padding: 10px 20px; font-weight: 700;
+            border-radius: 12px; cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+        .btn-auth-top:hover { filter: brightness(1.2); transform: translateY(-2px); }
 
         .container { width: 100%; max-width: 1100px; display: none; flex-direction: column; gap: 25px; }
         .container.active { display: flex; animation: slideUp 0.4s ease forwards; }
@@ -69,9 +76,10 @@
             padding: 35px; box-shadow: 0 20px 45px rgba(0,0,0,0.6);
         }
 
-        .form-group { margin-bottom: 20px; text-align: left; width: 100%; }
+        /* Form / Inputs */
+        .form-group { margin-bottom: 18px; text-align: left; width: 100%; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; color: var(--glimmer-gold); text-transform: uppercase; }
-        .form-group input, .form-group select, .form-group textarea {
+        .form-group input, .form-group select {
             width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; color: white; font-size: 0.95rem; outline: none;
             transition: all 0.25s ease;
@@ -87,9 +95,9 @@
             cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px var(--accent-glow);
             width: 100%; text-transform: uppercase;
         }
-        .btn:hover { filter: brightness(1.2); transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
-        .btn-secondary { background: #374151; box-shadow: none; margin-top: 10px; }
+        .btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
 
+        /* Skin Maker Grid */
         .skin-maker-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 25px; }
         @media(max-width: 850px) { .skin-maker-grid { grid-template-columns: 1fr; } }
         
@@ -99,51 +107,51 @@
             align-items: center; justify-content: center; position: relative; padding: 20px; gap: 15px;
         }
 
-        .timer-card {
-            background: rgba(0, 0, 0, 0.4); border: 1px solid var(--card-border); border-radius: 20px;
-            padding: 25px; display: flex; flex-direction: column; gap: 15px;
+        /* Modal Auth Screen Overlays */
+        .auth-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
+            display: none; justify-content: center; align-items: center; z-index: 9999;
         }
-        .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .time-box {
-            background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(245, 158, 11, 0.25);
-            border-radius: 14px; padding: 16px 8px; text-align: center;
+        .auth-modal.active { display: flex; }
+
+        .auth-card {
+            background: var(--card-bg); border: 2px solid var(--card-border);
+            border-radius: 30px; padding: 40px; max-width: 480px; width: 90%;
+            text-align: center; backdrop-filter: blur(25px); position: relative;
+            box-shadow: 0 35px 70px rgba(0,0,0,0.9);
         }
-        .time-value { font-size: 1.8rem; font-weight: 800; color: #fff; }
-        .time-label { font-size: 0.65rem; text-transform: uppercase; color: #a1a1aa; font-weight: 700; margin-top: 4px; }
+
+        /* Dev Knop Rechtsboven in Inlogscherm */
+        .dev-badge-btn {
+            position: absolute; top: 20px; right: 20px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+            color: #9ca3af; font-size: 0.75rem; font-weight: 800; padding: 5px 12px;
+            border-radius: 12px; cursor: pointer; transition: all 0.3s ease; letter-spacing: 1px;
+        }
+        .dev-badge-btn.active {
+            background: var(--dev-color); color: white; border-color: #60a5fa;
+            box-shadow: 0 0 12px var(--dev-glow);
+        }
+
+        .auth-toggle-text {
+            color: var(--glimmer-gold); margin-top: 15px; cursor: pointer;
+            font-size: 0.9rem; text-decoration: underline; display: inline-block;
+        }
 
         .status-badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
         .status-user { background: rgba(217, 119, 6, 0.2); color: #facc15; border: 1px solid rgba(217, 119, 6, 0.3); }
         .status-dev { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
 
-        .auth-wrapper { width: 100%; min-height: 80vh; display: flex; justify-content: center; align-items: center; }
-        .auth-card {
-            background: var(--card-bg); border: 2px solid var(--card-border);
-            border-radius: 30px; padding: 40px; max-width: 480px; width: 100%;
-            text-align: center; backdrop-filter: blur(25px);
-        }
-
-        .dev-switch-wrapper {
-            display: flex; align-items: center; justify-content: space-between;
-            background: rgba(0,0,0,0.5); padding: 14px; border-radius: 14px; margin-bottom: 25px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .switch { position: relative; display: inline-block; width: 48px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #3f3f46; transition: .3s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--dev-color); }
-        input:checked + .slider:before { transform: translateX(22px); }
-
         .verification-toast {
             position: fixed; top: 20px; right: 20px; background: #18181b; border: 2px solid var(--glimmer-gold);
-            padding: 20px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 9999;
+            padding: 20px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 10000;
             display: none; max-width: 320px;
         }
 
-        .footer-badge {
-            position: fixed; bottom: 12px; right: 20px; background: var(--card-bg);
-            border: 1px solid var(--card-border); padding: 8px 16px; border-radius: 12px;
-            font-size: 0.8rem; color: #d1d5db; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(10px); z-index: 1000;
+        .close-modal-btn {
+            position: absolute; top: 20px; left: 20px; background: none; border: none;
+            color: #9ca3af; font-size: 1.2rem; cursor: pointer;
         }
     </style>
 </head>
@@ -151,78 +159,26 @@
 
     <canvas id="bgCanvas"></canvas>
 
-    <!-- Simulatiedienst voor ontvangen e-mailbeveiligingscode -->
+    <!-- Beveiligingscode Toast Simulatie -->
     <div id="toastNotification" class="verification-toast">
         <h4 style="color: var(--glimmer-gold); font-size: 0.9rem; margin-bottom: 5px;">📩 Beveiligingscode Ontvangen</h4>
         <p style="font-size: 0.8rem; color: #ccc;">Code verzonden naar je e-mailadres:</p>
         <div id="toastCode" style="font-size: 1.5rem; font-weight: 800; color: #fff; letter-spacing: 4px; margin: 10px 0; text-align: center;">------</div>
-        <p style="font-size: 0.7rem; color: #888;">(Gebruik deze 6-cijferige code om in te loggen)</p>
+        <p style="font-size: 0.7rem; color: #888;">(Voer deze code in om te verifiëren)</p>
     </div>
 
-    <!-- Authentificatie Scherm -->
-    <div id="authScreen" class="auth-wrapper">
-        <div class="auth-card" id="loginCard">
-            <h2 style="color: #fff; font-size: 2rem; margin-bottom: 10px; font-weight: 800;">Portal Inloggen</h2>
-            <p style="color: #a1a1aa; margin-bottom: 25px; font-size: 0.95rem;">Voer je gegevens in om toegang te krijgen.</p>
-            
-            <div class="form-group">
-                <label for="emailInput">E-mailadres</label>
-                <input type="email" id="emailInput" placeholder="jouw@email.nl" required>
-            </div>
-
-            <div class="form-group">
-                <label for="usernameInput">Gebruikersnaam</label>
-                <input type="text" id="usernameInput" placeholder="Bijv. David..." required>
-            </div>
-
-            <div class="dev-switch-wrapper">
-                <span style="font-size: 0.95rem; font-weight: 600;">Inloggen als Developer</span>
-                <label class="switch">
-                    <input type="checkbox" id="devModeToggle">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <button class="btn" onclick="requestVerificationCode()">Verificatiecode Aanvragen</button>
-
-            <!-- Verificatie Stap -->
-            <div id="verificationStep" style="display: none; margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-                <div class="form-group">
-                    <label for="codeInput">6-Cijferige Beveiligingscode</label>
-                    <input type="text" id="codeInput" maxlength="6" placeholder="123456" style="text-align: center; letter-spacing: 5px; font-size: 1.2rem;">
-                </div>
-                <button class="btn" style="background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);" onclick="completeLogin()">Bevestig & Inloggen</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Applicatie Navigatie -->
-    <nav id="mainNav">
+    <!-- Hoofd Navigatie -->
+    <nav>
         <div style="font-weight: 800; font-size: 1.1rem; color: #fff;">PORTAL STUDIO</div>
         <div class="nav-links">
-            <button class="nav-btn active" onclick="switchTab('dashboardTab', this)">Dashboard</button>
-            <button class="nav-btn" onclick="switchTab('skinMakerTab', this)">TikTok Skin Maker</button>
-            <button class="nav-btn" onclick="switchTab('timerTab', this)">Countdowns</button>
-            <button class="nav-btn btn-secondary" style="padding: 8px 14px;" onclick="logout()">Uitloggen</button>
+            <button class="nav-btn active" onclick="switchTab('skinMakerTab', this)">TikTok Skin Maker</button>
+            <button class="nav-btn" onclick="switchTab('dashboardTab', this)">Dashboard</button>
+            <button id="navAuthBtn" class="btn-auth-top" onclick="openAuthModal()">Inloggen</button>
         </div>
     </nav>
 
-    <!-- TAB 1: DASHBOARD -->
-    <div id="dashboardTab" class="container">
-        <div class="content-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <div>
-                    <h1 style="font-size: 1.8rem;">Welkom, <span id="displayUsername" style="color: var(--glimmer-gold);">Gebruiker</span></h1>
-                    <p style="color: #a1a1aa; font-size: 0.9rem;" id="displayEmail">gekoppeld: email@domein.nl</p>
-                </div>
-                <span id="userRoleBadge" class="status-badge status-user">USER</span>
-            </div>
-            <p>Je bent succesvol ingelogd met 2-Factor e-mailbeveiliging. Gebruik de bovenstaande menu's om TikTok skins te genereren of klokken in te stellen.</p>
-        </div>
-    </div>
-
-    <!-- TAB 2: TIKTOK SKIN MAKER -->
-    <div id="skinMakerTab" class="container">
+    <!-- TAB 1: TIKTOK SKIN MAKER (Direct gratis toegankelijk) -->
+    <div id="skinMakerTab" class="container active">
         <div class="content-card">
             <h2 style="margin-bottom: 20px;">TikTok Live Overlay & Skin Studio</h2>
             <div class="skin-maker-grid">
@@ -232,7 +188,7 @@
                 </div>
                 <div>
                     <div class="form-group">
-                        <label for="skinText">Skin Tekst / Tik Tok Handle</label>
+                        <label for="skinText">Skin Tekst / TikTok Handle</label>
                         <input type="text" id="skinText" value="@JouwNaam" oninput="drawSkin()">
                     </div>
                     <div class="form-group">
@@ -248,58 +204,129 @@
                         <label for="skinSubtext">Subtekst Badge</label>
                         <input type="text" id="skinSubtext" value="LIVE STREAMER" oninput="drawSkin()">
                     </div>
+                    <p style="font-size: 0.8rem; color: #a1a1aa; margin-top: 10px;">
+                        💡 <em>Log in rechtsboven als je jouw skins en instellingen automatisch wilt opslaan.</em>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TAB 3: COUNTDOWN TIMERS -->
-    <div id="timerTab" class="container">
+    <!-- TAB 2: DASHBOARD -->
+    <div id="dashboardTab" class="container">
         <div class="content-card">
-            <h2 style="margin-bottom: 20px;">Event Countdown Timers</h2>
-            <div class="timer-card">
-                <div class="timer-header">
-                    <div class="timer-title" id="eventTitle">TikTok Live Stream Event</div>
-                    <span class="status-badge status-user">ACTIEF</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <h1 style="font-size: 1.8rem;">Status: <span id="displayUsername" style="color: var(--glimmer-gold);">Gastgebruiker</span></h1>
+                    <p style="color: #a1a1aa; font-size: 0.9rem;" id="displayEmail">Nog geen account gekoppeld</p>
                 </div>
-                <div class="countdown-grid">
-                    <div class="time-box"><div class="time-value" id="days">00</div><div class="time-label">Dagen</div></div>
-                    <div class="time-box"><div class="time-value" id="hours">00</div><div class="time-label">Uren</div></div>
-                    <div class="time-box"><div class="time-value" id="minutes">00</div><div class="time-label">Minuten</div></div>
-                    <div class="time-box"><div class="time-value" id="seconds">00</div><div class="time-label">Seconden</div></div>
-                </div>
+                <span id="userRoleBadge" class="status-badge status-user">GAST</span>
+            </div>
+            <div id="dashboardContent">
+                <p>Maak gratis een account aan om je bewaarde skins en voorkeuren op te slaan!</p>
             </div>
         </div>
     </div>
 
-    <div class="footer-badge">
-        <span>Beveiligde Sessie</span>
-        <span class="verified-badge">✓</span>
+    <!-- AUTHENTICATIE MODAL (Pop-up via inlogknop) -->
+    <div id="authModal" class="auth-modal">
+        <div class="auth-card">
+            <button class="close-modal-btn" onclick="closeAuthModal()">✕</button>
+            
+            <!-- DEV KNOP RECHTSBOVEN IN HET INLOGSCHERM -->
+            <button id="devToggleBtn" class="dev-badge-btn" onclick="toggleDevMode()">DEV</button>
+
+            <h2 id="authTitle" style="color: #fff; font-size: 1.8rem; margin-bottom: 10px; font-weight: 800;">Inloggen Portal</h2>
+            <p id="authSubtitle" style="color: #a1a1aa; margin-bottom: 20px; font-size: 0.9rem;">Voer je gegevens in om toegang te krijgen.</p>
+            
+            <div class="form-group">
+                <label for="emailInput">E-mailadres</label>
+                <input type="email" id="emailInput" placeholder="jouw@email.nl">
+            </div>
+
+            <div class="form-group">
+                <label for="usernameInput">Gebruikersnaam</label>
+                <input type="text" id="usernameInput" placeholder="Bijv. David...">
+            </div>
+
+            <button class="btn" onclick="requestVerificationCode()">Verificatiecode Aanvragen</button>
+
+            <!-- Verificatie Code Invoeren -->
+            <div id="verificationStep" style="display: none; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                <div class="form-group">
+                    <label for="codeInput">6-Cijferige Beveiligingscode</label>
+                    <input type="text" id="codeInput" maxlength="6" placeholder="123456" style="text-align: center; letter-spacing: 5px; font-size: 1.2rem;">
+                </div>
+                <button class="btn" style="background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);" onclick="completeAuth()">Bevestig & Opslaan</button>
+            </div>
+
+            <span class="auth-toggle-text" id="authToggleLink" onclick="toggleAuthMode()">Nog geen account? Account maken</span>
+        </div>
     </div>
 
     <script>
+        let isDevMode = false;
+        let isRegistering = false;
         let generatedCode = "";
-        let currentUser = { email: "", username: "", role: "USER" };
-        let countdownDate = new Date().getTime() + (2 * 24 * 60 * 60 * 1000);
+        let currentUser = null;
 
-        // Verificatiecode aanvragen
+        // Laad eventueel eerder opgeslagen account bij opstarten
+        window.onload = function() {
+            const savedUser = localStorage.getItem('portal_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUIForLoggedInUser();
+            }
+            drawSkin();
+        };
+
+        function openAuthModal() {
+            document.getElementById('authModal').classList.add('active');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('active');
+        }
+
+        function toggleDevMode() {
+            isDevMode = !isDevMode;
+            const devBtn = document.getElementById('devToggleBtn');
+            if (isDevMode) {
+                devBtn.classList.add('active');
+            } else {
+                devBtn.classList.remove('active');
+            }
+        }
+
+        function toggleAuthMode() {
+            isRegistering = !isRegistering;
+            const title = document.getElementById('authTitle');
+            const subtitle = document.getElementById('authSubtitle');
+            const toggleLink = document.getElementById('authToggleLink');
+
+            if (isRegistering) {
+                title.innerText = "Account Maken";
+                subtitle.innerText = "Maak gratis een account om al je skins op te slaan.";
+                toggleLink.innerText = "Al een account? Inloggen";
+            } else {
+                title.innerText = "Inloggen Portal";
+                subtitle.innerText = "Voer je gegevens in om toegang te krijgen.";
+                toggleLink.innerText = "Nog geen account? Account maken";
+            }
+        }
+
         function requestVerificationCode() {
             const email = document.getElementById('emailInput').value;
             const username = document.getElementById('usernameInput').value;
-            const isDev = document.getElementById('devModeToggle').checked;
 
             if (!email || !username) {
-                alert("Vul een geldig e-mailadres en gebruikersnaam in.");
+                alert("Vul a.u.b. een geldige gebruikersnaam en e-mailadres in.");
                 return;
             }
 
-            // Genereren van 6-cijferige code
+            // Gegenereerde beveiligingscode
             generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-            currentUser.email = email;
-            currentUser.username = username;
-            currentUser.role = isDev ? "DEVELOPER" : "USER";
-
-            // Simuleer verzending naar e-mailadres
+            
             document.getElementById('toastCode').innerText = generatedCode;
             document.getElementById('toastNotification').style.display = 'block';
             document.getElementById('verificationStep').style.display = 'block';
@@ -309,31 +336,51 @@
             }, 10000);
         }
 
-        // Inloggen afronden
-        function completeLogin() {
+        function completeAuth() {
             const inputCode = document.getElementById('codeInput').value;
 
             if (inputCode === generatedCode && generatedCode !== "") {
-                document.getElementById('authScreen').style.display = 'none';
-                document.getElementById('mainNav').classList.add('active');
-                
-                // Dashboard vullen
-                document.getElementById('displayUsername').innerText = currentUser.username;
-                document.getElementById('displayEmail').innerText = `Gekoppeld met beveiligd e-mailadres: ${currentUser.email}`;
-                
-                const badge = document.getElementById('userRoleBadge');
-                badge.innerText = currentUser.role;
-                badge.className = currentUser.role === "DEVELOPER" ? "status-badge status-dev" : "status-badge status-user";
+                const email = document.getElementById('emailInput').value;
+                const username = document.getElementById('usernameInput').value;
 
-                switchTab('dashboardTab');
-                drawSkin();
-                startTimer();
+                currentUser = {
+                    username: username,
+                    email: email,
+                    role: isDevMode ? "DEVELOPER" : "USER"
+                };
+
+                // Account opslaan in LocalStorage
+                localStorage.setItem('portal_user', JSON.stringify(currentUser));
+                
+                updateUIForLoggedInUser();
+                closeAuthModal();
+                alert(isRegistering ? "Account succesvol aangemaakt en opgeslagen!" : "Succesvol ingelogd!");
             } else {
-                alert("Ongeldige beveiligingscode. Controleer de ontvangen code.");
+                alert("Ongeldige beveiligingscode. Controleer de code in het notificatiescherm.");
             }
         }
 
-        // Tab navigatie
+        function updateUIForLoggedInUser() {
+            if (!currentUser) return;
+
+            document.getElementById('displayUsername').innerText = currentUser.username;
+            document.getElementById('displayEmail').innerText = `Gekoppeld e-mailadres: ${currentUser.email}`;
+            
+            const badge = document.getElementById('userRoleBadge');
+            badge.innerText = currentUser.role;
+            badge.className = currentUser.role === "DEVELOPER" ? "status-badge status-dev" : "status-badge status-user";
+
+            const authBtn = document.getElementById('navAuthBtn');
+            authBtn.innerText = "Uitloggen";
+            authBtn.onclick = logout;
+        }
+
+        function logout() {
+            localStorage.removeItem('portal_user');
+            currentUser = null;
+            location.reload();
+        }
+
         function switchTab(tabId, btnElement) {
             document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -342,7 +389,7 @@
             if(btnElement) btnElement.classList.add('active');
         }
 
-        // TikTok Skin Generator (Canvas)
+        // TikTok Canvas Skin Maker Render
         function drawSkin() {
             const canvas = document.getElementById('skinCanvas');
             const ctx = canvas.getContext('2d');
@@ -354,13 +401,14 @@
 
             // Achtergrond Kaart
             ctx.fillStyle = "rgba(18, 9, 4, 0.95)";
+            ctx.beginPath();
             ctx.roundRect(20, 20, 360, 360, 25);
             ctx.fill();
             ctx.strokeStyle = color;
             ctx.lineWidth = 3;
             ctx.stroke();
 
-            // Glow Cirkel
+            // Glow Cirkel Icon
             ctx.beginPath();
             ctx.arc(200, 160, 60, 0, Math.PI * 2);
             ctx.fillStyle = color;
@@ -369,7 +417,7 @@
             ctx.fill();
             ctx.shadowBlur = 0;
 
-            // Tekst rendering
+            // Tekst op Canvas
             ctx.fillStyle = "#ffffff";
             ctx.font = "bold 22px Outfit";
             ctx.textAlign = "center";
@@ -377,6 +425,7 @@
 
             // Subtekst badge
             ctx.fillStyle = color;
+            ctx.beginPath();
             ctx.roundRect(120, 280, 160, 30, 10);
             ctx.fill();
 
@@ -391,25 +440,6 @@
             link.download = 'tiktok-overlay-skin.png';
             link.href = canvas.toDataURL();
             link.click();
-        }
-
-        // Countdown Klok Logic
-        function startTimer() {
-            setInterval(() => {
-                const now = new Date().getTime();
-                const diff = countdownDate - now;
-
-                if (diff > 0) {
-                    document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-                    document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-                    document.getElementById('minutes').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-                    document.getElementById('seconds').innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
-                }
-            }, 1000);
-        }
-
-        function logout() {
-            location.reload();
         }
     </script>
 </body>
