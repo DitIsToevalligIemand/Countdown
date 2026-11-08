@@ -184,7 +184,7 @@
         <div class="content-card">
             <h2 style="margin-bottom: 10px; color: var(--purple-glow);">AI Social Media Video-to-Skin Creator</h2>
             <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 20px;">
-                Upload een TikTok, Vlog of foto. De scanner leest de video <strong>frame-voor-frame</strong>, scant haarlengte, outfit en huidskleur, en tekent automatisch een volledige Minecraft 64x64 skin met 3D outer hair layer!
+                Upload je TikTok of vlog. De scanner leest de video frame-voor-frame uit en zet de kleding en het haar direct om naar een strakke 3D Minecraft-skin!
             </p>
 
             <div class="grid-2">
@@ -202,7 +202,7 @@
                     </button>
 
                     <div style="margin-top: 20px; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.05);">
-                        <h4 style="font-size: 0.85rem; color: var(--glimmer-gold); margin-bottom: 10px; text-transform: uppercase;">Gedetecteerde Kleuren & Finetuning</h4>
+                        <h4 style="font-size: 0.85rem; color: var(--glimmer-gold); margin-bottom: 10px; text-transform: uppercase;">Kleuren & Outfit Finetuning</h4>
                         <div class="color-pickers">
                             <div class="color-picker-item"><span>Haar</span> <input type="color" id="cHair" value="#b58252" onchange="generateSkinFromColors()"></div>
                             <div class="color-picker-item"><span>Huid</span> <input type="color" id="cSkin" value="#f7cfb7" onchange="generateSkinFromColors()"></div>
@@ -214,14 +214,13 @@
 
                 <div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h3 style="font-size: 1rem;">Live 3D Skin Preview</h3>
+                        <h3 style="font-size: 1rem;">Live 3D Model Preview</h3>
                         <span style="font-size: 0.75rem; color: #888;">Minecraft 64×64 Format</span>
                     </div>
                     <div id="3dCanvasContainer"></div>
                     
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px;">
-                        <span style="font-size: 0.85rem; color: #aaa;">2D Raw Texture Map:</span>
-                        <canvas id="skinCanvas" width="64" height="64" style="width: 64px; height: 64px; image-rendering: pixelated; border: 1px solid #555; border-radius: 4px;"></canvas>
+                    <div style="display: none;">
+                        <canvas id="skinCanvas" width="64" height="64"></canvas>
                     </div>
 
                     <button class="btn" style="background: #22c55e; margin-top: 15px;" onclick="downloadSkin()">Download Volledige Skin (.PNG)</button>
@@ -320,10 +319,6 @@
 
         function analyzeMedia() {
             if(!currentFile) {
-                document.getElementById('cHair').value = "#b58252";
-                document.getElementById('cSkin').value = "#f7cfb7";
-                document.getElementById('cTop').value = "#c3d2e0";
-                document.getElementById('cPants').value = "#6b7c59";
                 generateSkinFromColors();
                 return;
             }
@@ -399,20 +394,20 @@
             const cTopDark = shadeColor(cTop, -15);
             const cPantsDark = shadeColor(cPants, -15);
 
-            // --- 1. HOOFD BASE (8x8x8 op UV 0,0) ---
+            // Hoofd Base
             ctx.fillStyle = cHair; ctx.fillRect(8, 0, 8, 8);
             ctx.fillStyle = cSkin; ctx.fillRect(16, 0, 8, 8);
-            ctx.fillStyle = cHairDark; ctx.fillRect(0, 8, 8, 8); // Right
-            ctx.fillStyle = cSkin;     ctx.fillRect(8, 8, 8, 8); // Front Face
-            ctx.fillStyle = cHairDark; ctx.fillRect(16, 8, 8, 8); // Left
-            ctx.fillStyle = cHair;     ctx.fillRect(24, 8, 8, 8); // Back
+            ctx.fillStyle = cHairDark; ctx.fillRect(0, 8, 8, 8);
+            ctx.fillStyle = cSkin;     ctx.fillRect(8, 8, 8, 8);
+            ctx.fillStyle = cHairDark; ctx.fillRect(16, 8, 8, 8);
+            ctx.fillStyle = cHair;     ctx.fillRect(24, 8, 8, 8);
 
             // Gezicht
             ctx.fillStyle = "#ffffff"; ctx.fillRect(9, 12, 2, 1); ctx.fillRect(13, 12, 2, 1);
             ctx.fillStyle = "#3b82f6"; ctx.fillRect(10, 12, 1, 1); ctx.fillRect(13, 12, 1, 1);
             ctx.fillStyle = "#e8998d"; ctx.fillRect(11, 14, 2, 1);
 
-            // --- 2. HOOFD OUTER LAYER / LANG HAAR (UV 32,0) ---
+            // Outer Hair Layer
             ctx.fillStyle = cHair;
             ctx.fillRect(40, 0, 8, 8);
             ctx.fillRect(32, 8, 8, 8);
@@ -422,7 +417,7 @@
             ctx.fillStyle = cHairLight;ctx.fillRect(40, 11, 2, 5);
             ctx.fillStyle = cHairLight;ctx.fillRect(46, 11, 2, 5);
 
-            // --- 3. BORST / TRUI & BUIK (UV 16,16) ---
+            // Torso & Trui
             ctx.fillStyle = cTop; ctx.fillRect(20, 16, 8, 4);
             ctx.fillStyle = cSkin; ctx.fillRect(28, 16, 8, 4);
             ctx.fillStyle = cTop;     ctx.fillRect(20, 20, 8, 6);
@@ -432,13 +427,13 @@
             ctx.fillStyle = cTop;     ctx.fillRect(16, 20, 4, 6); ctx.fillRect(28, 20, 4, 6);
             ctx.fillStyle = cSkin;    ctx.fillRect(16, 26, 4, 6); ctx.fillRect(28, 26, 4, 6);
 
-            // --- 4. ARMEN ---
+            // Armen
             ctx.fillStyle = cTop;  ctx.fillRect(44, 16, 4, 4); ctx.fillRect(44, 20, 4, 6);
             ctx.fillStyle = cSkin; ctx.fillRect(44, 26, 4, 6); ctx.fillRect(40, 20, 4, 12); ctx.fillRect(48, 20, 8, 12);
             ctx.fillStyle = cTop;  ctx.fillRect(36, 48, 4, 4); ctx.fillRect(36, 52, 4, 6);
             ctx.fillStyle = cSkin; ctx.fillRect(36, 58, 4, 6); ctx.fillRect(32, 52, 4, 12); ctx.fillRect(40, 52, 8, 12);
 
-            // --- 5. BENEN / BROEK ---
+            // Benen
             ctx.fillStyle = cPants;     ctx.fillRect(4, 16, 4, 4); ctx.fillRect(0, 20, 16, 12);
             ctx.fillStyle = cPantsDark; ctx.fillRect(20, 48, 4, 4); ctx.fillRect(16, 52, 16, 12);
 
@@ -489,19 +484,16 @@
 
             const mat = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
 
-            // Head
             const headGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
             const head = new THREE.Mesh(headGeo, mat);
             head.position.y = 0.9;
             characterGroup.add(head);
 
-            // Body
             const bodyGeo = new THREE.BoxGeometry(0.8, 1.2, 0.4);
             const body = new THREE.Mesh(bodyGeo, mat);
             body.position.y = -0.1;
             characterGroup.add(body);
 
-            // Arms
             const armGeo = new THREE.BoxGeometry(0.35, 1.2, 0.35);
             const lArm = new THREE.Mesh(armGeo, mat);
             lArm.position.set(-0.6, -0.1, 0);
@@ -511,7 +503,6 @@
             rArm.position.set(0.6, -0.1, 0);
             characterGroup.add(rArm);
 
-            // Legs
             const legGeo = new THREE.BoxGeometry(0.38, 1.2, 0.38);
             const lLeg = new THREE.Mesh(legGeo, mat);
             lLeg.position.set(-0.2, -1.3, 0);
@@ -525,7 +516,7 @@
         function downloadSkin() {
             const canvas = document.getElementById('skinCanvas');
             const link = document.createElement('a');
-            link.download = 'meisje-vlog-minecraft-skin.png';
+            link.download = 'vlog-meisje-minecraft-skin.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
         }
