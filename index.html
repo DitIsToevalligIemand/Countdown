@@ -59,15 +59,15 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        .nav-links { display: flex; gap: 5px; flex-wrap: wrap; }
+        .nav-links { display: flex; gap: 6px; flex-wrap: wrap; }
         .nav-btn {
             background: none;
             border: none;
             color: #d1d5db;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
-            padding: 8px 10px;
+            padding: 8px 12px;
             border-radius: 10px;
             transition: all 0.2s;
         }
@@ -571,7 +571,7 @@
         let modalInterval = null;
         let appData = { timers: [], tickets: [], concerts: [] };
 
-        const defaultAboutText = `Hoi! Welkom op mijn website. Ik ben <strong>DitIsToevalligIemand</strong>, de maker en eigenaar van dit portaal. Gemaakt in 2026 voor al je timers, radio, vakanties, eindexamens en concerten in Nederland en België!`;
+        const defaultAboutText = `Hoi! Welkom op mijn website. Ik ben <strong>DitIsToevalligIemand</strong>, de maker en eigenaar van dit portaal. Gemaakt voor al je timers, radio, vakanties, eindexamens en concerten in Nederland en België!`;
 
         function getAboutText() { return safeGetStorage('sinterklaas_about_text') || defaultAboutText; }
         function renderAboutTab() { document.getElementById('aboutContentBox').innerHTML = getAboutText(); }
