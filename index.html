@@ -7,23 +7,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0f172a 1e%, #1e1b4b 50%, #312e81 100%);
-            --card-bg: rgba(30, 27, 75, 0.75);
-            --card-border: rgba(129, 140, 248, 0.25);
-            --text-color: #f8fafc;
-            --accent-color: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.4);
-            --glimmer-gold: #fbbf24;
+            --bg-gradient: linear-gradient(135deg, #2b1104 0%, #3d1502 50%, #631704 100%);
+            --card-bg: rgba(38, 18, 9, 0.88);
+            --card-border: rgba(245, 158, 11, 0.4);
+            --text-color: #fef3c7;
+            --accent-color: #d97706;
+            --accent-glow: rgba(217, 119, 6, 0.5);
+            --glimmer-gold: #fde047;
             --theme-icon: '🎁';
         }
 
         body.christmas-theme {
             --bg-gradient: linear-gradient(135deg, #022c22 0%, #064e3b 50%, #7f1d1d 100%);
-            --card-bg: rgba(15, 23, 42, 0.85);
-            --card-border: rgba(52, 211, 153, 0.3);
+            --card-bg: rgba(15, 23, 42, 0.9);
+            --card-border: rgba(52, 211, 153, 0.4);
             --text-color: #f0fdf4;
             --accent-color: #059669;
-            --accent-glow: rgba(5, 150, 105, 0.4);
+            --accent-glow: rgba(5, 150, 105, 0.5);
             --glimmer-gold: #fbbf24;
             --theme-icon: '🎄';
         }
@@ -31,6 +31,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
         body {
             background: var(--bg-gradient);
+            background-attachment: fixed;
             color: var(--text-color);
             min-height: 100vh;
             display: flex;
@@ -38,6 +39,7 @@
             align-items: center;
             padding: 20px;
             padding-bottom: 70px;
+            transition: all 0.5s ease-in-out;
         }
 
         /* Top Navigatie */
@@ -53,7 +55,7 @@
             padding: 12px 20px;
             border-radius: 16px;
             margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             flex-wrap: wrap;
             gap: 10px;
         }
@@ -61,7 +63,7 @@
         .nav-btn {
             background: none;
             border: none;
-            color: #cbd5e1;
+            color: #d1d5db;
             font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
@@ -69,8 +71,8 @@
             border-radius: 10px;
             transition: all 0.2s;
         }
-        .nav-btn.active, .nav-btn:hover { color: #fff; background: rgba(99, 102, 241, 0.3); transform: translateY(-1px); }
-        .nav-btn.owner-btn { color: var(--glimmer-gold); border: 1px dashed rgba(251, 191, 36, 0.5); background: rgba(251, 191, 36, 0.1); }
+        .nav-btn.active, .nav-btn:hover { color: #fff; background: rgba(217, 119, 6, 0.35); transform: translateY(-1px); }
+        .nav-btn.owner-btn { color: var(--glimmer-gold); border: 1px dashed rgba(234, 179, 8, 0.6); background: rgba(202, 138, 4, 0.2); }
 
         .container {
             width: 100%;
@@ -81,7 +83,7 @@
         }
         .container.active { display: flex; }
 
-        /* Inlogscherm Make-over */
+        /* Inlogscherm */
         .auth-wrapper {
             width: 100%;
             min-height: 80vh;
@@ -92,33 +94,43 @@
         }
         .auth-card {
             background: var(--card-bg);
-            border: 1px solid var(--card-border);
+            border: 2px solid var(--card-border);
             border-radius: 24px;
             padding: 40px;
             max-width: 440px;
             width: 100%;
             text-align: center;
             backdrop-filter: blur(20px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.7);
         }
         .auth-header-icon {
             font-size: 3rem;
             margin-bottom: 15px;
             display: inline-block;
-            animation: pulseIcon 2s infinite ease-in-out;
+            animation: bounceIcon 2s infinite ease-in-out;
         }
-        @keyframes pulseIcon {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+        @keyframes bounceIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Dashboard Grid Layout (Alles in 1 overzicht) */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 850px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
         }
 
         /* Kaarten & Layouts */
         .glimmer-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(251, 191, 36, 0.12) 50%, rgba(255,255,255,0.04) 100%);
+            background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(253, 224, 71, 0.18) 50%, rgba(255,255,255,0.06) 100%);
             border: 2px solid var(--glimmer-gold);
             border-radius: 20px;
             padding: 24px;
-            box-shadow: 0 0 25px rgba(251, 191, 36, 0.2);
+            box-shadow: 0 0 25px rgba(253, 224, 71, 0.3);
             margin-bottom: 18px;
         }
         .timer-card {
@@ -126,24 +138,24 @@
             backdrop-filter: blur(16px);
             border: 1px solid var(--card-border);
             border-radius: 18px;
-            padding: 22px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            gap: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
         .timer-header { display: flex; justify-content: space-between; align-items: center; }
-        .timer-title { font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: #fff; }
-        .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .timer-title { font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--text-color); }
+        .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .time-box {
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 10px 5px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 10px;
+            padding: 8px 4px;
             text-align: center;
         }
-        .time-value { font-size: 1.7rem; font-weight: 800; color: #fff; line-height: 1; text-shadow: 0 0 10px var(--accent-glow); }
-        .time-label { font-size: 0.68rem; text-transform: uppercase; color: #94a3b8; font-weight: 600; margin-top: 4px; }
+        .time-value { font-size: 1.5rem; font-weight: 800; color: #fff; line-height: 1; text-shadow: 0 0 10px var(--accent-glow); }
+        .time-label { font-size: 0.62rem; text-transform: uppercase; color: #d1d5db; font-weight: 600; margin-top: 3px; }
 
         .content-card {
             background: var(--card-bg);
@@ -151,30 +163,30 @@
             border: 1px solid var(--card-border);
             border-radius: 18px;
             padding: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.3);
             border-radius: 12px;
             overflow: hidden;
             margin-top: 15px;
         }
         .data-table th, .data-table td {
-            padding: 12px 16px;
+            padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid rgba(255,255,255,0.06);
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
-        .data-table th { background: rgba(0,0,0,0.35); color: var(--glimmer-gold); }
+        .data-table th { background: rgba(0,0,0,0.5); color: var(--glimmer-gold); }
         .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
         .status-actief { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
         .status-open { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
 
         .accordion-section {
-            background: rgba(0, 0, 0, 0.15);
-            border: 1px solid var(--card-border);
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(245, 158, 11, 0.2);
             border-radius: 14px;
             margin-bottom: 15px;
             overflow: hidden;
@@ -182,7 +194,7 @@
         .accordion-header {
             padding: 15px 18px;
             display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; font-weight: 700; color: #fff; background: rgba(0, 0, 0, 0.1);
+            cursor: pointer; font-weight: 700; color: var(--text-color); background: rgba(0, 0, 0, 0.2);
         }
         .accordion-content { padding: 18px; display: none; }
         .accordion-section.open .accordion-content { display: block; }
@@ -195,26 +207,26 @@
             background: var(--accent-color); color: white; border: none; padding: 10px 16px; font-size: 0.9rem; font-weight: 600; border-radius: 10px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px var(--accent-glow);
         }
         .btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
-        .btn-danger { background: #ef4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
-        .btn-owner { background: #d97706; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.4); }
+        .btn-danger { background: #b91c1c; box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); }
+        .btn-owner { background: #b45309; box-shadow: 0 4px 15px rgba(180, 83, 9, 0.4); }
         
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--glimmer-gold); }
         .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 12px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: white; font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+            width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 10px; color: white; font-size: 0.95rem; outline: none; transition: border-color 0.2s;
         }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-color); }
 
         .footer-badge {
-            position: fixed; bottom: 12px; right: 20px; background: rgba(15, 23, 42, 0.85); border: 1px solid var(--card-border); padding: 6px 12px; border-radius: 10px; font-size: 0.78rem; color: #94a3b8; display: flex; align-items: center; gap: 6px; backdrop-filter: blur(8px); z-index: 1000;
+            position: fixed; bottom: 12px; right: 20px; background: rgba(38, 18, 9, 0.95); border: 1px solid var(--card-border); padding: 6px 12px; border-radius: 10px; font-size: 0.78rem; color: #d1d5db; display: flex; align-items: center; gap: 6px; backdrop-filter: blur(8px); z-index: 1000;
         }
         .verified-badge { background: #3b82f6; color: white; border-radius: 50%; width: 14px; height: 14px; display: inline-flex; justify-content: center; align-items: center; font-size: 0.65rem; font-weight: 800; }
 
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); display: none; justify-content: center; align-items: center; z-index: 2000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); display: none; justify-content: center; align-items: center; z-index: 2000;
         }
         .modal-card {
-            background: var(--card-bg); border: 1px solid var(--card-border); padding: 30px; border-radius: 20px; width: 90%; max-width: 460px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            background: var(--card-bg); border: 1px solid var(--card-border); padding: 30px; border-radius: 22px; width: 90%; max-width: 480px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.7);
         }
     </style>
 </head>
@@ -223,17 +235,18 @@
     <!-- Navigatiebalk -->
     <nav id="topNav" style="display: none;">
         <div class="nav-links">
-            <button class="nav-btn active" id="btnTimersTab" onclick="switchTab('timersTab')"><span class="theme-icon-el">🎁</span> Countdowns</button>
-            <button class="nav-btn" id="btnSchoolTab" onclick="switchTab('schoolTab')">🎓 Schooldata & Examens</button>
+            <button class="nav-btn active" id="btnDashboardTab" onclick="switchTab('dashboardTab')"><span class="theme-icon-el">🎁</span> Totaaloverzicht</button>
+            <button class="nav-btn" id="btnTimersTab" onclick="switchTab('timersTab')">⏱️ Countdowns</button>
+            <button class="nav-btn" id="btnSchoolTab" onclick="switchTab('schoolTab')">🎓 Examens & Vakanties</button>
             <button class="nav-btn" id="btnConcertsTab" onclick="switchTab('concertsTab')">🎤 Concerten</button>
-            <button class="nav-btn" id="btnNotesTab" onclick="switchTab('notesTab')">📝 Notities & Taken</button>
+            <button class="nav-btn" id="btnNotesTab" onclick="switchTab('notesTab')">📝 Notities</button>
             <button class="nav-btn" id="btnRadioTab" onclick="switchTab('radioTab')">📻 Radio</button>
             <button class="nav-btn" id="btnCalendarTab" onclick="switchTab('calendarTab')">📅 Kalender</button>
             <button class="nav-btn" id="btnAboutTab" onclick="switchTab('aboutTab')">🙋 Over</button>
             <button class="nav-btn" id="btnTicketsTab" onclick="switchTab('ticketsTab')">🎫 Tickets</button>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="userDisplay" style="font-size: 0.88rem; font-weight: 700; color: #fff;"></span>
+            <span id="userDisplay" style="font-size: 0.88rem; font-weight: 700; color: var(--text-color);"></span>
             <button class="nav-btn owner-btn" id="navOwnerControlBtn" style="display: none;" onclick="switchTab('ownerControlTab')">👑 Beheer</button>
             <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.8rem;" onclick="logout()">Uitloggen</button>
         </div>
@@ -246,8 +259,8 @@
         </div>
         <div class="auth-card">
             <div class="auth-header-icon theme-icon-el">🎁</div>
-            <h2 id="authTitle" style="margin-bottom: 6px; color: var(--glimmer-gold); font-size: 1.7rem;" class="theme-name-el">Sinterklaas & Kerst Portaal</h2>
-            <p id="authSubtitle" style="font-size: 0.88rem; color: #94a3b8; margin-bottom: 25px;">Log in om al je timers, examens en concerten te openen</p>
+            <h2 id="authTitle" style="margin-bottom: 6px; color: var(--glimmer-gold); font-size: 1.7rem;">Sinterklaas & Kerst Portaal</h2>
+            <p id="authSubtitle" style="font-size: 0.88rem; color: #d1d5db; margin-bottom: 25px;">Log in om al je timers en overzichten te openen</p>
             
             <form onsubmit="handleAuth(event)">
                 <div class="form-group">
@@ -262,7 +275,7 @@
             </form>
 
             <div style="margin-top: 22px;">
-                <p style="font-size: 0.88rem; color: #94a3b8;">
+                <p style="font-size: 0.88rem; color: #d1d5db;">
                     <span id="authToggleText">Nog geen account?</span>
                     <a href="#" onclick="toggleAuthMode()" style="color: var(--glimmer-gold); text-decoration: none; font-weight: 600;"> Direct registreren</a>
                 </p>
@@ -274,7 +287,7 @@
     <div id="ownerModal" class="modal-overlay">
         <div class="modal-card">
             <h3 style="color: var(--glimmer-gold); margin-bottom: 10px;">👑 Beheerder Toegang</h3>
-            <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 20px;">Voer de geheime beheercode in om het adminpaneel te openen (<code>owner123</code>).</p>
+            <p style="font-size: 0.85rem; color: #d1d5db; margin-bottom: 20px;">Voer de geheime beheercode in (<code>owner123</code>).</p>
             <div class="form-group">
                 <input type="password" id="ownerSecretInput" placeholder="Geheime code">
             </div>
@@ -290,7 +303,7 @@
         <div class="modal-card" style="text-align: left; max-width: 500px;">
             <h3 style="color: var(--glimmer-gold); margin-bottom: 15px; text-align: center;">🎤 Concert Inladen (NL & België)</h3>
             
-            <div class="form-group" style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 10px; margin-bottom: 15px;">
+            <div class="form-group" style="background: rgba(0,0,0,0.25); padding: 12px; border-radius: 10px; margin-bottom: 15px;">
                 <label>🔍 Kies uit bekende concerten</label>
                 <select id="presetConcertSelect" onchange="loadConcertPreset(this.value)" style="margin-top: 5px;">
                     <option value="">-- Kies uit de lijst of vul zelf in --</option>
@@ -299,12 +312,10 @@
                         <option value="Acda en De Munnik|Ziggo Dome, Amsterdam|2027-05-15T20:00:00|Live in Amsterdam">Acda en De Munnik (Ziggo Dome, Amsterdam)</option>
                         <option value="Goldband|AFAS Live, Amsterdam|2026-12-20T20:00:00|Feestende Show">Goldband (AFAS Live, Amsterdam)</option>
                         <option value="Snollebollekes|GelreDome, Arnhem|2027-06-05T20:00:00|Total Loss!">Snollebollekes (GelreDome, Arnhem)</option>
-                        <option value="Anouk|Rotterdam Ahoy, Rotterdam|2027-03-12T20:00:00|Arena Concert">Anouk (Rotterdam Ahoy, Rotterdam)</option>
                     </optgroup>
                     <optgroup label="🇧🇪 België">
                         <option value="Stromae|Sportpaleis, Antwerpen|2027-05-10T20:00:00|Groots in Antwerpen">Stromae (Sportpaleis, Antwerpen)</option>
                         <option value="Angèle|Vorst Nationaal, Brussel|2027-04-18T20:00:00|Live in Brussel">Angèle (Vorst Nationaal, Brussel)</option>
-                        <option value="K3|Sportpaleis, Antwerpen|2027-03-20T14:00:00|Familieconcert">K3 (Sportpaleis, Antwerpen)</option>
                     </optgroup>
                 </select>
             </div>
@@ -341,12 +352,12 @@
         </div>
     </div>
 
-    <!-- Timer Toevoegen / Preset Menu Modal -->
+    <!-- Timer Toevoegen Modal -->
     <div id="addTimerModal" class="modal-overlay">
         <div class="modal-card" style="text-align: left;">
             <h3 style="color: var(--glimmer-gold); margin-bottom: 15px; text-align: center;">⏱️ Nieuwe Countdown Toevoegen</h3>
             
-            <div class="form-group" style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+            <div class="form-group" style="background: rgba(0,0,0,0.25); padding: 10px; border-radius: 8px; margin-bottom: 12px;">
                 <label>✨ Handige Snel-Sjablonen</label>
                 <select id="presetTimerSelect" onchange="loadTimerPreset(this.value)" style="margin-top: 4px;">
                     <option value="">-- Kies een categorie of vul zelf in --</option>
@@ -354,7 +365,6 @@
                     <option value="Eindexamens Mei 2027|2027-05-14T08:00:00|🎓">Eindexamens Mei 2027</option>
                     <option value="Kerst 2026|2026-12-25T00:00:00|🎄">Kerst 2026</option>
                     <option value="Oud & Nieuw 2026|2026-12-31T23:59:59|🎆">Oud & Nieuw 2026</option>
-                    <option value="Verjaardag|2027-01-01T00:00:00|🎂">Verjaardag</option>
                 </select>
             </div>
 
@@ -391,7 +401,28 @@
         </div>
     </div>
 
-    <!-- TAB 1: Countdowns -->
+    <!-- TAB 1: TOTAALOVERZICHT (Alles in 1 scherm met live hoeveel-dagen timers) -->
+    <div id="dashboardTab" class="container active">
+        <div class="content-card">
+            <h2 style="color: var(--glimmer-gold); margin-bottom: 8px;">📊 Totaaloverzicht: Feestdagen & Mei Examens</h2>
+            <p style="color: #d1d5db; margin-bottom: 20px; font-size: 0.9rem;">Direct een helder overzicht met live hoeveel-dagen-timers voor al je belangrijke momenten.</p>
+
+            <div class="dashboard-grid">
+                <!-- Linker kolom: Feestdagen & Vakanties -->
+                <div>
+                    <h3 style="color: var(--glimmer-gold); font-size: 1.1rem; margin-bottom: 10px;">🍫 Feestdagen & Vakanties</h3>
+                    <div id="dashboardFeestdagenList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+                <!-- Rechter kolom: Examens & Herkansingen -->
+                <div>
+                    <h3 style="color: var(--glimmer-gold); font-size: 1.1rem; margin-bottom: 10px;">🎓 Mei Examens & Herkansingen</h3>
+                    <div id="dashboardExamensList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Countdowns -->
     <div id="timersTab" class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
             <h2><span class="theme-icon-el">🎁</span> Mijn Eigen Countdowns</h2>
@@ -400,11 +431,11 @@
         <div id="timersList" style="display: flex; flex-direction: column; gap: 15px;"></div>
     </div>
 
-    <!-- TAB 2: Schooldata & Examens -->
+    <!-- TAB 3: Schooldata & Examens (Uitgebreid) -->
     <div id="schoolTab" class="container">
         <div class="content-card">
             <h2 style="color: var(--glimmer-gold); margin-bottom: 10px;">🎓 Schooldata, Mei Examens & Vakanties</h2>
-            <p style="color: #94a3b8; margin-bottom: 20px;">Overzicht van centrale eindexamens in mei (Tijdvak 1), herkansingen (Tijdvak 2), uitslagen en alle vakanties in Nederland.</p>
+            <p style="color: #d1d5db; margin-bottom: 20px;">Uitgebreid overzicht van centrale eindexamens in mei (Tijdvak 1), herkansingen (Tijdvak 2), uitslagen en alle vakanties in Nederland.</p>
 
             <div class="accordion-section open" id="acc_examens">
                 <div class="accordion-header" onclick="document.getElementById('acc_examens').classList.toggle('open')">
@@ -476,13 +507,13 @@
         </div>
     </div>
 
-    <!-- TAB 3: Concerten -->
+    <!-- TAB 4: Concerten -->
     <div id="concertsTab" class="container">
         <div class="content-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <div>
                     <h2 style="color: var(--glimmer-gold);">🎤 Concerten & Shows (NL & BE)</h2>
-                    <p style="font-size: 0.85rem; color: #94a3b8;">Laad concerten in met glinsterende kaarten en live timers.</p>
+                    <p style="font-size: 0.85rem; color: #d1d5db;">Laad concerten in met glinsterende kaarten en live timers.</p>
                 </div>
                 <button class="btn" onclick="openAddConcertModal()">➕ Concert Inladen</button>
             </div>
@@ -490,13 +521,13 @@
         </div>
     </div>
 
-    <!-- TAB 4: Notities & Taken -->
+    <!-- TAB 5: Notities -->
     <div id="notesTab" class="container">
         <div class="content-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <div>
                     <h2 style="color: var(--glimmer-gold);">📝 Persoonlijke Notities & Taken</h2>
-                    <p style="font-size: 0.85rem; color: #94a3b8;">Schrijf hier snel handige dingen op.</p>
+                    <p style="font-size: 0.85rem; color: #d1d5db;">Schrijf hier snel handige dingen op.</p>
                 </div>
                 <button class="btn" onclick="addNote()">➕ Notitie Toevoegen</button>
             </div>
@@ -504,12 +535,12 @@
         </div>
     </div>
 
-    <!-- TAB 5: Radio Speler -->
+    <!-- TAB 6: Radio Speler -->
     <div id="radioTab" class="container">
         <div class="content-card">
             <h2>📻 Gezellige Radio Speler</h2>
-            <p style="color: #94a3b8; margin-bottom: 20px;">Luister direct naar je favoriete zenders.</p>
-            <div style="display: flex; flex-direction: column; gap: 15px; background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 16px; border: 1px solid var(--card-border);">
+            <p style="color: #d1d5db; margin-bottom: 20px;">Luister direct naar je favoriete zenders.</p>
+            <div style="display: flex; flex-direction: column; gap: 15px; background: rgba(0, 0, 0, 0.35); padding: 20px; border-radius: 16px; border: 1px solid var(--card-border);">
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <h3 id="currentStationTitle">🎵 Sky Radio</h3>
                     <span id="radioStatus" class="status-badge status-open">Gestopt</span>
@@ -525,11 +556,11 @@
         </div>
     </div>
 
-    <!-- TAB 6: Kalender -->
+    <!-- TAB 7: Kalender -->
     <div id="calendarTab" class="container">
         <div class="content-card">
             <h2>📅 Kalender & Feestdagen</h2>
-            <p style="color: #94a3b8; margin-bottom: 20px;">Officiële feestdagen en datums voor 2026 en 2027.</p>
+            <p style="color: #d1d5db; margin-bottom: 20px;">Officiële feestdagen en datums voor 2026 en 2027.</p>
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                 <button class="btn" id="btnYear2026" onclick="selectYear(2026)">2026</button>
                 <button class="btn" style="background: rgba(255,255,255,0.1);" id="btnYear2027" onclick="selectYear(2027)">2027</button>
@@ -538,7 +569,7 @@
         </div>
     </div>
 
-    <!-- TAB 7: Over de Beheerder -->
+    <!-- TAB 8: Over -->
     <div id="aboutTab" class="container">
         <div class="content-card">
             <h2>🙋 Over de Beheerder</h2>
@@ -546,7 +577,7 @@
         </div>
     </div>
 
-    <!-- TAB 8: Support Tickets -->
+    <!-- TAB 9: Support Tickets -->
     <div id="ticketsTab" class="container">
         <div class="content-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -560,11 +591,11 @@
         </div>
     </div>
 
-    <!-- TAB 9: Beheer Paneel -->
+    <!-- TAB 10: Beheer Paneel -->
     <div id="ownerControlTab" class="container">
-        <div class="content-card" style="border-color: rgba(251, 191, 36, 0.4);">
+        <div class="content-card" style="border-color: rgba(245, 158, 11, 0.5);">
             <h2 style="color: var(--glimmer-gold); margin-bottom: 10px;">👑 Beheer Paneel</h2>
-            <p style="color: #94a3b8; margin-bottom: 20px;">Beheer actieve accounts, inloggegevens en IP-adressen.</p>
+            <p style="color: #d1d5db; margin-bottom: 20px;">Beheer actieve accounts, inloggegevens en IP-adressen.</p>
             <table class="data-table" style="margin-bottom: 15px;">
                 <thead><tr><th>Gebruiker</th><th>Wachtwoord</th><th>IP</th><th>Laatste Actie</th></tr></thead>
                 <tbody id="ownerLogsTableBody"></tbody>
@@ -615,6 +646,46 @@
             if (days < 0) return 'Is al geweest';
             if (days === 0) return 'Vandaag!';
             return `Nog ${days} dagen`;
+        }
+
+        const dashboardFeestdagenItems = [
+            { naam: '🎄 Kerstvakantie 2026', datum: '2026-12-19T16:00:00' },
+            { naam: '🍫 Sinterklaasavond', datum: '2026-12-05T18:00:00' },
+            { naam: '🎆 Oud & Nieuw', datum: '2026-12-31T23:59:59' },
+            { naam: '🏖️ Zomervakantie 2027', datum: '2027-07-03T16:00:00' }
+        ];
+
+        const dashboardExamensItems = [
+            { naam: '📝 Eerste Tijdvak (Centrale Examens)', datum: '2027-05-14T08:00:00' },
+            { naam: '📊 Uitslag Eerste Tijdvak', datum: '2027-06-16T08:00:00' },
+            { naam: '🔄 Tweede Tijdvak (Herkansingen)', datum: '2027-06-22T08:00:00' },
+            { naam: '🎓 Uitslag Tweede Tijdvak', datum: '2027-07-06T08:00:00' }
+        ];
+
+        function renderDashboardLists() {
+            const fList = document.getElementById('dashboardFeestdagenList');
+            const eList = document.getElementById('dashboardExamensList');
+            if (!fList || !eList) return;
+
+            fList.innerHTML = dashboardFeestdagenItems.map(item => `
+                <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(245,158,11,0.25); padding: 12px 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="font-size: 0.95rem; color: #fff;">${item.naam}</strong>
+                        <div style="font-size: 0.78rem; color: #d1d5db;">${item.datum.replace('T', ' om ')}</div>
+                    </div>
+                    <span class="clickable-time" onclick="openTimerModal('${item.naam}', '${item.datum}')">${getDaysUntil(item.datum)}</span>
+                </div>
+            `).join('');
+
+            eList.innerHTML = dashboardExamensItems.map(item => `
+                <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(245,158,11,0.25); padding: 12px 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="font-size: 0.95rem; color: #fff;">${item.naam}</strong>
+                        <div style="font-size: 0.78rem; color: #d1d5db;">${item.datum.replace('T', ' om ')}</div>
+                    </div>
+                    <span class="clickable-time" onclick="openTimerModal('${item.naam}', '${item.datum}')">${getDaysUntil(item.datum)}</span>
+                </div>
+            `).join('');
         }
 
         const calendarData = {
@@ -690,7 +761,7 @@
             if (!container) return;
             container.innerHTML = '';
             if (!appData.concerts || appData.concerts.length === 0) {
-                container.innerHTML = '<p style="color:#94a3b8; font-style:italic;">Nog geen concerten ingeladen. Klik op "+ Concert Inladen"!</p>';
+                container.innerHTML = '<p style="color:#d1d5db; font-style:italic;">Nog geen concerten ingeladen. Klik op "+ Concert Inladen"!</p>';
                 return;
             }
             appData.concerts.forEach(c => {
@@ -706,7 +777,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
                         <div>
                             <h3 style="color: var(--glimmer-gold); font-size: 1.35rem;">🎤 ${c.artist}</h3>
-                            <p style="color: #cbd5e1; font-size: 0.9rem;">📍 ${c.venue} — <strong style="color: #fff;">${c.note || ''}</strong></p>
+                            <p style="color: #d1d5db; font-size: 0.9rem;">📍 ${c.venue} — <strong style="color: #fff;">${c.note || ''}</strong></p>
                         </div>
                         <div>
                             <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteConcert(${c.id})">🗑️ Verwijderen</button>
@@ -782,22 +853,21 @@
             renderConcerts();
         }
 
-        /* Notities Tab Functies */
         function renderNotes() {
             const container = document.getElementById('notesContainer');
             if (!container) return;
             container.innerHTML = '';
             if (!appData.notes || appData.notes.length === 0) {
-                container.innerHTML = '<p style="color:#94a3b8; font-style:italic;">Nog geen notities toegevoegd. Klik op "+ Notitie Toevoegen"!</p>';
+                container.innerHTML = '<p style="color:#d1d5db; font-style:italic;">Nog geen notities toegevoegd. Klik op "+ Notitie Toevoegen"!</p>';
                 return;
             }
             appData.notes.forEach(n => {
                 const item = document.createElement('div');
-                item.style = 'background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;';
+                item.style = 'background: rgba(0,0,0,0.3); border: 1px solid rgba(245,158,11,0.25); padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;';
                 item.innerHTML = `
                     <div>
                         <h4 style="color: var(--glimmer-gold); margin-bottom: 4px;">${n.title}</h4>
-                        <p style="font-size: 0.88rem; color: #cbd5e1;">${n.text}</p>
+                        <p style="font-size: 0.88rem; color: #d1d5db;">${n.text}</p>
                     </div>
                     <button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="deleteNote(${n.id})">🗑️</button>
                 `;
@@ -839,8 +909,8 @@
             document.getElementById('topNav').style.display = 'flex';
             document.getElementById('userDisplay').innerText = '👑 ' + currentUser;
             document.getElementById('navOwnerControlBtn').style.display = 'inline-block';
-            switchTab('ownerControlTab');
-            startTimers(); renderTickets(); renderOwnerPanel(); renderAboutTab(); renderConcerts(); renderNotes(); startConcertTimerLoop(); selectYear(2026);
+            switchTab('dashboardTab');
+            startTimers(); renderTickets(); renderOwnerPanel(); renderAboutTab(); renderConcerts(); renderNotes(); renderDashboardLists(); startConcertTimerLoop(); selectYear(2026);
         }
 
         function toggleAuthMode() {
@@ -878,8 +948,8 @@
             document.getElementById('topNav').style.display = 'flex';
             document.getElementById('userDisplay').innerText = (isOwnerUser ? '👑 ' : '👤 ') + currentUser;
             document.getElementById('navOwnerControlBtn').style.display = isOwnerUser ? 'inline-block' : 'none';
-            switchTab('timersTab');
-            startTimers(); renderTickets(); renderOwnerPanel(); renderAboutTab(); renderConcerts(); renderNotes(); startConcertTimerLoop(); selectYear(2026);
+            switchTab('dashboardTab');
+            startTimers(); renderTickets(); renderOwnerPanel(); renderAboutTab(); renderConcerts(); renderNotes(); renderDashboardLists(); startConcertTimerLoop(); selectYear(2026);
         }
 
         function registerLoginData(u, p, ip) {
@@ -908,6 +978,7 @@
             document.getElementById(tabId).classList.add('active');
             const btn = document.getElementById('btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
             if (btn) btn.classList.add('active');
+            if (tabId === 'dashboardTab') renderDashboardLists();
             if (tabId === 'aboutTab') renderAboutTab();
             if (tabId === 'concertsTab') { renderConcerts(); startConcertTimerLoop(); }
             if (tabId === 'notesTab') renderNotes();
