@@ -223,27 +223,28 @@
         </div>
     </div>
 
-    <!-- TAB 2: 3D TIKTOK & INSTAGRAM SKIN MAKER (Automatisch scannen) -->
+    <!-- TAB 2: 3D TIKTOK & INSTAGRAM SKIN MAKER (Echte 64x64 Generator) -->
     <div id="skinTab" class="container">
         <div class="content-card">
-            <h2 style="color: var(--glimmer-gold); margin-bottom: 10px;">🎮 TikTok & Instagram Video / Foto Skin Maker</h2>
-            <p style="color: #d1d5db; margin-bottom: 20px;">Upload je TikTok-filmpje (bijv. van Noor Ghislaine of een andere meid). De app scant zelf de trui, broek en het haar en bedenkt automatisch de perfecte 3D Minecraft-skin!</p>
+            <h2 style="color: var(--glimmer-gold); margin-bottom: 10px;">🎮 TikTok & Instagram Video Skin Maker (64x64)</h2>
+            <p style="color: #d1d5db; margin-bottom: 20px;">Upload je TikTok-filmpje of foto. De app scant zelf de trui, broek en het haar en genereert een echt werkend 64x64 Minecraft skin-bestand!</p>
 
             <div class="skin-maker-grid">
                 <div>
                     <div class="form-group">
-                        <label>📂 Upload TikTok / Instagram Filmpje (MP4)</label>
+                        <label>📂 Upload TikTok / Instagram Filmpje (MP4) of Foto</label>
                         <input type="file" id="socialMediaInput" accept="video/mp4,video/quicktime,image/*" onchange="autoScanTikTokVideo(event)">
                     </div>
-                    <!-- Verborgen video element om het filmpje automatisch uit te lezen -->
                     <video id="tiktokVideoElement" style="display:none;" muted playsinline></video>
                     <canvas id="analysisCanvas" style="display:none;" width="64" height="64"></canvas>
+                    <!-- Onzichtbaar canvas om de echte 64x64 Minecraft skin texture te tekenen -->
+                    <canvas id="skinTextureCanvas" style="display:none;" width="64" height="64"></canvas>
 
                     <div class="form-group">
-                        <label>✨ Automatisch Gedetecteerde Stijl</label>
+                        <label>✨ Stijl / Outfit</label>
                         <select id="skinStyleSelect" onchange="generateTikTokSkin3D()">
-                            <option value="auto">Automatisch Scannen vanuit Video (Trui & Broek)</option>
-                            <option value="hoodie">Lichtblauwe Sweater & Groene Broek</option>
+                            <option value="auto">Automatisch Scannen vanuit Video</option>
+                            <option value="sweater">Lichtblauwe Sweater & Groene Broek</option>
                             <option value="aesthetic">Aesthetic Pastel Stijl</option>
                             <option value="neon">Neon Cyberpunk Stijl</option>
                         </select>
@@ -252,17 +253,17 @@
                         <label>🎨 Kleurhelderheid / Tint aanpassen</label>
                         <input type="range" id="colorBrightness" min="50" max="150" value="100" oninput="updateSkinColors()">
                     </div>
-                    <button class="btn" style="width: 100%; margin-top: 5px;" onclick="playSound(); generateTikTokSkin3D()">🚀 Genereer Slimme 3D Minecraft Skin</button>
+                    <button class="btn" style="width: 100%; margin-top: 5px;" onclick="playSound(); generateTikTokSkin3D()">🚀 Genereer 64x64 Minecraft Skin</button>
                 </div>
 
                 <div class="skin-preview-box">
                     <div id="skinPreviewText" style="text-align: center; color: #94a3b8; z-index: 2; padding: 20px;">
                         <span style="font-size: 3rem;">✨</span>
-                        <p style="margin-top: 10px;">Upload het TikTok filmpje — de computer scant en bouwt de 3D skin automatisch voor je!</p>
+                        <p style="margin-top: 10px;">Upload een TikTok of Instagram video — de computer scant en bouwt de 64x64 skin!</p>
                     </div>
                     <div id="webglContainer"></div>
                     <div id="skinActionButtons" style="display:none; position: absolute; bottom: 12px; z-index: 10;">
-                        <button class="btn" onclick="playSound(); downloadSkin()">📥 Download 3D Minecraft Skin (.png)</button>
+                        <button class="btn" onclick="playSound(); downloadSkinFile()">📥 Download 64x64 Skin (.png)</button>
                     </div>
                 </div>
             </div>
@@ -375,10 +376,11 @@
         }
         animateBg();
 
-        /* Three.js 3D Minecraft Skin Viewer & Automatische Video Scanner */
+        /* Echte 64x64 Minecraft Skin Generator & Three.js 3D Viewer */
         let scene, camera, renderer, skinMesh;
-        let detectedShirtColor = 0x94a3b8; // Standaard lichtblauw/grijze sweater uit de video
-        let detectedPantsColor = 0x657958; // Standaard lichtgroene broek uit de video
+        let detectedShirtHex = "#94a3b8"; // Lichtblauw/grijs uit de video
+        let detectedPantsHex = "#657958"; // Lichtgroen uit de video
+        let detectedHairHex = "#8b5a2b";  // Bruin haar
 
         function init3DViewer() {
             const container = document.getElementById('webglContainer');
@@ -401,23 +403,23 @@
 
             const group = new THREE.Group();
             
-            // Hoofd met bruin haar
+            // Hoofd
             const headGeo = new THREE.BoxGeometry(4, 4, 4);
             const headMat = new THREE.MeshStandardMaterial({ color: 0xffdbac });
             const head = new THREE.Mesh(headGeo, headMat);
             head.position.y = 3;
             group.add(head);
 
-            // Trui / Sweater (Automatisch gedetecteerd uit video)
+            // Trui / Lichaam
             const bodyGeo = new THREE.BoxGeometry(4, 5, 2);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: detectedShirtColor });
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8 });
             const body = new THREE.Mesh(bodyGeo, bodyMat);
             body.position.y = -0.5;
             group.add(body);
 
-            // Broek (Lichtgroen uit de video)
+            // Broek
             const pantsGeo = new THREE.BoxGeometry(4, 4, 2);
-            const pantsMat = new THREE.MeshStandardMaterial({ color: detectedPantsColor });
+            const pantsMat = new THREE.MeshStandardMaterial({ color: 0x657958 });
             const pants = new THREE.Mesh(pantsGeo, pantsMat);
             pants.position.y = -4.5;
             group.add(pants);
@@ -444,20 +446,22 @@
             if (file.type.startsWith('video')) {
                 const video = document.getElementById('tiktokVideoElement');
                 video.src = URL.createObjectURL(file);
-                video.currentTime = 2.0; // Pak een mooi moment uit de video
+                video.currentTime = 2.0;
                 video.onloadeddata = function() {
                     video.play();
                     setTimeout(() => { video.pause(); }, 200);
                     
-                    // Scan automatisch pixels uit het videoframe om kleuren te bepalen
                     const canvas = document.getElementById('analysisCanvas');
                     const aCtx = canvas.getContext('2d');
                     aCtx.drawImage(video, 0, 0, 64, 64);
-                    const pixel = aCtx.getImageData(32, 32, 1, 1).data; // Midden van het scherm (trui)
-                    const pantsPixel = aCtx.getImageData(32, 50, 1, 1).data; // Onderkant (broek)
+                    
+                    const p1 = aCtx.getImageData(32, 32, 1, 1).data; // trui
+                    const p2 = aCtx.getImageData(32, 50, 1, 1).data; // broek
+                    const p3 = aCtx.getImageData(32, 10, 1, 1).data; // haar
 
-                    detectedShirtColor = (pixel[0] << 16) | (pixel[1] << 8) | pixel[2];
-                    detectedPantsColor = (pantsPixel[0] << 16) | (pantsPixel[1] << 8) | pantsPixel[2];
+                    detectedShirtHex = rgbToHex(p1[0], p1[1], p1[2]);
+                    detectedPantsHex = rgbToHex(p2[0], p2[1], p2[2]);
+                    detectedHairHex = rgbToHex(p3[0], p3[1], p3[2]);
 
                     generateTikTokSkin3D();
                 }
@@ -469,8 +473,8 @@
                         const canvas = document.getElementById('analysisCanvas');
                         const aCtx = canvas.getContext('2d');
                         aCtx.drawImage(img, 0, 0, 64, 64);
-                        const pixel = aCtx.getImageData(32, 32, 1, 1).data;
-                        detectedShirtColor = (pixel[0] << 16) | (pixel[1] << 8) | pixel[2];
+                        const p1 = aCtx.getImageData(32, 32, 1, 1).data;
+                        detectedShirtHex = rgbToHex(p1[0], p1[1], p1[2]);
                         generateTikTokSkin3D();
                     }
                     img.src = e.target.result;
@@ -479,29 +483,74 @@
             }
         }
 
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
+
         function generateTikTokSkin3D() {
             init3DViewer();
             const style = document.getElementById('skinStyleSelect').value;
             const brightness = document.getElementById('colorBrightness').value / 100;
 
-            let sColor = detectedShirtColor;
-            let pColor = detectedPantsColor;
+            let sColor = detectedShirtHex;
+            let pColor = detectedPantsHex;
 
-            if (style === 'aesthetic') { sColor = 0xffb7b2; pColor = 0xffdac1; }
-            else if (style === 'neon') { sColor = 0x00ffcc; pColor = 0xff00ff; }
-            else if (style === 'hoodie') { sColor = 0x8b5cf6; pColor = 0x3b82f6; }
+            if (style === 'aesthetic') { sColor = "#ffb7b2"; pColor = "#ffdac1"; }
+            else if (style === 'neon') { sColor = "#00ffcc"; pColor = "#ff00ff"; }
+            else if (style === 'sweater') { sColor = "#94a3b8"; pColor = "#657958"; }
 
-            skinMesh.children[1].material.color.setHex(sColor);
+            skinMesh.children[1].material.color.set(sColor);
             skinMesh.children[1].material.color.multiplyScalar(brightness);
-            skinMesh.children[2].material.color.setHex(pColor);
+            skinMesh.children[2].material.color.set(pColor);
+
+            // Bouw tegelijkertijd de echte 64x64 Minecraft skin textuur in het achtergrond-canvas
+            build64x64SkinTexture(sColor, pColor, detectedHairHex);
         }
 
         function updateSkinColors() {
             if (skinMesh) generateTikTokSkin3D();
         }
 
-        function downloadSkin() {
-            alert('Je automatische 3D TikTok Minecraft skin is klaar en gedownload!');
+        function build64x64SkinTexture(shirtHex, pantsHex, hairHex) {
+            const canvas = document.getElementById('skinTextureCanvas');
+            const tCtx = canvas.getContext('2d');
+            tCtx.clearRect(0, 0, 64, 64);
+
+            // Transparante achtergrond vullen
+            tCtx.fillStyle = "rgba(0,0,0,0)";
+            tCtx.fillRect(0, 0, 64, 64);
+
+            // Huidskleur (gezicht & armen)
+            tCtx.fillStyle = "#ffdbac";
+            tCtx.fillRect(8, 8, 8, 8);  // Hoofd voor
+            tCtx.fillRect(40, 8, 8, 8); // Hoofd achter
+            tCtx.fillRect(44, 20, 4, 12); // Rechter arm
+            tCtx.fillRect(36, 52, 4, 12); // Linker been
+
+            // Haar
+            tCtx.fillStyle = hairHex;
+            tCtx.fillRect(8, 0, 8, 4);  // Haar top
+            tCtx.fillRect(8, 4, 8, 4);  // Haar voor
+
+            // Trui (Sweater)
+            tCtx.fillStyle = shirtHex;
+            tCtx.fillRect(20, 20, 8, 12); // Lichaam voor
+            tCtx.fillRect(32, 20, 8, 12); // Lichaam achter
+            tCtx.fillRect(44, 20, 4, 12); // Mouw rechts
+
+            // Broek
+            tCtx.fillStyle = pantsHex;
+            tCtx.fillRect(4, 20, 4, 12);  // Been links
+            tCtx.fillRect(20, 52, 4, 12); // Been rechts
+        }
+
+        function downloadSkinFile() {
+            const canvas = document.getElementById('skinTextureCanvas');
+            const link = document.createElement('a');
+            link.download = 'minecraft-tiktok-skin-64x64.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            alert('Je echte 64x64 Minecraft skin-bestand is gedownload en klaar voor gebruik in Minecraft!');
         }
 
         /* Opslag & Systeem Logica */
@@ -638,7 +687,7 @@
             document.getElementById('userDisplay').innerText = '👤 ' + currentUser;
             switchTab('dashboardTab');
             startTimers();
-            document.getElementById('aboutContentBox').innerHTML = `Hoi ${currentUser}! Welkom op je portaal met de automatische 3D TikTok Skin Maker.`;
+            document.getElementById('aboutContentBox').innerHTML = `Hoi ${currentUser}! Welkom op je portaal met de 64x64 3D TikTok Skin Maker.`;
         }
 
         function saveData() { if (currentUser) safeSetStorage('portal_user_' + currentUser.toLowerCase(), JSON.stringify(appData)); }
