@@ -221,7 +221,7 @@
         </div>
     </div>
 
-    <!-- TAB 2: TIKTOK SKIN MAKER (Echte 64x64 Bestand Generator) -->
+    <!-- TAB 2: TIKTOK SKIN MAKER -->
     <div id="skinTab" class="container">
         <div class="content-card">
             <h2 style="color: var(--glimmer-gold); margin-bottom: 10px;">🎮 TikTok Video naar 64x64 Minecraft Skin</h2>
@@ -323,7 +323,6 @@
     </div>
 
     <script>
-        /* Geluidseffecten */
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound() {
             try {
@@ -342,7 +341,6 @@
             } catch(e) {}
         }
 
-        /* Canvas Achtergrond */
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -369,10 +367,9 @@
         }
         animateBg();
 
-        /* Echte 64x64 Minecraft Skin Generator & Video Scanner */
-        let detectedShirtHex = "#94a3b8"; // Lichtblauw/grijs uit de video
-        let detectedPantsHex = "#657958"; // Lichtgroen uit de video
-        let detectedHairHex = "#8b5a2b";  // Bruin haar
+        let detectedShirtHex = "#94a3b8"; 
+        let detectedPantsHex = "#657958"; 
+        let detectedHairHex = "#8b5a2b";  
 
         function autoScanTikTokVideo(event) {
             const file = event.target.files[0];
@@ -435,7 +432,6 @@
             if (style === 'aesthetic') { sColor = "#ffb7b2"; pColor = "#ffdac1"; }
             else if (style === 'neon') { sColor = "#00ffcc"; pColor = "#ff00ff"; }
 
-            // Bouw de 64x64 Minecraft skin textuur
             const skinCanvas = document.getElementById('skinTextureCanvas');
             const tCtx = skinCanvas.getContext('2d');
             tCtx.clearRect(0, 0, 64, 64);
@@ -443,30 +439,25 @@
             tCtx.fillStyle = "rgba(0,0,0,0)";
             tCtx.fillRect(0, 0, 64, 64);
 
-            // Huidskleur (gezicht)
             tCtx.fillStyle = "#ffdbac";
             tCtx.fillRect(8, 8, 8, 8);  
             tCtx.fillRect(40, 8, 8, 8); 
             tCtx.fillRect(44, 20, 4, 12); 
             tCtx.fillRect(36, 52, 4, 12); 
 
-            // Haar
             tCtx.fillStyle = detectedHairHex;
             tCtx.fillRect(8, 0, 8, 4);  
             tCtx.fillRect(8, 4, 8, 4);  
 
-            // Sweater / Trui
             tCtx.fillStyle = sColor;
             tCtx.fillRect(20, 20, 8, 12); 
             tCtx.fillRect(32, 20, 8, 12); 
             tCtx.fillRect(44, 20, 4, 12); 
 
-            // Broek & Schoenen
             tCtx.fillStyle = pColor;
             tCtx.fillRect(4, 20, 4, 12);  
             tCtx.fillRect(20, 52, 4, 12); 
 
-            // Teken een verkleinde versie op het preview canvas voor direct zicht
             const pCtx = previewCanvas.getContext('2d');
             pCtx.imageSmoothingEnabled = false;
             pCtx.clearRect(0, 0, 128, 128);
@@ -482,7 +473,6 @@
             alert('Je echte 64x64 Minecraft skin-bestand is succesvol gedownload!');
         }
 
-        /* Opslag & Systeem Logica */
         const memoryStorage = {};
         function safeGetStorage(key) { try { return localStorage.getItem(key); } catch(e) { return memoryStorage[key] || null; } }
         function safeSetStorage(key, value) { try { localStorage.setItem(key, value); } catch(e) { memoryStorage[key] = value; } }
@@ -616,7 +606,7 @@
             document.getElementById('userDisplay').innerText = '👤 ' + currentUser;
             switchTab('dashboardTab');
             startTimers();
-            document.getElementById('aboutContentBox').innerHTML = `Hoi ${currentUser}! Welkom op je portaal met de 64x64 TikTok Skin Maker.`;
+            document.getElementById('aboutContentBox').innerHTML = `Hoi ${currentUser}! Welkom op je portaal met de TikTok Skin Maker.`;
         }
 
         function saveData() { if (currentUser) safeSetStorage('portal_user_' + currentUser.toLowerCase(), JSON.stringify(appData)); }
