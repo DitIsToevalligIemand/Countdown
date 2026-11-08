@@ -82,9 +82,8 @@
         
         .skin-preview-box {
             background: rgba(0,0,0,0.6); border: 2px dashed var(--card-border);
-            border-radius: 16px; height: 380px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; position: relative; overflow: hidden;
-            gap: 15px;
+            border-radius: 16px; min-height: 380px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; position: relative; padding: 20px; gap: 15px;
         }
 
         .btn {
@@ -132,7 +131,7 @@
     <nav id="topNav" style="display: none;">
         <div class="nav-links">
             <button class="nav-btn active" id="btnDashboardTab" onclick="playSound(); switchTab('dashboardTab')">🎁 Dashboard</button>
-            <button class="nav-btn" id="btnSkinTab" onclick="playSound(); switchTab('skinTab')">🎮 TikTok Skin Maker (64x64)</button>
+            <button class="nav-btn" id="btnSkinTab" onclick="playSound(); switchTab('skinTab')">🎮 TikTok Skin Maker (Zichtbare Analyse)</button>
             <button class="nav-btn" id="btnTimersTab" onclick="playSound(); switchTab('timersTab')">⏱️ Countdowns</button>
             <button class="nav-btn" id="btnSchoolTab" onclick="playSound(); switchTab('schoolTab')">🎓 Examen & Vakanties</button>
             <button class="nav-btn" id="btnRadioTab" onclick="playSound(); switchTab('radioTab')">📻 Radio</button>
@@ -221,42 +220,56 @@
         </div>
     </div>
 
-    <!-- TAB 2: TIKTOK SKIN MAKER -->
+    <!-- TAB 2: TIKTOK SKIN MAKER (Met live visuele analyse) -->
     <div id="skinTab" class="container">
         <div class="content-card">
-            <h2 style="color: var(--glimmer-gold); margin-bottom: 10px;">🎮 TikTok Video naar 64x64 Minecraft Skin</h2>
-            <p style="color: #d1d5db; margin-bottom: 20px;">Upload je TikTok-filmpje (bijv. van Noor). De app scant automatisch de trui, broek en het haar, en maakt direct een echt 64x64 Minecraft .png skin-bestand!</p>
+            <h2 style="color: var(--glimmer-gold); margin-bottom: 10px;">🎮 TikTok Video Analysator & 64x64 Skin Maker</h2>
+            <p style="color: #d1d5db; margin-bottom: 20px;">Upload je TikTok-filmpje (of foto). De app toont direct de foto en het gedecteerde kleurenpalet op je scherm, en maakt automatisch een echte 64x64 Minecraft skin!</p>
 
             <div class="skin-maker-grid">
                 <div>
                     <div class="form-group">
-                        <label>📂 Upload TikTok Filmpje (MP4) of Foto</label>
-                        <input type="file" id="socialMediaInput" accept="video/mp4,video/quicktime,image/*" onchange="autoScanTikTokVideo(event)">
+                        <label>📂 Stap 1: Upload TikTok Filmpje (MP4) of Foto</label>
+                        <input type="file" id="socialMediaInput" accept="video/mp4,video/quicktime,image/*" onchange="uploadAndAnalyzeFile(event)">
                     </div>
                     <video id="tiktokVideoElement" style="display:none;" muted playsinline></video>
                     <canvas id="analysisCanvas" style="display:none;" width="64" height="64"></canvas>
                     <canvas id="skinTextureCanvas" style="display:none;" width="64" height="64"></canvas>
 
                     <div class="form-group">
-                        <label>✨ Stijl / Outfit</label>
-                        <select id="skinStyleSelect" onchange="generateSkinPreview()">
-                            <option value="auto">Automatisch Scannen vanuit Video</option>
+                        <label>✨ Stap 2: Gescande Kleuren (Je ziet wat de app ziet)</label>
+                        <div style="display: flex; gap: 10px; align-items: center; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px;">
+                            <div style="text-align: center;"><div id="colorBoxShirt" style="width: 35px; height: 35px; background: #94a3b8; border-radius: 6px; border: 1px solid #fff;"></div><span style="font-size:0.75rem;">Trui</span></div>
+                            <div style="text-align: center;"><div id="colorBoxPants" style="width: 35px; height: 35px; background: #657958; border-radius: 6px; border: 1px solid #fff;"></div><span style="font-size:0.75rem;">Broek</span></div>
+                            <div style="text-align: center;"><div id="colorBoxHair" style="width: 35px; height: 35px; background: #8b5a2b; border-radius: 6px; border: 1px solid #fff;"></div><span style="font-size:0.75rem;">Haar</span></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>🎨 Handmatige Stijl Kiezen (Optioneel)</label>
+                        <select id="skinStyleSelect" onchange="redrawSkin()">
+                            <option value="analyzed">Gebruik Gescande TikTok Kleuren (Noor Stijl)</option>
                             <option value="sweater">Lichtblauwe Sweater & Groene Broek</option>
                             <option value="aesthetic">Aesthetic Pastel Stijl</option>
                             <option value="neon">Neon Cyberpunk Stijl</option>
                         </select>
                     </div>
-                    <button class="btn" style="width: 100%; margin-top: 5px;" onclick="playSound(); generateSkinPreview()">🚀 Genereer 64x64 Minecraft Skin</button>
+                    <button class="btn" style="width: 100%; margin-top: 5px;" onclick="playSound(); redrawSkin()">🚀 Ververs 64x64 Minecraft Skin</button>
                 </div>
 
                 <div class="skin-preview-box">
                     <div id="skinPreviewText" style="text-align: center; color: #94a3b8; padding: 20px;">
-                        <span style="font-size: 3rem;">✨</span>
-                        <p style="margin-top: 10px;">Upload een TikTok-filmpje om de skin te bouwen!</p>
+                        <span style="font-size: 3rem;">📸</span>
+                        <p style="margin-top: 10px;">Upload hierboven je TikTok-filmpje om de foto én de skin te bekijken!</p>
                     </div>
-                    <canvas id="previewCanvas" width="128" height="128" style="display:none; image-rendering: pixelated; width: 140px; height: 140px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);"></canvas>
-                    <div id="skinActionButtons" style="display:none;">
-                        <button class="btn" onclick="playSound(); downloadSkinFile()">📥 Download 64x64 Skin (.png)</button>
+                    <!-- Zichtbare foto van het geüploade moment -->
+                    <img id="uploadedPhotoPreview" style="display:none; max-width: 120px; max-height: 120px; border-radius: 8px; border: 2px solid var(--glimmer-gold);" alt="Geüploade TikTok frame">
+                    
+                    <!-- Zichtbare 64x64 skin preview -->
+                    <canvas id="previewCanvas" width="128" height="128" style="display:none; image-rendering: pixelated; width: 130px; height: 130px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);"></canvas>
+                    
+                    <div id="skinActionButtons" style="display:none; width: 100%; text-align: center;">
+                        <button class="btn" onclick="playSound(); downloadSkinFile()">📥 Download 64x64 Minecraft Skin (.png)</button>
                     </div>
                 </div>
             </div>
@@ -367,47 +380,65 @@
         }
         animateBg();
 
-        let detectedShirtHex = "#94a3b8"; 
-        let detectedPantsHex = "#657958"; 
-        let detectedHairHex = "#8b5a2b";  
+        let scannedShirtHex = "#94a3b8"; 
+        let scannedPantsHex = "#657958"; 
+        let scannedHairHex = "#8b5a2b";  
 
-        function autoScanTikTokVideo(event) {
+        function uploadAndAnalyzeFile(event) {
             const file = event.target.files[0];
             if (!file) return;
 
             if (file.type.startsWith('video')) {
                 const video = document.getElementById('tiktokVideoElement');
                 video.src = URL.createObjectURL(file);
-                video.currentTime = 2.0;
+                video.currentTime = 2.0; 
                 video.onloadeddata = function() {
                     video.play();
                     setTimeout(() => { video.pause(); }, 200);
                     
-                    const canvas = document.getElementById('analysisCanvas');
-                    const aCtx = canvas.getContext('2d');
+                    const analysisCanvas = document.getElementById('analysisCanvas');
+                    const aCtx = analysisCanvas.getContext('2d');
                     aCtx.drawImage(video, 0, 0, 64, 64);
                     
-                    const p1 = aCtx.getImageData(32, 32, 1, 1).data; 
-                    const p2 = aCtx.getImageData(32, 50, 1, 1).data; 
-                    const p3 = aCtx.getImageData(32, 10, 1, 1).data; 
+                    const p1 = aCtx.getImageData(32, 32, 1, 1).data; // Trui
+                    const p2 = aCtx.getImageData(32, 50, 1, 1).data; // Broek
+                    const p3 = aCtx.getImageData(32, 10, 1, 1).data; // Haar
 
-                    detectedShirtHex = rgbToHex(p1[0], p1[1], p1[2]);
-                    detectedPantsHex = rgbToHex(p2[0], p2[1], p2[2]);
-                    detectedHairHex = rgbToHex(p3[0], p3[1], p3[2]);
+                    scannedShirtHex = rgbToHex(p1[0], p1[1], p1[2]);
+                    scannedPantsHex = rgbToHex(p2[0], p2[1], p2[2]);
+                    scannedHairHex = rgbToHex(p3[0], p3[1], p3[2]);
 
-                    generateSkinPreview();
+                    // Toon een frame als zichtbare foto
+                    const photoImg = document.getElementById('uploadedPhotoPreview');
+                    photoImg.src = analysisCanvas.toDataURL('image/png');
+                    photoImg.style.display = 'block';
+
+                    updateColorBoxes();
+                    redrawSkin();
                 }
             } else {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const img = new Image();
                     img.onload = function() {
-                        const canvas = document.getElementById('analysisCanvas');
-                        const aCtx = canvas.getContext('2d');
+                        const analysisCanvas = document.getElementById('analysisCanvas');
+                        const aCtx = analysisCanvas.getContext('2d');
                         aCtx.drawImage(img, 0, 0, 64, 64);
+                        
                         const p1 = aCtx.getImageData(32, 32, 1, 1).data;
-                        detectedShirtHex = rgbToHex(p1[0], p1[1], p1[2]);
-                        generateSkinPreview();
+                        const p2 = aCtx.getImageData(32, 50, 1, 1).data;
+                        const p3 = aCtx.getImageData(32, 10, 1, 1).data;
+
+                        scannedShirtHex = rgbToHex(p1[0], p1[1], p1[2]);
+                        scannedPantsHex = rgbToHex(p2[0], p2[1], p2[2]);
+                        scannedHairHex = rgbToHex(p3[0], p3[1], p3[2]);
+
+                        const photoImg = document.getElementById('uploadedPhotoPreview');
+                        photoImg.src = e.target.result;
+                        photoImg.style.display = 'block';
+
+                        updateColorBoxes();
+                        redrawSkin();
                     }
                     img.src = e.target.result;
                 }
@@ -419,18 +450,26 @@
             return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
         }
 
-        function generateSkinPreview() {
+        function updateColorBoxes() {
+            document.getElementById('colorBoxShirt').style.background = scannedShirtHex;
+            document.getElementById('colorBoxPants').style.background = scannedPantsHex;
+            document.getElementById('colorBoxHair').style.background = scannedHairHex;
+        }
+
+        function redrawSkin() {
             document.getElementById('skinPreviewText').style.display = 'none';
             const previewCanvas = document.getElementById('previewCanvas');
             previewCanvas.style.display = 'block';
             document.getElementById('skinActionButtons').style.display = 'block';
 
             const style = document.getElementById('skinStyleSelect').value;
-            let sColor = detectedShirtHex;
-            let pColor = detectedPantsHex;
+            let sColor = scannedShirtHex;
+            let pColor = scannedPantsHex;
+            let hColor = scannedHairHex;
 
-            if (style === 'aesthetic') { sColor = "#ffb7b2"; pColor = "#ffdac1"; }
-            else if (style === 'neon') { sColor = "#00ffcc"; pColor = "#ff00ff"; }
+            if (style === 'sweater') { sColor = "#94a3b8"; pColor = "#657958"; }
+            else if (style === 'aesthetic') { sColor = "#ffb7b2"; pColor = "#ffdac1"; hColor = "#5c4033"; }
+            else if (style === 'neon') { sColor = "#00ffcc"; pColor = "#ff00ff"; hColor = "#00ffff"; }
 
             const skinCanvas = document.getElementById('skinTextureCanvas');
             const tCtx = skinCanvas.getContext('2d');
@@ -439,21 +478,25 @@
             tCtx.fillStyle = "rgba(0,0,0,0)";
             tCtx.fillRect(0, 0, 64, 64);
 
+            // Gezicht & Huid
             tCtx.fillStyle = "#ffdbac";
             tCtx.fillRect(8, 8, 8, 8);  
             tCtx.fillRect(40, 8, 8, 8); 
             tCtx.fillRect(44, 20, 4, 12); 
             tCtx.fillRect(36, 52, 4, 12); 
 
-            tCtx.fillStyle = detectedHairHex;
+            // Haar
+            tCtx.fillStyle = hColor;
             tCtx.fillRect(8, 0, 8, 4);  
             tCtx.fillRect(8, 4, 8, 4);  
 
+            // Sweater
             tCtx.fillStyle = sColor;
             tCtx.fillRect(20, 20, 8, 12); 
             tCtx.fillRect(32, 20, 8, 12); 
             tCtx.fillRect(44, 20, 4, 12); 
 
+            // Broek & Schoenen
             tCtx.fillStyle = pColor;
             tCtx.fillRect(4, 20, 4, 12);  
             tCtx.fillRect(20, 52, 4, 12); 
@@ -467,7 +510,7 @@
         function downloadSkinFile() {
             const canvas = document.getElementById('skinTextureCanvas');
             const link = document.createElement('a');
-            link.download = 'minecraft-tiktok-skin-64x64.png';
+            link.download = 'noor-minecraft-skin-64x64.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
             alert('Je echte 64x64 Minecraft skin-bestand is succesvol gedownload!');
