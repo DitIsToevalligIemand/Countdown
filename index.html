@@ -150,7 +150,6 @@
         .time-value { font-size: 1.5rem; font-weight: 800; color: #fff; line-height: 1; text-shadow: 0 0 10px var(--accent-glow); }
         .time-label { font-size: 0.62rem; text-transform: uppercase; color: #d1d5db; font-weight: 600; margin-top: 3px; }
 
-        /* TikTok & 3D Skin Maker Grid */
         .skin-maker-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -213,7 +212,7 @@
             <button class="nav-btn" id="btnTimersTab" onclick="playSound(); switchTab('timersTab')">⏱️ Countdowns & Concerten</button>
             <button class="nav-btn" id="btnSchoolTab" onclick="playSound(); switchTab('schoolTab')">🎓 Examen & Vakanties</button>
             <button class="nav-btn" id="btnRadioTab" onclick="playSound(); switchTab('radioTab')">📻 Radio</button>
-            <button class="nav-btn" id="btnAboutTab" onclick="switchTab('aboutTab')">🙋 Over</button>
+            <button class="nav-btn" id="btnAboutTab" onclick="playSound(); switchTab('aboutTab')">🙋 Over</button>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
             <span id="userDisplay" style="font-size: 0.88rem; font-weight: 700; color: var(--text-color);"></span>
@@ -221,12 +220,12 @@
         </div>
     </nav>
 
-    <!-- Inlogscherm -->
+    <!-- Inlog- en Registratiemenu -->
     <div id="authWrapper" class="auth-wrapper">
         <div class="auth-card">
             <div class="auth-header-icon theme-icon-el">🎁</div>
             <h2 id="authTitle" style="margin-bottom: 8px; color: var(--glimmer-gold); font-size: 1.8rem;" class="theme-name-el">Sinterklaas & Kerst Portaal</h2>
-            <p id="authSubtitle" style="font-size: 0.9rem; color: #d1d5db; margin-bottom: 25px;">Log in voor je timers en de 3D TikTok Skin Maker</p>
+            <p id="authSubtitle" style="font-size: 0.9rem; color: #d1d5db; margin-bottom: 25px;">Log in of maak direct een account aan om te beginnen</p>
             
             <form onsubmit="handleAuth(event)">
                 <div class="form-group">
@@ -239,6 +238,13 @@
                 </div>
                 <button type="submit" class="btn" style="width: 100%; margin-top: 10px; padding: 12px; font-size: 1rem;" id="authSubmitBtn">Inloggen</button>
             </form>
+
+            <div style="margin-top: 22px;">
+                <p style="font-size: 0.9rem; color: #d1d5db;">
+                    <span id="authToggleText">Nog geen account?</span>
+                    <a href="#" onclick="toggleAuthMode(); return false;" style="color: var(--glimmer-gold); text-decoration: none; font-weight: 600;" id="authToggleLink"> Direct registreren</a>
+                </p>
+            </div>
         </div>
     </div>
 
@@ -466,7 +472,7 @@
 
         function init3DViewer() {
             const container = document.getElementById('webglContainer');
-            if (renderer) return; // al geïnitialiseerd
+            if (renderer) return;
             container.style.display = 'block';
             
             scene = new THREE.Scene();
@@ -483,17 +489,14 @@
             directionalLight.position.set(10, 20, 15);
             scene.add(directionalLight);
 
-            // Maak een blokkerig Minecraft hoofd / lichaam model
             const group = new THREE.Group();
             
-            // Hoofd
             const headGeo = new THREE.BoxGeometry(4, 4, 4);
             const headMat = new THREE.MeshStandardMaterial({ color: 0xffdbac });
             const head = new THREE.Mesh(headGeo, headMat);
             head.position.y = 3;
             group.add(head);
 
-            // Lichaam
             const bodyGeo = new THREE.BoxGeometry(4, 6, 2);
             const bodyMat = new THREE.MeshStandardMaterial({ color: 0xd97706 });
             const body = new THREE.Mesh(bodyGeo, bodyMat);
@@ -532,10 +535,9 @@
         function generate3DSkin() {
             if (!uploadedImageObj) { alert('Upload eerst een TikTok of social media foto!'); return; }
             init3DViewer();
-            const style = document.getElementById('skinStyleSelect'].value;
+            const style = document.getElementById('skinStyleSelect').value;
             const brightness = document.getElementById('colorBrightness').value / 100;
 
-            // Pas kleuren van het 3D model aan op basis van de foto-stijl
             let col = 0xd97706;
             if (style === 'neon') col = 0x00ffcc;
             else if (style === 'aesthetic') col = 0xffb7b2;
@@ -550,7 +552,18 @@
         }
 
         function downloadSkin() {
-            alert('Je 3D Minecraft skin is klaar om te downloaden en te gebruiken in Minecraft!');
+            alert('Je 3D Minecraft skin is klaar om te downloaden!');
+        }
+
+        /* Inlog & Registratie Schakelaar */
+        let isLoginMode = true;
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('authTitle').innerText = isLoginMode ? 'Sinterklaas & Kerst Portaal' : 'Account Registreren';
+            document.getElementById('authSubtitle').innerText = isLoginMode ? 'Log in of maak direct een account aan om te beginnen' : 'Maak een nieuw account aan om je eigen timers op te slaan';
+            document.getElementById('authSubmitBtn').innerText = isLoginMode ? 'Inloggen' : 'Account Aanmaken';
+            document.getElementById('authToggleText').innerText = isLoginMode ? 'Nog geen account?' : 'Al een account?';
+            document.getElementById('authToggleLink').innerText = isLoginMode ? ' Direct registreren' : ' Inloggen';
         }
 
         /* Opslag & Systeem Logica */
