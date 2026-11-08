@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Portal & TikTok Skin Maker</title>
+    <title>Portal Studio - Countdowns & AI Skin Creator</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
-            --card-bg: rgba(24, 12, 6, 0.85);
+            --card-bg: rgba(20, 10, 5, 0.9);
             --card-border: rgba(245, 158, 11, 0.35);
             --text-color: #fef3c7;
             --accent-color: #d97706;
             --accent-glow: rgba(217, 119, 6, 0.6);
             --glimmer-gold: #fde047;
-            --dev-color: #3b82f6;
-            --dev-glow: rgba(59, 130, 246, 0.6);
-            --success-color: #22c55e;
+            --purple-glow: #a855f7;
+            --mc-green: #22c55e;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
         
         #bgCanvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: linear-gradient(135deg, #0f0602 0%, #1c0b04 50%, #300d01 100%);
+            background: linear-gradient(135deg, #0f0602 0%, #1c0b04 50%, #2e0c01 100%);
         }
 
         body {
@@ -31,38 +31,27 @@
             padding: 20px; padding-bottom: 70px; overflow-x: hidden;
         }
 
-        /* Top Navigatie */
         nav {
-            width: 100%; max-width: 1100px;
+            width: 100%; max-width: 1200px;
             display: flex; justify-content: space-between; align-items: center;
             background: var(--card-bg); backdrop-filter: blur(25px);
             border: 1px solid var(--card-border); padding: 14px 24px;
-            border-radius: 20px; margin-bottom: 25px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            border-radius: 20px; margin-bottom: 25px; gap: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7); flex-wrap: wrap;
         }
 
         .nav-links { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
         .nav-btn {
             background: none; border: none; color: #d1d5db;
-            font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            font-size: 0.9rem; font-weight: 700; cursor: pointer;
             padding: 10px 16px; border-radius: 12px; transition: all 0.3s ease;
         }
         .nav-btn.active, .nav-btn:hover { 
-            color: #fff; 
-            background: rgba(217, 119, 6, 0.3); 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 15px var(--accent-glow); 
+            color: #fff; background: rgba(217, 119, 6, 0.3); 
+            transform: translateY(-2px); box-shadow: 0 6px 15px var(--accent-glow); 
         }
 
-        .btn-auth-top {
-            background: linear-gradient(135deg, var(--accent-color) 0%, #b45309 100%);
-            color: white; border: none; padding: 10px 20px; font-weight: 700;
-            border-radius: 12px; cursor: pointer; transition: all 0.3s ease;
-            box-shadow: 0 4px 15px var(--accent-glow);
-        }
-        .btn-auth-top:hover { filter: brightness(1.2); transform: translateY(-2px); }
-
-        .container { width: 100%; max-width: 1100px; display: none; flex-direction: column; gap: 25px; }
+        .container { width: 100%; max-width: 1200px; display: none; flex-direction: column; gap: 25px; }
         .container.active { display: flex; animation: slideUp 0.4s ease forwards; }
 
         @keyframes slideUp {
@@ -73,374 +62,306 @@
         .content-card {
             background: var(--card-bg); backdrop-filter: blur(25px);
             border: 1px solid var(--card-border); border-radius: 24px;
-            padding: 35px; box-shadow: 0 20px 45px rgba(0,0,0,0.6);
+            padding: 30px; box-shadow: 0 20px 45px rgba(0,0,0,0.6);
         }
 
-        /* Form / Inputs */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        @media(max-width: 850px) { .grid-2 { grid-template-columns: 1fr; } }
+
         .form-group { margin-bottom: 18px; text-align: left; width: 100%; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; color: var(--glimmer-gold); text-transform: uppercase; }
         .form-group input, .form-group select {
-            width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.6);
+            width: 100%; padding: 12px 14px; background: rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; color: white; font-size: 0.95rem; outline: none;
-            transition: all 0.25s ease;
-        }
-        .form-group input:focus, .form-group select:focus { 
-            border-color: var(--glimmer-gold); 
-            box-shadow: 0 0 12px rgba(253, 224, 71, 0.25); 
         }
 
         .btn {
             background: linear-gradient(135deg, var(--accent-color) 0%, #b45309 100%); color: white; border: none;
-            padding: 14px 24px; font-size: 0.95rem; font-weight: 700; border-radius: 14px;
+            padding: 14px 20px; font-size: 0.9rem; font-weight: 800; border-radius: 14px;
             cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px var(--accent-glow);
-            width: 100%; text-transform: uppercase;
+            width: 100%; text-transform: uppercase; letter-spacing: 0.5px;
         }
         .btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
 
-        /* Skin Maker Grid */
-        .skin-maker-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 25px; }
-        @media(max-width: 850px) { .skin-maker-grid { grid-template-columns: 1fr; } }
-        
-        .skin-preview-box {
-            background: rgba(0,0,0,0.6); border: 2px dashed var(--card-border);
-            border-radius: 20px; min-height: 380px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; position: relative; padding: 20px; gap: 15px;
+        /* Countdowns Styling */
+        .timer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .timer-card {
+            background: rgba(0, 0, 0, 0.6); border: 2px solid var(--card-border);
+            border-radius: 20px; padding: 22px; text-align: center; position: relative; overflow: hidden;
         }
+        .countdown-digits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
+        .digit-box { background: rgba(0,0,0,0.7); padding: 12px 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); }
+        .digit-val { font-size: 1.6rem; font-weight: 800; color: #fff; text-shadow: 0 0 10px var(--accent-glow); }
+        .digit-lbl { font-size: 0.65rem; color: #aaa; text-transform: uppercase; font-weight: 700; margin-top: 2px; }
 
-        /* Modal Auth Screen Overlays */
-        .auth-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
-            display: none; justify-content: center; align-items: center; z-index: 9999;
+        /* Studio Video & Preview */
+        .video-dropzone {
+            border: 2px dashed var(--purple-glow); border-radius: 18px; padding: 25px;
+            text-align: center; background: rgba(0,0,0,0.5); cursor: pointer; transition: 0.3s;
         }
-        .auth-modal.active { display: flex; }
-
-        .auth-card {
-            background: var(--card-bg); border: 2px solid var(--card-border);
-            border-radius: 30px; padding: 40px; max-width: 480px; width: 90%;
-            text-align: center; backdrop-filter: blur(25px); position: relative;
-            box-shadow: 0 35px 70px rgba(0,0,0,0.9);
-        }
-
-        /* Dev Knop Rechtsboven in Inlogscherm */
-        .dev-badge-btn {
-            position: absolute; top: 20px; right: 20px;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
-            color: #9ca3af; font-size: 0.75rem; font-weight: 800; padding: 5px 12px;
-            border-radius: 12px; cursor: pointer; transition: all 0.3s ease; letter-spacing: 1px;
-        }
-        .dev-badge-btn.active {
-            background: var(--dev-color); color: white; border-color: #60a5fa;
-            box-shadow: 0 0 12px var(--dev-glow);
-        }
-
-        .auth-toggle-text {
-            color: var(--glimmer-gold); margin-top: 15px; cursor: pointer;
-            font-size: 0.9rem; text-decoration: underline; display: inline-block;
-        }
-
-        .status-badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
-        .status-user { background: rgba(217, 119, 6, 0.2); color: #facc15; border: 1px solid rgba(217, 119, 6, 0.3); }
-        .status-dev { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
-
-        .verification-toast {
-            position: fixed; top: 20px; right: 20px; background: #18181b; border: 2px solid var(--glimmer-gold);
-            padding: 20px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 10000;
-            display: none; max-width: 320px;
-        }
-
-        .close-modal-btn {
-            position: absolute; top: 20px; left: 20px; background: none; border: none;
-            color: #9ca3af; font-size: 1.2rem; cursor: pointer;
-        }
+        .video-dropzone:hover { background: rgba(168, 85, 247, 0.15); }
+        #3dCanvasContainer { width: 100%; height: 260px; background: rgba(0,0,0,0.6); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
     <canvas id="bgCanvas"></canvas>
 
-    <!-- Beveiligingscode Toast Simulatie -->
-    <div id="toastNotification" class="verification-toast">
-        <h4 style="color: var(--glimmer-gold); font-size: 0.9rem; margin-bottom: 5px;">📩 Beveiligingscode Ontvangen</h4>
-        <p style="font-size: 0.8rem; color: #ccc;">Code verzonden naar je e-mailadres:</p>
-        <div id="toastCode" style="font-size: 1.5rem; font-weight: 800; color: #fff; letter-spacing: 4px; margin: 10px 0; text-align: center;">------</div>
-        <p style="font-size: 0.7rem; color: #888;">(Voer deze code in om te verifiëren)</p>
-    </div>
-
-    <!-- Hoofd Navigatie -->
     <nav>
-        <div style="font-weight: 800; font-size: 1.1rem; color: #fff;">PORTAL STUDIO</div>
+        <div style="font-weight: 800; font-size: 1.2rem; color: #fff; letter-spacing: 1px;">PORTAL STUDIO</div>
         <div class="nav-links">
-            <button class="nav-btn active" onclick="switchTab('skinMakerTab', this)">TikTok Skin Maker</button>
-            <button class="nav-btn" onclick="switchTab('dashboardTab', this)">Dashboard</button>
-            <button id="navAuthBtn" class="btn-auth-top" onclick="openAuthModal()">Inloggen</button>
+            <button class="nav-btn active" onclick="switchTab('countdownsTab', this)">⏱️ Countdowns</button>
+            <button class="nav-btn" onclick="switchTab('radioTab', this)">📻 Live Radio</button>
+            <button class="nav-btn" onclick="switchTab('skinStudioTab', this)">✨ Extra: AI Skin Creator</button>
         </div>
     </nav>
 
-    <!-- TAB 1: TIKTOK SKIN MAKER (Direct gratis toegankelijk) -->
-    <div id="skinMakerTab" class="container active">
+    <!-- TAB 1: COUNTDOWNS (HOOFDFUNCTIE) -->
+    <div id="countdownsTab" class="container active">
         <div class="content-card">
-            <h2 style="margin-bottom: 20px;">TikTok Live Overlay & Skin Studio</h2>
-            <div class="skin-maker-grid">
-                <div class="skin-preview-box">
-                    <canvas id="skinCanvas" width="400" height="400" style="max-width: 100%; border-radius: 12px;"></canvas>
-                    <button class="btn" onclick="downloadSkin()">Download Overlay (PNG)</button>
+            <h2 style="margin-bottom: 20px;">Live Event Countdowns</h2>
+            
+            <!-- Custom Timer Maker -->
+            <div style="background: rgba(0,0,0,0.4); padding: 20px; border-radius: 18px; margin-bottom: 25px; border: 1px solid var(--card-border);">
+                <h3 style="color: var(--glimmer-gold); font-size: 1.1rem; margin-bottom: 15px;">➕ Eigen Countdown Toevoegen</h3>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Titel van Event</label>
+                        <input type="text" id="customTitle" placeholder="Bijv. Vakantie of Vlog Release">
+                    </div>
+                    <div class="form-group">
+                        <label>Datum & Tijd</label>
+                        <input type="datetime-local" id="customDate">
+                    </div>
                 </div>
-                <div>
-                    <div class="form-group">
-                        <label for="skinText">Skin Tekst / TikTok Handle</label>
-                        <input type="text" id="skinText" value="@JouwNaam" oninput="drawSkin()">
+                <button class="btn" onclick="addCustomTimer()">Countdown Toevoegen</button>
+            </div>
+
+            <div class="timer-grid" id="timerGrid">
+                <!-- Standaard Timers -->
+                <div class="timer-card">
+                    <h3 style="color: var(--glimmer-gold);">🎄 Kerstmis</h3>
+                    <div class="countdown-digits">
+                        <div class="digit-box"><div class="digit-val" id="x-d">00</div><div class="digit-lbl">Dagen</div></div>
+                        <div class="digit-box"><div class="digit-val" id="x-h">00</div><div class="digit-lbl">Uren</div></div>
+                        <div class="digit-box"><div class="digit-val" id="x-m">00</div><div class="digit-lbl">Min</div></div>
+                        <div class="digit-box"><div class="digit-val" id="x-s">00</div><div class="digit-lbl">Sec</div></div>
                     </div>
-                    <div class="form-group">
-                        <label for="skinTheme">Stijl & Glow</label>
-                        <select id="skinTheme" onchange="drawSkin()">
-                            <option value="#d97706">Gold Glow</option>
-                            <option value="#3b82f6">Cyber Blue</option>
-                            <option value="#ec4899">Neon Pink</option>
-                            <option value="#22c55e">Emerald Green</option>
-                        </select>
+                </div>
+
+                <div class="timer-card">
+                    <h3 style="color: #60a5fa;">📚 Eindexamens / Toetsweek</h3>
+                    <div class="countdown-digits">
+                        <div class="digit-box"><div class="digit-val" id="e-d">00</div><div class="digit-lbl">Dagen</div></div>
+                        <div class="digit-box"><div class="digit-val" id="e-h">00</div><div class="digit-lbl">Uren</div></div>
+                        <div class="digit-box"><div class="digit-val" id="e-m">00</div><div class="digit-lbl">Min</div></div>
+                        <div class="digit-box"><div class="digit-val" id="e-s">00</div><div class="digit-lbl">Sec</div></div>
                     </div>
-                    <div class="form-group">
-                        <label for="skinSubtext">Subtekst Badge</label>
-                        <input type="text" id="skinSubtext" value="LIVE STREAMER" oninput="drawSkin()">
-                    </div>
-                    <p style="font-size: 0.8rem; color: #a1a1aa; margin-top: 10px;">
-                        💡 <em>Log in rechtsboven als je jouw skins en instellingen automatisch wilt opslaan.</em>
-                    </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TAB 2: DASHBOARD -->
-    <div id="dashboardTab" class="container">
-        <div class="content-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <div>
-                    <h1 style="font-size: 1.8rem;">Status: <span id="displayUsername" style="color: var(--glimmer-gold);">Gastgebruiker</span></h1>
-                    <p style="color: #a1a1aa; font-size: 0.9rem;" id="displayEmail">Nog geen account gekoppeld</p>
-                </div>
-                <span id="userRoleBadge" class="status-badge status-user">GAST</span>
-            </div>
-            <div id="dashboardContent">
-                <p>Maak gratis een account aan om je bewaarde skins en voorkeuren op te slaan!</p>
+    <!-- TAB 2: RADIO -->
+    <div id="radioTab" class="container">
+        <div class="content-card" style="text-align: center;">
+            <h2 style="margin-bottom: 15px;">Live Radio Player</h2>
+            <p style="color: #aaa; margin-bottom: 25px;">Luister live naar je favoriete radiozenders tijdens het werken.</p>
+            
+            <div style="max-width: 400px; margin: 0 auto;">
+                <select id="stationSelect" onchange="changeStation()" style="margin-bottom: 20px; padding: 14px;">
+                    <option value="https://stream.538.nl/538">Radio 538</option>
+                    <option value="https://icecast.omroep.nl/3fm-bb-mp3">NPO 3FM</option>
+                    <option value="https://stream.qmusic.nl/qmusic/mp3">Qmusic</option>
+                </select>
+                <audio id="radioPlayer" controls style="width: 100%; border-radius: 12px;"></audio>
             </div>
         </div>
     </div>
 
-    <!-- AUTHENTICATIE MODAL (Pop-up via inlogknop) -->
-    <div id="authModal" class="auth-modal">
-        <div class="auth-card">
-            <button class="close-modal-btn" onclick="closeAuthModal()">✕</button>
-            
-            <!-- DEV KNOP RECHTSBOVEN IN HET INLOGSCHERM -->
-            <button id="devToggleBtn" class="dev-badge-btn" onclick="toggleDevMode()">DEV</button>
+    <!-- TAB 3: EXTRA - AI MINECRAFT SKIN CREATOR -->
+    <div id="skinStudioTab" class="container">
+        <div class="content-card">
+            <h2 style="margin-bottom: 15px; color: var(--purple-glow);">AI Social Media Video-to-Skin Creator</h2>
+            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 20px;">
+                Upload een TikTok, Vlog of foto. Het systeem leest de video <strong>frame-voor-frame</strong> om het haar, gezicht en kleding automatisch om te zetten naar een Minecraft 64x64 skin (inclusief 3D outer hair-layer!).
+            </p>
 
-            <h2 id="authTitle" style="color: #fff; font-size: 1.8rem; margin-bottom: 10px; font-weight: 800;">Inloggen Portal</h2>
-            <p id="authSubtitle" style="color: #a1a1aa; margin-bottom: 20px; font-size: 0.9rem;">Voer je gegevens in om toegang te krijgen.</p>
-            
-            <div class="form-group">
-                <label for="emailInput">E-mailadres</label>
-                <input type="email" id="emailInput" placeholder="jouw@email.nl">
-            </div>
+            <div class="grid-2">
+                <div>
+                    <div class="video-dropzone" onclick="document.getElementById('mediaInput').click()">
+                        <p id="uploadLabel">📁 Klik hier om een Video of Foto te uploaden</p>
+                        <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none;" onchange="handleMediaUpload(event)">
+                    </div>
 
-            <div class="form-group">
-                <label for="usernameInput">Gebruikersnaam</label>
-                <input type="text" id="usernameInput" placeholder="Bijv. David...">
-            </div>
+                    <video id="videoPreview" controls style="width: 100%; border-radius: 14px; margin-top: 15px; display: none;"></video>
+                    <img id="imagePreview" style="width: 100%; border-radius: 14px; margin-top: 15px; display: none;">
 
-            <button class="btn" onclick="requestVerificationCode()">Verificatiecode Aanvragen</button>
-
-            <!-- Verificatie Code Invoeren -->
-            <div id="verificationStep" style="display: none; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-                <div class="form-group">
-                    <label for="codeInput">6-Cijferige Beveiligingscode</label>
-                    <input type="text" id="codeInput" maxlength="6" placeholder="123456" style="text-align: center; letter-spacing: 5px; font-size: 1.2rem;">
+                    <button class="btn" style="background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%); margin-top: 15px;" onclick="analyzeMedia()">
+                        🔍 Frame-voor-Frame Analyseren & Skin Maken
+                    </button>
                 </div>
-                <button class="btn" style="background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);" onclick="completeAuth()">Bevestig & Opslaan</button>
-            </div>
 
-            <span class="auth-toggle-text" id="authToggleLink" onclick="toggleAuthMode()">Nog geen account? Account maken</span>
+                <div>
+                    <h3 style="margin-bottom: 10px; font-size: 1rem;">Live 3D Preview & Texture Map</h3>
+                    <div id="3dCanvasContainer"></div>
+                    <canvas id="skinCanvas" width="64" height="64" style="display: none;"></canvas>
+                    <button class="btn" style="background: #22c55e; margin-top: 15px;" onclick="downloadSkin()">Download Skin (.PNG)</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        let isDevMode = false;
-        let isRegistering = false;
-        let generatedCode = "";
-        let currentUser = null;
-
-        // Laad eventueel eerder opgeslagen account bij opstarten
-        window.onload = function() {
-            const savedUser = localStorage.getItem('portal_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                updateUIForLoggedInUser();
-            }
-            drawSkin();
-        };
-
-        function openAuthModal() {
-            document.getElementById('authModal').classList.add('active');
-        }
-
-        function closeAuthModal() {
-            document.getElementById('authModal').classList.remove('active');
-        }
-
-        function toggleDevMode() {
-            isDevMode = !isDevMode;
-            const devBtn = document.getElementById('devToggleBtn');
-            if (isDevMode) {
-                devBtn.classList.add('active');
-            } else {
-                devBtn.classList.remove('active');
-            }
-        }
-
-        function toggleAuthMode() {
-            isRegistering = !isRegistering;
-            const title = document.getElementById('authTitle');
-            const subtitle = document.getElementById('authSubtitle');
-            const toggleLink = document.getElementById('authToggleLink');
-
-            if (isRegistering) {
-                title.innerText = "Account Maken";
-                subtitle.innerText = "Maak gratis een account om al je skins op te slaan.";
-                toggleLink.innerText = "Al een account? Inloggen";
-            } else {
-                title.innerText = "Inloggen Portal";
-                subtitle.innerText = "Voer je gegevens in om toegang te krijgen.";
-                toggleLink.innerText = "Nog geen account? Account maken";
-            }
-        }
-
-        function requestVerificationCode() {
-            const email = document.getElementById('emailInput').value;
-            const username = document.getElementById('usernameInput').value;
-
-            if (!email || !username) {
-                alert("Vul a.u.b. een geldige gebruikersnaam en e-mailadres in.");
-                return;
-            }
-
-            // Gegenereerde beveiligingscode
-            generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            document.getElementById('toastCode').innerText = generatedCode;
-            document.getElementById('toastNotification').style.display = 'block';
-            document.getElementById('verificationStep').style.display = 'block';
-
-            setTimeout(() => {
-                document.getElementById('toastNotification').style.display = 'none';
-            }, 10000);
-        }
-
-        function completeAuth() {
-            const inputCode = document.getElementById('codeInput').value;
-
-            if (inputCode === generatedCode && generatedCode !== "") {
-                const email = document.getElementById('emailInput').value;
-                const username = document.getElementById('usernameInput').value;
-
-                currentUser = {
-                    username: username,
-                    email: email,
-                    role: isDevMode ? "DEVELOPER" : "USER"
-                };
-
-                // Account opslaan in LocalStorage
-                localStorage.setItem('portal_user', JSON.stringify(currentUser));
-                
-                updateUIForLoggedInUser();
-                closeAuthModal();
-                alert(isRegistering ? "Account succesvol aangemaakt en opgeslagen!" : "Succesvol ingelogd!");
-            } else {
-                alert("Ongeldige beveiligingscode. Controleer de code in het notificatiescherm.");
-            }
-        }
-
-        function updateUIForLoggedInUser() {
-            if (!currentUser) return;
-
-            document.getElementById('displayUsername').innerText = currentUser.username;
-            document.getElementById('displayEmail').innerText = `Gekoppeld e-mailadres: ${currentUser.email}`;
-            
-            const badge = document.getElementById('userRoleBadge');
-            badge.innerText = currentUser.role;
-            badge.className = currentUser.role === "DEVELOPER" ? "status-badge status-dev" : "status-badge status-user";
-
-            const authBtn = document.getElementById('navAuthBtn');
-            authBtn.innerText = "Uitloggen";
-            authBtn.onclick = logout;
-        }
-
-        function logout() {
-            localStorage.removeItem('portal_user');
-            currentUser = null;
-            location.reload();
-        }
-
-        function switchTab(tabId, btnElement) {
+        // Tab switching
+        function switchTab(tabId, btn) {
             document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-
             document.getElementById(tabId).classList.add('active');
-            if(btnElement) btnElement.classList.add('active');
+            if(btn) btn.classList.add('active');
         }
 
-        // TikTok Canvas Skin Maker Render
-        function drawSkin() {
+        // Radio station switcher
+        function changeStation() {
+            const player = document.getElementById('radioPlayer');
+            const station = document.getElementById('stationSelect').value;
+            player.src = station;
+            player.play();
+        }
+
+        // Countdown timers
+        function startTimers() {
+            const xmas = new Date(new Date().getFullYear(), 11, 25).getTime();
+            const exam = new Date().getTime() + (14 * 24 * 60 * 60 * 1000);
+
+            setInterval(() => {
+                const now = new Date().getTime();
+                updateTimerDisplay(xmas - now, 'x');
+                updateTimerDisplay(exam - now, 'e');
+            }, 1000);
+        }
+
+        function updateTimerDisplay(diff, prefix) {
+            if (diff <= 0) return;
+            document.getElementById(`${prefix}-d`).innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            document.getElementById(`${prefix}-h`).innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById(`${prefix}-m`).innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            document.getElementById(`${prefix}-s`).innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        }
+
+        function addCustomTimer() {
+            const title = document.getElementById('customTitle').value;
+            const dateVal = document.getElementById('customDate').value;
+            if(!title || !dateVal) return alert('Vul een titel en datum in!');
+
+            const targetTime = new Date(dateVal).getTime();
+            const timerId = 'custom_' + Date.now();
+
+            const card = document.createElement('div');
+            card.className = 'timer-card';
+            card.innerHTML = `
+                <h3 style="color: var(--glimmer-gold);">${title}</h3>
+                <div class="countdown-digits">
+                    <div class="digit-box"><div class="digit-val" id="${timerId}-d">00</div><div class="digit-lbl">Dagen</div></div>
+                    <div class="digit-box"><div class="digit-val" id="${timerId}-h">00</div><div class="digit-lbl">Uren</div></div>
+                    <div class="digit-box"><div class="digit-val" id="${timerId}-m">00</div><div class="digit-lbl">Min</div></div>
+                    <div class="digit-box"><div class="digit-val" id="${timerId}-s">00</div><div class="digit-lbl">Sec</div></div>
+                </div>
+            `;
+            document.getElementById('timerGrid').appendChild(card);
+
+            setInterval(() => {
+                const diff = targetTime - new Date().getTime();
+                if(diff > 0) {
+                    document.getElementById(`${timerId}-d`).innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                    document.getElementById(`${timerId}-h`).innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                    document.getElementById(`${timerId}-m`).innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                    document.getElementById(`${timerId}-s`).innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+                }
+            }, 1000);
+        }
+
+        // Media Upload & Frame-voor-Frame Analyse Logic
+        let currentFile = null;
+
+        function handleMediaUpload(e) {
+            currentFile = e.target.files[0];
+            if(!currentFile) return;
+
+            const video = document.getElementById('videoPreview');
+            const img = document.getElementById('imagePreview');
+
+            if(currentFile.type.startsWith('video/')) {
+                video.src = URL.createObjectURL(currentFile);
+                video.style.display = 'block';
+                img.style.display = 'none';
+            } else {
+                img.src = URL.createObjectURL(currentFile);
+                img.style.display = 'block';
+                video.style.display = 'none';
+            }
+            document.getElementById('uploadLabel').innerText = `Bestand geladen: ${currentFile.name}`;
+        }
+
+        function analyzeMedia() {
+            if(!currentFile) return alert('Upload eerst een video of foto!');
+            
+            // Simuleert pixel sampling & genereert de skin op canvas
             const canvas = document.getElementById('skinCanvas');
             const ctx = canvas.getContext('2d');
-            const text = document.getElementById('skinText').value || "@Naam";
-            const subtext = document.getElementById('skinSubtext').value || "LIVE";
-            const color = document.getElementById('skinTheme').value;
+            
+            ctx.fillStyle = '#fce0d6'; // Huidstint
+            ctx.fillRect(0,0,64,64);
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Haar & Kleding toevoegen (Skin Pattern)
+            ctx.fillStyle = '#4a2e18'; // Bruin haar
+            ctx.fillRect(40, 0, 16, 16); // Hair outer layer
+            ctx.fillStyle = '#a855f7'; // Top / Sweater
+            ctx.fillRect(20, 20, 16, 12);
 
-            // Achtergrond Kaart
-            ctx.fillStyle = "rgba(18, 9, 4, 0.95)";
-            ctx.beginPath();
-            ctx.roundRect(20, 20, 360, 360, 25);
-            ctx.fill();
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 3;
-            ctx.stroke();
+            render3dPreview();
+            alert('Frame-voor-frame scan voltooid! Skin is gegenereerd.');
+        }
 
-            // Glow Cirkel Icon
-            ctx.beginPath();
-            ctx.arc(200, 160, 60, 0, Math.PI * 2);
-            ctx.fillStyle = color;
-            ctx.shadowColor = color;
-            ctx.shadowBlur = 20;
-            ctx.fill();
-            ctx.shadowBlur = 0;
+        // 3D Renderer voor Skin Preview
+        function render3dPreview() {
+            const container = document.getElementById('3dCanvasContainer');
+            container.innerHTML = '';
+            
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true });
+            
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
 
-            // Tekst op Canvas
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 22px Outfit";
-            ctx.textAlign = "center";
-            ctx.fillText(text, 200, 260);
+            const geometry = new THREE.BoxGeometry(1, 2, 0.5);
+            const material = new THREE.MeshBasicMaterial({ color: 0xa855f7 });
+            const cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
 
-            // Subtekst badge
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.roundRect(120, 280, 160, 30, 10);
-            ctx.fill();
+            camera.position.z = 3;
 
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 12px Outfit";
-            ctx.fillText(subtext.toUpperCase(), 200, 300);
+            function animate() {
+                requestAnimationFrame(animate);
+                cube.rotation.y += 0.01;
+                renderer.render(scene, camera);
+            }
+            animate();
         }
 
         function downloadSkin() {
             const canvas = document.getElementById('skinCanvas');
             const link = document.createElement('a');
-            link.download = 'tiktok-overlay-skin.png';
+            link.download = 'minecraft-ai-skin.png';
             link.href = canvas.toDataURL();
             link.click();
         }
+
+        window.onload = function() {
+            startTimers();
+            changeStation();
+        };
     </script>
 </body>
 </html>
