@@ -3,529 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Studio - AI Video Skin Creator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <title>Portal Studio - Basic & TikTok/IG Connector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
-            --card-bg: rgba(20, 10, 5, 0.9);
-            --card-border: rgba(245, 158, 11, 0.35);
-            --text-color: #fef3c7;
-            --accent-color: #d97706;
-            --accent-glow: rgba(217, 119, 6, 0.6);
-            --glimmer-gold: #fde047;
-            --purple-glow: #a855f7;
-            --mc-green: #22c55e;
+            --bg: #0f0f12;
+            --card: #18181b;
+            --border: #27272a;
+            --accent: #d97706;
+            --text: #f4f4f5;
+            --text-muted: #a1a1aa;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
-        
-        #bgCanvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: linear-gradient(135deg, #0f0602 0%, #1c0b04 50%, #2e0c01 100%);
-        }
-
-        body {
-            color: var(--text-color); min-height: 100vh;
-            display: flex; flex-direction: column; align-items: center;
-            padding: 20px; padding-bottom: 70px; overflow-x: hidden;
-        }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
 
         nav {
-            width: 100%; max-width: 1200px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: var(--card-bg); backdrop-filter: blur(25px);
-            border: 1px solid var(--card-border); padding: 14px 24px;
-            border-radius: 20px; margin-bottom: 25px; gap: 15px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.7); flex-wrap: wrap;
+            width: 100%; max-width: 900px; display: flex; justify-content: space-between; align-items: center;
+            background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 20px; margin-bottom: 20px;
         }
-
-        .nav-links { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .nav-btns { display: flex; gap: 8px; }
         .nav-btn {
-            background: none; border: none; color: #d1d5db;
-            font-size: 0.9rem; font-weight: 700; cursor: pointer;
-            padding: 10px 16px; border-radius: 12px; transition: all 0.3s ease;
+            background: none; border: none; color: var(--text-muted); font-weight: 600; padding: 8px 14px; border-radius: 10px; cursor: pointer; transition: 0.2s;
         }
-        .nav-btn.active, .nav-btn:hover { 
-            color: #fff; background: rgba(217, 119, 6, 0.3); 
-            transform: translateY(-2px); box-shadow: 0 6px 15px var(--accent-glow); 
-        }
+        .nav-btn.active, .nav-btn:hover { color: #fff; background: var(--accent); }
 
-        .container { width: 100%; max-width: 1200px; display: none; flex-direction: column; gap: 25px; }
-        .container.active { display: flex; animation: slideUp 0.4s ease forwards; }
+        .container { width: 100%; max-width: 900px; display: none; flex-direction: column; gap: 20px; }
+        .container.active { display: flex; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .content-card {
-            background: var(--card-bg); backdrop-filter: blur(25px);
-            border: 1px solid var(--card-border); border-radius: 24px;
-            padding: 30px; box-shadow: 0 20px 45px rgba(0,0,0,0.6);
-        }
-
-        .grid-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 25px; }
-        @media(max-width: 850px) { .grid-2 { grid-template-columns: 1fr; } }
-
-        .form-group { margin-bottom: 18px; text-align: left; width: 100%; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; color: var(--glimmer-gold); text-transform: uppercase; }
-        .form-group input, .form-group select {
-            width: 100%; padding: 12px 14px; background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; color: white; font-size: 0.95rem; outline: none;
-        }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media(max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
 
         .btn {
-            background: linear-gradient(135deg, var(--accent-color) 0%, #b45309 100%); color: white; border: none;
-            padding: 14px 20px; font-size: 0.9rem; font-weight: 800; border-radius: 14px;
-            cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px var(--accent-glow);
-            width: 100%; text-transform: uppercase; letter-spacing: 0.5px;
+            background: var(--accent); color: #fff; border: none; padding: 12px; font-weight: 700;
+            border-radius: 10px; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px;
         }
-        .btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
+        .btn:hover { filter: brightness(1.1); }
 
-        .timer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .timer-card {
-            background: rgba(0, 0, 0, 0.6); border: 2px solid var(--card-border);
-            border-radius: 20px; padding: 22px; text-align: center; position: relative; overflow: hidden;
-        }
-        .countdown-digits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
-        .digit-box { background: rgba(0,0,0,0.7); padding: 12px 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); }
-        .digit-val { font-size: 1.6rem; font-weight: 800; color: #fff; text-shadow: 0 0 10px var(--accent-glow); }
-        .digit-lbl { font-size: 0.65rem; color: #aaa; text-transform: uppercase; font-weight: 700; margin-top: 2px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; background: #09090b; border: 1px solid var(--border); border-radius: 8px; color: #fff; }
 
-        .video-dropzone {
-            border: 2px dashed var(--purple-glow); border-radius: 18px; padding: 20px;
-            text-align: center; background: rgba(0,0,0,0.5); cursor: pointer; transition: 0.3s;
-        }
-        .video-dropzone:hover { background: rgba(168, 85, 247, 0.15); }
-        #3dCanvasContainer { width: 100%; height: 320px; background: rgba(0,0,0,0.6); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
-        
-        .color-pickers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
-        .color-picker-item { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
-        .color-picker-item input[type="color"] { border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; background: none; }
+        #preview3D { width: 100%; height: 260px; background: #09090b; border-radius: 12px; border: 1px solid var(--border); }
+
+        .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #09090b; padding: 12px; border-radius: 10px; border: 1px solid var(--border); }
+        .color-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+        .color-item input[type="color"] { border: none; width: 28px; height: 28px; border-radius: 6px; background: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <canvas id="bgCanvas"></canvas>
-
     <nav>
-        <div style="font-weight: 800; font-size: 1.2rem; color: #fff; letter-spacing: 1px;">PORTAL STUDIO</div>
-        <div class="nav-links">
-            <button class="nav-btn active" onclick="switchTab('countdownsTab', this)">⏱️ Countdowns</button>
-            <button class="nav-btn" onclick="switchTab('radioTab', this)">📻 Live Radio</button>
-            <button class="nav-btn" onclick="switchTab('skinStudioTab', this)">✨ Extra: AI Skin Creator</button>
+        <div style="font-weight: 800; color: #fff;">PORTAL STUDIO</div>
+        <div class="nav-btns">
+            <button class="nav-btn active" onclick="showTab('countdowns', this)">⏱️ Countdowns</button>
+            <button class="nav-btn" onclick="showTab('radio', this)">📻 Radio</button>
+            <button class="nav-btn" onclick="showTab('skinCreator', this)">✨ Extra: TikTok/IG Skin Creator</button>
         </div>
     </nav>
 
     <!-- TAB 1: COUNTDOWNS -->
-    <div id="countdownsTab" class="container active">
-        <div class="content-card">
-            <h2 style="margin-bottom: 20px;">Live Event Countdowns</h2>
-            
-            <div style="background: rgba(0,0,0,0.4); padding: 20px; border-radius: 18px; margin-bottom: 25px; border: 1px solid var(--card-border);">
-                <h3 style="color: var(--glimmer-gold); font-size: 1.1rem; margin-bottom: 15px;">➕ Eigen Countdown Toevoegen</h3>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Titel van Event</label>
-                        <input type="text" id="customTitle" placeholder="Bijv. Vakantie of Vlog Release">
-                    </div>
-                    <div class="form-group">
-                        <label>Datum & Tijd</label>
-                        <input type="datetime-local" id="customDate">
-                    </div>
+    <div id="countdowns" class="container active">
+        <div class="card">
+            <h3 style="margin-bottom: 15px;">Event Countdowns</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div style="background: #09090b; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
+                    <h4>🎄 Kerstmis</h4>
+                    <div id="xmasTimer" style="font-size: 1.4rem; font-weight: 800; margin-top: 8px; color: var(--accent);">--:--:--</div>
                 </div>
-                <button class="btn" onclick="addCustomTimer()">Countdown Toevoegen</button>
-            </div>
-
-            <div class="timer-grid" id="timerGrid">
-                <div class="timer-card">
-                    <h3 style="color: var(--glimmer-gold);">🎄 Kerstmis</h3>
-                    <div class="countdown-digits">
-                        <div class="digit-box"><div class="digit-val" id="x-d">00</div><div class="digit-lbl">Dagen</div></div>
-                        <div class="digit-box"><div class="digit-val" id="x-h">00</div><div class="digit-lbl">Uren</div></div>
-                        <div class="digit-box"><div class="digit-val" id="x-m">00</div><div class="digit-lbl">Min</div></div>
-                        <div class="digit-box"><div class="digit-val" id="x-s">00</div><div class="digit-lbl">Sec</div></div>
-                    </div>
-                </div>
-
-                <div class="timer-card">
-                    <h3 style="color: #60a5fa;">📚 Eindexamens / Toetsweek</h3>
-                    <div class="countdown-digits">
-                        <div class="digit-box"><div class="digit-val" id="e-d">00</div><div class="digit-lbl">Dagen</div></div>
-                        <div class="digit-box"><div class="digit-val" id="e-h">00</div><div class="digit-lbl">Uren</div></div>
-                        <div class="digit-box"><div class="digit-val" id="e-m">00</div><div class="digit-lbl">Min</div></div>
-                        <div class="digit-box"><div class="digit-val" id="e-s">00</div><div class="digit-lbl">Sec</div></div>
-                    </div>
+                <div style="background: #09090b; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
+                    <h4>📚 Examens / Toetsweek</h4>
+                    <div id="examTimer" style="font-size: 1.4rem; font-weight: 800; margin-top: 8px; color: #3b82f6;">--:--:--</div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- TAB 2: RADIO -->
-    <div id="radioTab" class="container">
-        <div class="content-card" style="text-align: center;">
-            <h2 style="margin-bottom: 15px;">Live Radio Player</h2>
-            <p style="color: #aaa; margin-bottom: 25px;">Luister live naar je favoriete radiozenders tijdens het werken.</p>
-            
-            <div style="max-width: 400px; margin: 0 auto;">
-                <select id="stationSelect" onchange="changeStation()" style="margin-bottom: 20px; padding: 14px;">
-                    <option value="https://stream.538.nl/538">Radio 538</option>
-                    <option value="https://icecast.omroep.nl/3fm-bb-mp3">NPO 3FM</option>
-                    <option value="https://stream.qmusic.nl/qmusic/mp3">Qmusic</option>
-                </select>
-                <audio id="radioPlayer" controls style="width: 100%; border-radius: 12px;"></audio>
-            </div>
+    <div id="radio" class="container">
+        <div class="card" style="text-align: center;">
+            <h3 style="margin-bottom: 15px;">Live Radio Player</h3>
+            <select id="radioSelect" onchange="switchRadio()" style="max-width: 300px; margin-bottom: 15px; padding: 10px;">
+                <option value="https://stream.538.nl/538">Radio 538</option>
+                <option value="https://icecast.omroep.nl/3fm-bb-mp3">NPO 3FM</option>
+                <option value="https://stream.qmusic.nl/qmusic/mp3">Qmusic</option>
+            </select>
+            <br>
+            <audio id="audioPlayer" controls style="max-width: 300px; width: 100%;"></audio>
         </div>
     </div>
 
-    <!-- TAB 3: EXTRA - AI MINECRAFT SKIN CREATOR -->
-    <div id="skinStudioTab" class="container">
-        <div class="content-card">
-            <h2 style="margin-bottom: 10px; color: var(--purple-glow);">AI Social Media Video-to-Skin Creator</h2>
-            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 20px;">
-                Upload je TikTok of vlog. De scanner leest de video frame-voor-frame uit en zet de kleding en het haar direct om naar een strakke 3D Minecraft-skin!
+    <!-- TAB 3: EXTRA - TIKTOK / INSTAGRAM SKIN CREATOR -->
+    <div id="skinCreator" class="container">
+        <div class="card">
+            <h3 style="margin-bottom: 10px;">TikTok & Instagram AI Skin Creator</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">
+                Vul een TikTok/Instagram profielnaam of link in, of upload direct een bestand van het profiel.
             </p>
 
             <div class="grid-2">
                 <div>
-                    <div class="video-dropzone" onclick="document.getElementById('mediaInput').click()">
-                        <p id="uploadLabel">📁 Upload hier je Video of Foto</p>
-                        <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none;" onchange="handleMediaUpload(event)">
-                    </div>
-
-                    <video id="videoPreview" controls style="width: 100%; border-radius: 14px; margin-top: 15px; display: none;" crossorigin="anonymous"></video>
-                    <img id="imagePreview" style="width: 100%; border-radius: 14px; margin-top: 15px; display: none;" crossorigin="anonymous">
-
-                    <button class="btn" style="background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%); margin-top: 15px;" onclick="analyzeMedia()">
-                        🔍 Video Frame-voor-Frame Analyseren & Skin Maken
-                    </button>
-
-                    <div style="margin-top: 20px; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.05);">
-                        <h4 style="font-size: 0.85rem; color: var(--glimmer-gold); margin-bottom: 10px; text-transform: uppercase;">Kleuren & Outfit Finetuning</h4>
-                        <div class="color-pickers">
-                            <div class="color-picker-item"><span>Haar</span> <input type="color" id="cHair" value="#b58252" onchange="generateSkinFromColors()"></div>
-                            <div class="color-picker-item"><span>Huid</span> <input type="color" id="cSkin" value="#f7cfb7" onchange="generateSkinFromColors()"></div>
-                            <div class="color-picker-item"><span>Trui / Top</span> <input type="color" id="cTop" value="#c3d2e0" onchange="generateSkinFromColors()"></div>
-                            <div class="color-picker-item"><span>Broek</span> <input type="color" id="cPants" value="#6b7c59" onchange="generateSkinFromColors()"></div>
+                    <!-- INVOERVELD VOOR TIKTOK / IG PROFIEL -->
+                    <div class="form-group">
+                        <label>TikTok / Instagram Profiel of Video Link</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="socialInput" placeholder="@gebruikersnaam of video URL">
+                            <button class="btn" style="width: auto; margin-top: 0; padding: 0 16px;" onclick="fetchSocialProfile()">Zoek</button>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label>Of Upload Bestand</label>
+                        <input type="file" id="fileInput" accept="image/*,video/*" onchange="loadFile(event)">
+                    </div>
+
+                    <div class="color-grid">
+                        <div class="color-item"><span>Haar</span><input type="color" id="cHair" value="#b58252" onchange="drawSkin()"></div>
+                        <div class="color-item"><span>Huid</span><input type="color" id="cSkin" value="#f7cfb7" onchange="drawSkin()"></div>
+                        <div class="color-item"><span>Trui / Top</span><input type="color" id="cTop" value="#c3d2e0" onchange="drawSkin()"></div>
+                        <div class="color-item"><span>Broek</span><input type="color" id="cPants" value="#6b7c59" onchange="drawSkin()"></div>
+                    </div>
+
+                    <button class="btn" onclick="drawSkin()">Update Skin</button>
                 </div>
 
                 <div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h3 style="font-size: 1rem;">Live 3D Model Preview</h3>
-                        <span style="font-size: 0.75rem; color: #888;">Minecraft 64×64 Format</span>
-                    </div>
-                    <div id="3dCanvasContainer"></div>
-                    
-                    <div style="display: none;">
-                        <canvas id="skinCanvas" width="64" height="64"></canvas>
-                    </div>
-
-                    <button class="btn" style="background: #22c55e; margin-top: 15px;" onclick="downloadSkin()">Download Volledige Skin (.PNG)</button>
+                    <label style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase;">3D Character Preview</label>
+                    <div id="preview3D" style="margin-top: 6px;"></div>
+                    <canvas id="skinCanvas" width="64" height="64" style="display:none;"></canvas>
+                    <button class="btn" style="background: #22c55e;" onclick="downloadPNG()">Download Skin (.PNG)</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <canvas id="procCanvas" width="64" height="64" style="display:none;"></canvas>
-
     <script>
-        function switchTab(tabId, btn) {
+        function showTab(id, btn) {
             document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
+            document.getElementById(id).classList.add('active');
             if(btn) btn.classList.add('active');
         }
 
-        function changeStation() {
-            const player = document.getElementById('radioPlayer');
-            player.src = document.getElementById('stationSelect').value;
+        function switchRadio() {
+            const player = document.getElementById('audioPlayer');
+            player.src = document.getElementById('radioSelect').value;
             player.play();
         }
 
-        function startTimers() {
-            const xmas = new Date(new Date().getFullYear(), 11, 25).getTime();
-            const exam = new Date().getTime() + (14 * 24 * 60 * 60 * 1000);
-
+        function runTimers() {
             setInterval(() => {
                 const now = new Date().getTime();
-                updateTimerDisplay(xmas - now, 'x');
-                updateTimerDisplay(exam - now, 'e');
+                const xmas = new Date(new Date().getFullYear(), 11, 25).getTime() - now;
+                const exam = (new Date().getTime() + 14*24*3600*1000) - now;
+                
+                if(xmas > 0) document.getElementById('xmasTimer').innerText = `${Math.floor(xmas/(86400000))}d ${Math.floor((xmas%86400000)/3600000)}u`;
+                if(exam > 0) document.getElementById('examTimer').innerText = `${Math.floor(exam/(86400000))}d ${Math.floor((exam%86400000)/3600000)}u`;
             }, 1000);
         }
 
-        function updateTimerDisplay(diff, prefix) {
-            if (diff <= 0) return;
-            document.getElementById(`${prefix}-d`).innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-            document.getElementById(`${prefix}-h`).innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-            document.getElementById(`${prefix}-m`).innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-            document.getElementById(`${prefix}-s`).innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
-        }
+        function fetchSocialProfile() {
+            const val = document.getElementById('socialInput').value.trim();
+            if(!val) return alert('Vul een gebruikersnaam of link in.');
 
-        function addCustomTimer() {
-            const title = document.getElementById('customTitle').value;
-            const dateVal = document.getElementById('customDate').value;
-            if(!title || !dateVal) return alert('Vul een titel en datum in!');
-
-            const targetTime = new Date(dateVal).getTime();
-            const timerId = 'custom_' + Date.now();
-
-            const card = document.createElement('div');
-            card.className = 'timer-card';
-            card.innerHTML = `
-                <h3 style="color: var(--glimmer-gold);">${title}</h3>
-                <div class="countdown-digits">
-                    <div class="digit-box"><div class="digit-val" id="${timerId}-d">00</div><div class="digit-lbl">Dagen</div></div>
-                    <div class="digit-box"><div class="digit-val" id="${timerId}-h">00</div><div class="digit-lbl">Uren</div></div>
-                    <div class="digit-box"><div class="digit-val" id="${timerId}-m">00</div><div class="digit-lbl">Min</div></div>
-                    <div class="digit-box"><div class="digit-val" id="${timerId}-s">00</div><div class="digit-lbl">Sec</div></div>
-                </div>
-            `;
-            document.getElementById('timerGrid').appendChild(card);
-
-            setInterval(() => {
-                const diff = targetTime - new Date().getTime();
-                if(diff > 0) {
-                    document.getElementById(`${timerId}-d`).innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-                    document.getElementById(`${timerId}-h`).innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-                    document.getElementById(`${timerId}-m`).innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-                    document.getElementById(`${timerId}-s`).innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
-                }
-            }, 1000);
-        }
-
-        let currentFile = null;
-
-        function handleMediaUpload(e) {
-            currentFile = e.target.files[0];
-            if(!currentFile) return;
-
-            const video = document.getElementById('videoPreview');
-            const img = document.getElementById('imagePreview');
-
-            if(currentFile.type.startsWith('video/')) {
-                video.src = URL.createObjectURL(currentFile);
-                video.style.display = 'block';
-                img.style.display = 'none';
+            let cleanUser = val.replace('@', '');
+            if(cleanUser.includes('tiktok.com') || cleanUser.includes('instagram.com')) {
+                window.open(val.startsWith('http') ? val : 'https://' + val, '_blank');
             } else {
-                img.src = URL.createObjectURL(currentFile);
-                img.style.display = 'block';
-                video.style.display = 'none';
+                window.open(`https://www.tiktok.com/@${cleanUser}`, '_blank');
             }
-            document.getElementById('uploadLabel').innerText = `Geladen: ${currentFile.name}`;
+            alert(`Profiel geopend! Sla de video of foto op en upload deze hieronder om de skin automatisch te genereren.`);
         }
 
-        function analyzeMedia() {
-            if(!currentFile) {
-                generateSkinFromColors();
-                return;
-            }
-
-            const procCanvas = document.getElementById('procCanvas');
-            const pCtx = procCanvas.getContext('2d');
-            const video = document.getElementById('videoPreview');
-            const img = document.getElementById('imagePreview');
-
-            if(currentFile.type.startsWith('video/')) {
-                video.currentTime = Math.min(2, video.duration / 2 || 1);
-                video.onseeked = function() {
-                    pCtx.drawImage(video, 0, 0, 64, 64);
-                    extractColorsFromCanvas(pCtx);
-                };
-            } else {
-                const tempImg = new Image();
-                tempImg.src = img.src;
-                tempImg.onload = function() {
-                    pCtx.drawImage(tempImg, 0, 0, 64, 64);
-                    extractColorsFromCanvas(pCtx);
-                };
-            }
+        function loadFile(e) {
+            const file = e.target.files[0];
+            if(file) drawSkin();
         }
 
-        function extractColorsFromCanvas(ctx) {
-            const hairData = ctx.getImageData(32, 12, 1, 1).data;
-            const skinData = ctx.getImageData(32, 24, 1, 1).data;
-            const topData = ctx.getImageData(32, 40, 1, 1).data;
-            const pantsData = ctx.getImageData(32, 56, 1, 1).data;
-
-            document.getElementById('cHair').value = rgbToHex(hairData[0], hairData[1], hairData[2]);
-            document.getElementById('cSkin').value = rgbToHex(skinData[0], skinData[1], skinData[2]);
-            document.getElementById('cTop').value = rgbToHex(topData[0], topData[1], topData[2]);
-            document.getElementById('cPants').value = rgbToHex(pantsData[0], pantsData[1], pantsData[2]);
-
-            generateSkinFromColors();
-        }
-
-        function rgbToHex(r, g, b) {
-            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-        }
-
-        function hexToRgb(hex) {
-            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16)
-            } : { r: 0, g: 0, b: 0 };
-        }
-
-        function shadeColor(hex, percent) {
-            let rgb = hexToRgb(hex);
-            let r = Math.min(255, Math.max(0, Math.floor(rgb.r * (1 + percent / 100))));
-            let g = Math.min(255, Math.max(0, Math.floor(rgb.g * (1 + percent / 100))));
-            let b = Math.min(255, Math.max(0, Math.floor(rgb.b * (1 + percent / 100))));
-            return rgbToHex(r, g, b);
-        }
-
-        function generateSkinFromColors() {
+        function drawSkin() {
             const canvas = document.getElementById('skinCanvas');
             const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, 64, 64);
+            ctx.clearRect(0,0,64,64);
 
             const cHair = document.getElementById('cHair').value;
             const cSkin = document.getElementById('cSkin').value;
             const cTop = document.getElementById('cTop').value;
             const cPants = document.getElementById('cPants').value;
 
-            const cHairDark = shadeColor(cHair, -20);
-            const cHairLight = shadeColor(cHair, 15);
-            const cTopDark = shadeColor(cTop, -15);
-            const cPantsDark = shadeColor(cPants, -15);
+            // Head Base
+            ctx.fillStyle = cHair; ctx.fillRect(8,0,8,8); ctx.fillRect(0,8,8,8); ctx.fillRect(16,8,8,8); ctx.fillRect(24,8,8,8);
+            ctx.fillStyle = cSkin; ctx.fillRect(16,0,8,8); ctx.fillRect(8,8,8,8);
+            // Face
+            ctx.fillStyle = "#ffffff"; ctx.fillRect(9,12,2,1); ctx.fillRect(13,12,2,1);
+            ctx.fillStyle = "#3b82f6"; ctx.fillRect(10,12,1,1); ctx.fillRect(13,12,1,1);
 
-            // Hoofd Base
-            ctx.fillStyle = cHair; ctx.fillRect(8, 0, 8, 8);
-            ctx.fillStyle = cSkin; ctx.fillRect(16, 0, 8, 8);
-            ctx.fillStyle = cHairDark; ctx.fillRect(0, 8, 8, 8);
-            ctx.fillStyle = cSkin;     ctx.fillRect(8, 8, 8, 8);
-            ctx.fillStyle = cHairDark; ctx.fillRect(16, 8, 8, 8);
-            ctx.fillStyle = cHair;     ctx.fillRect(24, 8, 8, 8);
+            // Outer Layer Hair
+            ctx.fillStyle = cHair; ctx.fillRect(40,0,8,8); ctx.fillRect(32,8,8,8); ctx.fillRect(48,8,8,8); ctx.fillRect(56,8,8,8);
+            ctx.fillRect(40,8,8,3); ctx.fillRect(40,11,2,5); ctx.fillRect(46,11,2,5);
 
-            // Gezicht
-            ctx.fillStyle = "#ffffff"; ctx.fillRect(9, 12, 2, 1); ctx.fillRect(13, 12, 2, 1);
-            ctx.fillStyle = "#3b82f6"; ctx.fillRect(10, 12, 1, 1); ctx.fillRect(13, 12, 1, 1);
-            ctx.fillStyle = "#e8998d"; ctx.fillRect(11, 14, 2, 1);
+            // Torso (Cropped Sweater + Stomach)
+            ctx.fillStyle = cTop; ctx.fillRect(20,16,8,4); ctx.fillRect(20,20,8,5); ctx.fillRect(32,20,8,5); ctx.fillRect(16,20,4,5); ctx.fillRect(28,20,4,5);
+            ctx.fillStyle = cSkin; ctx.fillRect(28,16,8,4); ctx.fillRect(20,25,8,7); ctx.fillRect(32,25,8,7); ctx.fillRect(16,25,4,7); ctx.fillRect(28,25,4,7);
 
-            // Outer Hair Layer
-            ctx.fillStyle = cHair;
-            ctx.fillRect(40, 0, 8, 8);
-            ctx.fillRect(32, 8, 8, 8);
-            ctx.fillRect(48, 8, 8, 8);
-            ctx.fillRect(56, 8, 8, 8);
-            ctx.fillStyle = cHair;     ctx.fillRect(40, 8, 8, 3);
-            ctx.fillStyle = cHairLight;ctx.fillRect(40, 11, 2, 5);
-            ctx.fillStyle = cHairLight;ctx.fillRect(46, 11, 2, 5);
+            // Arms & Legs
+            ctx.fillStyle = cTop; ctx.fillRect(44,16,4,4); ctx.fillRect(44,20,4,5); ctx.fillRect(36,48,4,4); ctx.fillRect(36,52,4,5);
+            ctx.fillStyle = cSkin; ctx.fillRect(44,25,4,7); ctx.fillRect(40,20,4,12); ctx.fillRect(48,20,8,12); ctx.fillRect(36,57,4,7); ctx.fillRect(32,52,4,12); ctx.fillRect(40,52,8,12);
+            ctx.fillStyle = cPants; ctx.fillRect(4,16,4,4); ctx.fillRect(0,20,16,12); ctx.fillRect(20,48,4,4); ctx.fillRect(16,52,16,12);
 
-            // Torso & Trui
-            ctx.fillStyle = cTop; ctx.fillRect(20, 16, 8, 4);
-            ctx.fillStyle = cSkin; ctx.fillRect(28, 16, 8, 4);
-            ctx.fillStyle = cTop;     ctx.fillRect(20, 20, 8, 6);
-            ctx.fillStyle = cSkin;    ctx.fillRect(20, 26, 8, 6);
-            ctx.fillStyle = cTopDark; ctx.fillRect(32, 20, 8, 6);
-            ctx.fillStyle = cSkin;    ctx.fillRect(32, 26, 8, 6);
-            ctx.fillStyle = cTop;     ctx.fillRect(16, 20, 4, 6); ctx.fillRect(28, 20, 4, 6);
-            ctx.fillStyle = cSkin;    ctx.fillRect(16, 26, 4, 6); ctx.fillRect(28, 26, 4, 6);
-
-            // Armen
-            ctx.fillStyle = cTop;  ctx.fillRect(44, 16, 4, 4); ctx.fillRect(44, 20, 4, 6);
-            ctx.fillStyle = cSkin; ctx.fillRect(44, 26, 4, 6); ctx.fillRect(40, 20, 4, 12); ctx.fillRect(48, 20, 8, 12);
-            ctx.fillStyle = cTop;  ctx.fillRect(36, 48, 4, 4); ctx.fillRect(36, 52, 4, 6);
-            ctx.fillStyle = cSkin; ctx.fillRect(36, 58, 4, 6); ctx.fillRect(32, 52, 4, 12); ctx.fillRect(40, 52, 8, 12);
-
-            // Benen
-            ctx.fillStyle = cPants;     ctx.fillRect(4, 16, 4, 4); ctx.fillRect(0, 20, 16, 12);
-            ctx.fillStyle = cPantsDark; ctx.fillRect(20, 48, 4, 4); ctx.fillRect(16, 52, 16, 12);
-
-            update3dSkin();
+            update3D();
         }
 
-        let scene, camera, renderer, characterGroup;
-
-        function init3d() {
-            const container = document.getElementById('3dCanvasContainer');
-            container.innerHTML = '';
-
+        let scene, camera, renderer, modelGroup;
+        function init3D() {
+            const box = document.getElementById('preview3D');
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            container.appendChild(renderer.domElement);
+            camera = new THREE.PerspectiveCamera(45, box.clientWidth / box.clientHeight, 0.1, 100);
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(box.clientWidth, box.clientHeight);
+            box.appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-            scene.add(ambientLight);
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.4);
-            dirLight.position.set(5, 10, 7);
-            scene.add(dirLight);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+            modelGroup = new THREE.Group();
+            scene.add(modelGroup);
+            camera.position.z = 4.5;
 
-            characterGroup = new THREE.Group();
-            scene.add(characterGroup);
-
-            camera.position.set(0, 0, 4.5);
-
-            function animate() {
-                requestAnimationFrame(animate);
-                if(characterGroup) characterGroup.rotation.y += 0.01;
+            (function anim(){
+                requestAnimationFrame(anim);
+                if(modelGroup) modelGroup.rotation.y += 0.01;
                 renderer.render(scene, camera);
-            }
-            animate();
+            })();
         }
 
-        function update3dSkin() {
-            if(!characterGroup) return;
-            while(characterGroup.children.length > 0) { 
-                characterGroup.remove(characterGroup.children[0]); 
-            }
+        function update3D() {
+            if(!modelGroup) return;
+            while(modelGroup.children.length > 0) modelGroup.remove(modelGroup.children[0]);
 
-            const canvas = document.getElementById('skinCanvas');
-            const texture = new THREE.CanvasTexture(canvas);
-            texture.magFilter = THREE.NearestFilter;
-            texture.minFilter = THREE.NearestFilter;
+            const tex = new THREE.CanvasTexture(document.getElementById('skinCanvas'));
+            tex.magFilter = THREE.NearestFilter;
+            const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true });
 
-            const mat = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.8), mat); head.position.y = 0.9;
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.2, 0.4), mat); body.position.y = -0.1;
+            const lArm = new THREE.Mesh(new THREE.BoxGeometry(0.35, 1.2, 0.35), mat); lArm.position.set(-0.6, -0.1, 0);
+            const rArm = new THREE.Mesh(new THREE.BoxGeometry(0.35, 1.2, 0.35), mat); rArm.position.set(0.6, -0.1, 0);
+            const lLeg = new THREE.Mesh(new THREE.BoxGeometry(0.38, 1.2, 0.38), mat); lLeg.position.set(-0.2, -1.3, 0);
+            const rLeg = new THREE.Mesh(new THREE.BoxGeometry(0.38, 1.2, 0.38), mat); rLeg.position.set(0.2, -1.3, 0);
 
-            const headGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
-            const head = new THREE.Mesh(headGeo, mat);
-            head.position.y = 0.9;
-            characterGroup.add(head);
-
-            const bodyGeo = new THREE.BoxGeometry(0.8, 1.2, 0.4);
-            const body = new THREE.Mesh(bodyGeo, mat);
-            body.position.y = -0.1;
-            characterGroup.add(body);
-
-            const armGeo = new THREE.BoxGeometry(0.35, 1.2, 0.35);
-            const lArm = new THREE.Mesh(armGeo, mat);
-            lArm.position.set(-0.6, -0.1, 0);
-            characterGroup.add(lArm);
-
-            const rArm = new THREE.Mesh(armGeo, mat);
-            rArm.position.set(0.6, -0.1, 0);
-            characterGroup.add(rArm);
-
-            const legGeo = new THREE.BoxGeometry(0.38, 1.2, 0.38);
-            const lLeg = new THREE.Mesh(legGeo, mat);
-            lLeg.position.set(-0.2, -1.3, 0);
-            characterGroup.add(lLeg);
-
-            const rLeg = new THREE.Mesh(legGeo, mat);
-            rLeg.position.set(0.2, -1.3, 0);
-            characterGroup.add(rLeg);
+            modelGroup.add(head, body, lArm, rArm, lLeg, rLeg);
         }
 
-        function downloadSkin() {
-            const canvas = document.getElementById('skinCanvas');
-            const link = document.createElement('a');
-            link.download = 'vlog-meisje-minecraft-skin.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
+        function downloadPNG() {
+            const a = document.createElement('a');
+            a.download = 'minecraft-skin.png';
+            a.href = document.getElementById('skinCanvas').toDataURL();
+            a.click();
         }
 
         window.onload = function() {
-            startTimers();
-            changeStation();
-            init3d();
-            generateSkinFromColors();
+            runTimers();
+            init3D();
+            drawSkin();
         };
     </script>
 </body>
